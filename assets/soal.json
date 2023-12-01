@@ -1,0 +1,1518 @@
+[
+      {
+        "pertanyaan": "Apa sinonim dari kata 'murah'?",
+        "jawaban": "hemat"
+      },
+      {
+        "pertanyaan": "Siapakah penulis novel 'Laskar Pelangi'?",
+        "jawaban": "Andrea Hirata"
+      },
+      {
+        "pertanyaan": "Apa antonim dari kata 'tinggi'?",
+        "jawaban": "rendah"
+      },
+      {
+        "pertanyaan": "Berapakah hasil dari 10 + 5?",
+        "jawaban": "15"
+      },
+      {
+        "pertanyaan": "Apa kepanjangan dari 'UNESCO'?",
+        "jawaban": "United Nations Educational, Scientific, and Cultural Organization"
+      },
+      {
+        "pertanyaan": "Siapakah presiden pertama Indonesia?",
+        "jawaban": "Soekarno"
+      },
+      {
+        "pertanyaan": "Apa ibu kota dari Jepang?",
+        "jawaban": "Tokyo"
+      },
+      {
+        "pertanyaan": "Siapakah tokoh kartun seekor kucing yang sangat terkenal?",
+        "jawaban": "Garfield"
+      },
+      {
+        "pertanyaan": "Apa nama benua terbesar di dunia?",
+        "jawaban": "Asia"
+      },
+      {
+        "pertanyaan": "Dalam sistem angka Romawi, huruf apakah yang mewakili angka 50?",
+        "jawaban": "L"
+      },
+      {
+        "pertanyaan": "Apa kepanjangan dari 'ASEAN'?",
+        "jawaban": "Association of Southeast Asian Nations"
+      },
+      {
+        "pertanyaan": "Siapakah penulis drama terkenal 'Romeo dan Juliet'?",
+        "jawaban": "William Shakespeare"
+      },
+      {
+        "pertanyaan": "Apa sinonim dari kata 'senang'?",
+        "jawaban": "gembira"
+      },
+      {
+        "pertanyaan": "Berapakah hasil dari 8 x 7?",
+        "jawaban": "56"
+      },
+      {
+        "pertanyaan": "Apa nama sungai terpanjang di dunia?",
+        "jawaban": "Sungai Nil"
+      },
+      {
+        "pertanyaan": "Siapakah penemu bola lampu?",
+        "jawaban": "Thomas Alva Edison"
+      },
+      {
+        "pertanyaan": "Apa antonim dari kata 'gelap'?",
+        "jawaban": "terang"
+      },
+      {
+        "pertanyaan": "Siapakah presiden Amerika Serikat ke-44?",
+        "jawaban": "Barack Obama"
+      },
+      {
+        "pertanyaan": "Apa ibu kota dari Spanyol?",
+        "jawaban": "Madrid"
+      },
+      {
+        "pertanyaan": "Siapakah tokoh fiksi penjahat terkenal dalam cerita 'Sherlock Holmes'?",
+        "jawaban": "Professor Moriarty"
+      },
+      {
+        "pertanyaan": "Apa nama alat musik tiup yang terbuat dari logam dan sering digunakan dalam marching band?",
+        "jawaban": "Trompet"
+      },
+      {
+        "pertanyaan": "Siapakah penulis novel 'Harry Potter'?",
+        "jawaban": "J.K. Rowling"
+      },
+      {
+        "pertanyaan": "Apa sinonim dari kata 'menggemaskan'?",
+        "jawaban": "lucu"
+      },
+      {
+        "pertanyaan": "Berapakah hasil dari 20 ÷ 4?",
+        "jawaban": "5"
+      },
+      {
+        "pertanyaan": "Apa nama samudra terbesar di dunia?",
+        "jawaban": "Samudra Pasifik"
+      },
+      {
+        "pertanyaan": "Siapakah penemu gravitasi?",
+        "jawaban": "Isaac Newton"
+      },
+      {
+        "pertanyaan": "Apa antonim dari kata 'berani'?",
+        "jawaban": "takut"
+      },
+      {
+        "pertanyaan": "Negara mana yang memiliki julukan 'Negara Gajah Putih'?",
+        "jawaban": "Thailand"
+      },
+      {
+        "pertanyaan": "Negara mana yang memiliki julukan 'Negara Matahari Terbit'?",
+        "jawaban": "Jepang"
+      },
+      {
+        "pertanyaan": "Negara mana yang memiliki ibu kota bernama Ottawa?",
+        "jawaban": "Kanada"
+      },
+      {
+        "pertanyaan": "Negara mana yang memiliki julukan 'Negeri Paman Sam'?",
+        "jawaban": "Amerika Serikat"
+      },
+      {
+        "pertanyaan": "Negara mana yang memiliki ibu kota bernama New Delhi?",
+        "jawaban": "India"
+      },
+      {
+        "pertanyaan": "Negara mana yang memiliki julukan 'Negeri Seribu Pulau'?",
+        "jawaban": "Indonesia"
+      },
+      {
+        "pertanyaan": "Negara mana yang memiliki ibu kota bernama Cairo?",
+        "jawaban": "Mesir"
+      },
+      {
+        "pertanyaan": "Negara mana yang memiliki julukan 'Negara Kanguru'?",
+        "jawaban": "Australia"
+      },
+      {
+        "pertanyaan": "Negara mana yang memiliki ibu kota bernama Paris?",
+        "jawaban": "Prancis"
+      },
+      {
+        "pertanyaan": "Negara mana yang memiliki julukan 'Negeri Bunga Mawar'?",
+        "jawaban": "Bulgaria"
+      },
+      {
+        "pertanyaan": "Negara mana yang memiliki ibu kota bernama Berlin?",
+        "jawaban": "Jerman"
+      },
+      {
+        "pertanyaan": "Negara mana yang memiliki julukan 'Negara Singa Merlion'?",
+        "jawaban": "Singapura"
+      },
+      {
+        "pertanyaan": "Negara mana yang memiliki ibu kota bernama Buenos Aires?",
+        "jawaban": "Argentina"
+      },
+      {
+        "pertanyaan": "Negara mana yang memiliki julukan 'Negara Paman Ho-Ho'?",
+        "jawaban": "China"
+      },
+      {
+        "pertanyaan": "Negara mana yang memiliki ibu kota bernama Abu Dhabi?",
+        "jawaban": "Uni Emirat Arab (UEA)"
+      },
+      {
+        "pertanyaan": "Negara mana yang memiliki julukan 'Negeri Seribu Wajah'?",
+        "jawaban": "Greece"
+      },
+      {
+        "pertanyaan": "Negara mana yang memiliki ibu kota bernama Moscow?",
+        "jawaban": "Rusia"
+      },
+      {
+        "pertanyaan": "Negara mana yang memiliki julukan 'Negeri Bunga Matahari'?",
+        "jawaban": "Argentina"
+      },
+      {
+        "pertanyaan": "Negara mana yang memiliki ibu kota bernama Jakarta?",
+        "jawaban": "Indonesia"
+      },
+      {
+        "pertanyaan": "Negara mana yang memiliki julukan 'Negeri Angin Ribut'?",
+        "jawaban": "Belanda"
+      },
+      {
+        "pertanyaan": "Siapakah penulis novel 'Pride and Prejudice'?",
+        "jawaban": "Jane Austen"
+      },
+      {
+        "pertanyaan": "Apa ibu kota dari Brasil?",
+        "jawaban": "Brasilia"
+      },
+      {
+        "pertanyaan": "Siapakah tokoh fiksi pahlawan super yang mempunyai julukan 'Caped Crusader'?",
+        "jawaban": "Batman"
+      },
+      {
+      "pertanyaan": "Apa nama tokoh fiksi terkenal yang tinggal di bawah laut dan memiliki rumah nanas?",
+      "jawaban": "SpongeBob SquarePants"
+    },
+    {
+      "pertanyaan": "Siapakah penulis drama 'Hamlet'?",
+      "jawaban": "William Shakespeare"
+    },
+    {
+      "pertanyaan": "Apa sinonim dari kata 'santai'?",
+      "jawaban": "tenang"
+    },
+    {
+      "pertanyaan": "Berapakah hasil dari 15 + 9?",
+      "jawaban": "24"
+    },
+    {
+      "pertanyaan": "Apa nama gunung tertinggi di dunia?",
+      "jawaban": "Gunung Everest"
+    },
+    {
+      "pertanyaan": "Siapakah penemu teori relativitas?",
+      "jawaban": "Albert Einstein"
+    },
+    {
+      "pertanyaan": "Apa antonim dari kata 'cerah'?",
+      "jawaban": "gelap"
+    },
+    {
+      "pertanyaan": "Siapakah presiden Indonesia ke-6?",
+      "jawaban": "Susilo Bambang Yudhoyono"
+    },
+    {
+      "pertanyaan": "Apa ibu kota dari Australia?",
+      "jawaban": "Canberra"
+    },
+    {
+      "pertanyaan": "Siapakah tokoh kartun pemilik rumah pohon yang sangat tinggi?",
+      "jawaban": "Tarzan"
+    },
+    {
+        "pertanyaan": "Apa nama tokoh fiksi terkenal yang tinggal di bawah laut dan memiliki rumah nanas?",
+        "jawaban": "SpongeBob SquarePants"
+      },
+      {
+        "pertanyaan": "Siapakah penulis drama 'Hamlet'?",
+        "jawaban": "William Shakespeare"
+      },
+      {
+        "pertanyaan": "Apa sinonim dari kata 'santai'?",
+        "jawaban": "tenang"
+      },
+      {
+        "pertanyaan": "Berapakah hasil dari 15 + 9?",
+        "jawaban": "24"
+      },
+      {
+        "pertanyaan": "Apa nama gunung tertinggi di dunia?",
+        "jawaban": "Gunung Everest"
+      },
+      {
+        "pertanyaan": "Siapakah penemu teori relativitas?",
+        "jawaban": "Albert Einstein"
+      },
+      {
+        "pertanyaan": "Apa antonim dari kata 'cerah'?",
+        "jawaban": "gelap"
+      },
+      {
+        "pertanyaan": "Siapakah presiden Indonesia ke-6?",
+        "jawaban": "Susilo Bambang Yudhoyono"
+      },
+      {
+        "pertanyaan": "Apa ibu kota dari Australia?",
+        "jawaban": "Canberra"
+      },
+      {
+        "pertanyaan": "Siapakah tokoh kartun pemilik rumah pohon yang sangat tinggi?",
+        "jawaban": "Tarzan"
+      },
+      {
+        "pertanyaan": "Apa nama negara terbesar di dunia berdasarkan luas wilayah?",
+        "jawaban": "Rusia"
+      },
+      {
+        "pertanyaan": "Siapakah penulis drama 'Macbeth'?",
+        "jawaban": "William Shakespeare"
+      },
+      {
+        "pertanyaan": "Apa sinonim dari kata 'mengerti'?",
+        "jawaban": "memahami"
+      },
+      {
+        "pertanyaan": "Berapakah hasil dari 3^2?",
+        "jawaban": "9"
+      },
+      {
+        "pertanyaan": "Apa nama sungai terpanjang di Amerika Selatan?",
+        "jawaban": "Sungai Amazon"
+      },
+      {
+        "pertanyaan": "Siapakah penulis novel 'To Kill a Mockingbird'?",
+        "jawaban": "Harper Lee"
+      },
+      {
+        "pertanyaan": "Apa antonim dari kata 'bahagia'?",
+        "jawaban": "sedih"
+      },
+      {
+        "pertanyaan": "Siapakah presiden Amerika Serikat ke-45?",
+        "jawaban": "Donald Trump"
+      },
+      {
+        "pertanyaan": "Apa ibu kota dari Perancis?",
+        "jawaban": "Paris"
+      },
+      {
+        "pertanyaan": "Siapakah tokoh fiksi pahlawan super yang memiliki kekuatan laba-laba?",
+        "jawaban": "Spider-Man"
+      },
+      {
+        "pertanyaan": "Apa nama negara yang memiliki lambang berupa harimau dengan pedang?",
+        "jawaban": "Malaysia"
+      },
+      {
+        "pertanyaan": "Siapakah penulis novel 'The Great Gatsby'?",
+        "jawaban": "F. Scott Fitzgerald"
+      },
+      {
+        "pertanyaan": "Apa sinonim dari kata 'mendengarkan'?",
+        "jawaban": "menguping"
+      },
+      {
+        "pertanyaan": "Berapakah hasil dari 20 ÷ 5?",
+        "jawaban": "4"
+      },
+      {
+        "pertanyaan": "Apa nama sungai terpanjang di dunia?",
+        "jawaban": "Sungai Nil"
+      },
+      {
+        "pertanyaan": "Siapakah penulis novel '1984'?",
+        "jawaban": "George Orwell"
+      },
+      {
+        "pertanyaan": "Apa antonim dari kata 'gelisah'?",
+        "jawaban": "tenang"
+      },
+      {
+        "pertanyaan": "Siapakah presiden Indonesia ke-7?",
+        "jawaban": "Joko Widodo"
+      },
+      {
+        "pertanyaan": "Apa ibu kota dari Jerman?",
+        "jawaban": "Berlin"
+      },
+      {
+        "pertanyaan": "Siapakah tokoh kartun yang berdiam di dalam gua dan suka mencuri?",
+        "jawaban": "Doraemon"
+      },
+      {
+        "pertanyaan": "Apa nama hewan mamalia terbesar di dunia?",
+        "jawaban": "Paus biru"
+      },
+      {
+        "pertanyaan": "Siapakah penulis drama 'Romeo and Juliet'?",
+        "jawaban": "William Shakespeare"
+      },
+      {
+        "pertanyaan": "Apa sinonim dari kata 'menghancurkan'?",
+        "jawaban": "membantai"
+      },
+      {
+        "pertanyaan": "Berapakah hasil dari 12 x 8?",
+        "jawaban": "96"
+      },
+      {
+        "pertanyaan": "Apa nama gunung tertinggi di Indonesia?",
+        "jawaban": "Puncak Jaya/Wilhelmus Peak/Carstensz Pyramid"
+      },
+      {
+        "pertanyaan": "Siapakah penulis novel 'Lord of the Rings'?",
+        "jawaban": "J.R.R. Tolkien"
+      },
+      {
+        "pertanyaan": "Apa antonim dari kata 'bersih'?",
+        "jawaban": "kotor"
+      },
+      {
+        "pertanyaan": "Siapakah presiden Amerika Serikat ke-46?",
+        "jawaban": "Joe Biden"
+      },
+      {
+        "pertanyaan": "Apa ibu kota dari Kanada?",
+        "jawaban": "Ottawa"
+      },
+      {
+        "pertanyaan": "Siapakah tokoh fiksi pahlawan super yang berasal dari planet Krypton?",
+        "jawaban": "Superman"
+      },
+      {
+        "pertanyaan": "Apa nama ilmuwan yang merumuskan hukum gravitasi?",
+        "jawaban": "Isaac Newton"
+      },
+      {
+        "pertanyaan": "Siapakah penulis drama 'Hamlet'?",
+        "jawaban": "William Shakespeare"
+      },
+      {
+        "pertanyaan": "Apa sinonim dari kata 'merasa'?",
+        "jawaban": "menganggap"
+      },
+      {
+        "pertanyaan": "Berapakah hasil dari 16 ÷ 4?",
+        "jawaban": "4"
+      },
+      {
+        "pertanyaan": "Apa nama laut terbesar di dunia?",
+        "jawaban": "Lautan Pasifik"
+      },
+      {
+        "pertanyaan": "Siapakah penulis novel 'Pride and Prejudice'?",
+        "jawaban": "Jane Austen"
+      },
+      {
+        "pertanyaan": "Apa antonim dari kata 'cepat'?",
+        "jawaban": "lambat"
+      },
+      {
+        "pertanyaan": "Siapakah presiden Amerika Serikat ke-35?",
+        "jawaban": "John F. Kennedy"
+      },
+      {
+        "pertanyaan": "Apa ibu kota dari Inggris?",
+        "jawaban": "London"
+      },
+      {
+        "pertanyaan": "Siapakah tokoh fiksi pahlawan super yang memiliki kekuatan kilat?",
+        "jawaban": "The Flash"
+      },
+      {
+        "pertanyaan": "Apa nama bintang terdekat dari Bumi?",
+        "jawaban": "Matahari"
+      },
+      {
+        "pertanyaan": "Siapakah penulis novel 'The Catcher in the Rye'?",
+        "jawaban": "J.D. Salinger"
+      },
+      {
+        "pertanyaan": "Apa sinonim dari kata 'menyenangkan'?",
+        "jawaban": "mengasyikkan"
+      },
+      {
+        "pertanyaan": "Berapakah hasil dari 7^3?",
+        "jawaban": "343"
+      },
+      {
+        "pertanyaan": "Apa nama gunung tertinggi di Eropa?",
+        "jawaban": "Gunung Elbrus"
+      },
+      {
+        "pertanyaan": "Siapakah penulis novel 'The Hobbit'?",
+        "jawaban": "J.R.R. Tolkien"
+      },
+      {
+        "pertanyaan": "Apa antonim dari kata 'bahagia'?",
+        "jawaban": "sedih"
+      },
+      {
+        "pertanyaan": "Siapakah presiden Indonesia ke-4?",
+        "jawaban": "Abdurrahman Wahid"
+      },
+      {
+        "pertanyaan": "Apa ibu kota dari Argentina?",
+        "jawaban": "Buenos Aires"
+      },
+      {
+        "pertanyaan": "Siapakah tokoh fiksi pahlawan super yang identitasnya adalah Tony Stark?",
+        "jawaban": "Iron Man"
+      },
+      {
+        "pertanyaan": "Apa nama planet terbesar di tata surya?",
+        "jawaban": "Yupiter"
+      },
+      {
+        "pertanyaan": "Siapakah penulis novel 'Moby-Dick'?",
+        "jawaban": "Herman Melville"
+      },
+      {
+        "pertanyaan": "Apa sinonim dari kata 'memukau'?",
+        "jawaban": "menakjubkan"
+      },
+      {
+        "pertanyaan": "Berapakah hasil dari 9 x 6?",
+        "jawaban": "54"
+      },
+      {
+        "pertanyaan": "Apa nama benua terkecil di dunia?",
+        "jawaban": "Australia"
+      },
+      {
+        "pertanyaan": "Siapakah penulis novel 'The Lord of the Flies'?",
+        "jawaban": "William Golding"
+      },
+      {
+        "pertanyaan": "Apa antonim dari kata 'gelap'?",
+        "jawaban": "terang"
+      },
+      {
+        "pertanyaan": "Siapakah presiden Amerika Serikat ke-32?",
+        "jawaban": "Franklin D. Roosevelt"
+      },
+      {
+        "pertanyaan": "Apa ibu kota dari Turki?",
+        "jawaban": "Ankara"
+      },
+      {
+        "pertanyaan": "Siapakah tokoh fiksi pahlawan super yang memiliki kemampuan menyusut?",
+        "jawaban": "Ant-Man"
+      },
+      {
+        "pertanyaan": "Apa nama negara terkecil di dunia berdasarkan luas wilayah?",
+        "jawaban": "Vatikan"
+      },
+      {
+        "pertanyaan": "Siapakah penulis drama 'Macbeth'?",
+        "jawaban": "William Shakespeare"
+      },
+      {
+        "pertanyaan": "Apa sinonim dari kata 'terkenal'?",
+        "jawaban": "populer"
+      },
+      {
+        "pertanyaan": "Berapakah hasil dari 25 ÷ 5?",
+        "jawaban": "5"
+      },
+      {
+        "pertanyaan": "Apa nama bintang terdekat dari Bumi setelah Matahari?",
+        "jawaban": "Proxima Centauri"
+      },
+      {
+        "pertanyaan": "Siapakah penulis novel 'Jane Eyre'?",
+        "jawaban": "Charlotte Brontë"
+      },
+      {
+        "pertanyaan": "Apa antonim dari kata 'dingin'?",
+        "jawaban": "panas"
+      },
+      {
+        "pertanyaan": "Siapakah presiden Indonesia ke-5?",
+        "jawaban": "Megawati Soekarnoputri"
+      },
+      {
+        "pertanyaan": "Apa ibu kota dari Mesir?",
+        "jawaban": "Kairo"
+      },
+      {
+        "pertanyaan": "Siapakah tokoh kartun yang hidup di tanah Fantasia dan memiliki auryn?",
+        "jawaban": "Atreyu"
+      },
+      {
+        "pertanyaan": "Apa nama planet terdekat dari Bumi setelah Mars?",
+        "jawaban": "Venus"
+      },
+      {
+        "pertanyaan": "Siapakah penulis novel 'The Hunger Games'?",
+        "jawaban": "Suzanne Collins"
+      },
+      {
+        "pertanyaan": "Apa sinonim dari kata 'percaya'?",
+        "jawaban": "yakin"
+      },
+      {
+        "pertanyaan": "Berapakah hasil dari 8 x 9?",
+        "jawaban": "72"
+      },
+      {
+        "pertanyaan": "Apa nama samudra terbesar di dunia?",
+        "jawaban": "Samudra Pasifik"
+      },
+      {
+        "pertanyaan": "Siapakah penulis novel 'Pride and Prejudice'?",
+        "jawaban": "Jane Austen"
+      },
+      {
+        "pertanyaan": "Apa antonim dari kata 'lebar'?",
+        "jawaban": "sempit"
+      },
+      {
+        "pertanyaan": "Siapakah presiden Amerika Serikat ke-46?",
+        "jawaban": "Joe Biden"
+      },
+      {
+        "pertanyaan": "Apa ibu kota dari Argentina?",
+        "jawaban": "Buenos Aires"
+      },
+      {
+        "pertanyaan": "Siapakah tokoh fiksi pahlawan super yang identitasnya adalah Tony Stark?",
+        "jawaban": "Iron Man"
+      },
+      {
+        "pertanyaan": "Apa nama alat musik tiup yang terbuat dari logam dan sering digunakan dalam orkestra?",
+        "jawaban": "Trombone"
+      },
+      {
+        "pertanyaan": "Siapakah penulis drama 'Othello'?",
+        "jawaban": "William Shakespeare"
+      },
+      {
+        "pertanyaan": "Apa sinonim dari kata 'mengangkat'?",
+        "jawaban": "menaikkan"
+      },
+      {
+        "pertanyaan": "Berapakah hasil dari 12 x 7?",
+        "jawaban": "84"
+      },
+      {
+        "pertanyaan": "Apa nama sungai terpanjang di Amerika Utara?",
+        "jawaban": "Sungai Mississippi"
+      },
+      {
+        "pertanyaan": "Siapakah penulis novel 'The Great Gatsby'?",
+        "jawaban": "F. Scott Fitzgerald"
+      },
+      {
+        "pertanyaan": "Apa antonim dari kata 'gigih'?",
+        "jawaban": "lemah"
+      },
+      {
+        "pertanyaan": "Siapakah presiden Indonesia ke-3?",
+        "jawaban": "B.J. Habibie"
+      },
+      {
+        "pertanyaan": "Apa ibu kota dari Spanyol?",
+        "jawaban": "Madrid"
+      },
+      {
+        "pertanyaan": "Siapakah tokoh kartun yang tinggal di Bikini Bottom dan bekerja di Krusty Krab?",
+        "jawaban": "SpongeBob SquarePants"
+      },
+      {
+        "pertanyaan": "Siapakah penulis novel 'The Lord of the Rings'?",
+        "jawaban": "J.R.R. Tolkien"
+      },
+      {
+        "pertanyaan": "Apa sinonim dari kata 'melihat'?",
+        "jawaban": "memandang"
+      },
+      {
+        "pertanyaan": "Berapakah hasil dari 10 ÷ 2?",
+        "jawaban": "5"
+      },
+      {
+        "pertanyaan": "Apa nama gunung tertinggi di Amerika Utara?",
+        "jawaban": "Gunung Denali"
+      },
+      {
+        "pertanyaan": "Siapakah penulis novel 'Harry Potter'?",
+        "jawaban": "J.K. Rowling"
+      },
+      {
+        "pertanyaan": "Apa antonim dari kata 'terang'?",
+        "jawaban": "gelap"
+      },
+      {
+        "pertanyaan": "Siapakah presiden Amerika Serikat ke-44?",
+        "jawaban": "Barack Obama"
+      },
+      {
+        "pertanyaan": "Apa ibu kota dari Brazil?",
+        "jawaban": "Brasília"
+      },
+      {
+        "pertanyaan": "Siapakah tokoh fiksi pahlawan super yang mengenakan kostum berwarna merah dan memiliki kekuatan laba-laba?",
+        "jawaban": "Spider-Man"
+      },
+      {
+        "pertanyaan": "Apa nama negara terkecil di dunia berdasarkan jumlah penduduk?",
+        "jawaban": "Vatikan"
+      },
+      {
+        "pertanyaan": "Siapakah penulis drama 'Hamlet'?",
+        "jawaban": "William Shakespeare"
+      },
+      {
+        "pertanyaan": "Apa sinonim dari kata 'meriah'?",
+        "jawaban": "ramai"
+      },
+      {
+        "pertanyaan": "Berapakah hasil dari 4^3?",
+        "jawaban": "64"
+      },
+      {
+        "pertanyaan": "Apa nama gunung tertinggi di dunia?",
+        "jawaban": "Gunung Everest"
+      },
+      {
+        "pertanyaan": "Siapakah penulis novel 'To Kill a Mockingbird'?",
+        "jawaban": "Harper Lee"
+      },
+      {
+        "pertanyaan": "Apa antonim dari kata 'berani'?",
+        "jawaban": "takut"
+      },
+      {
+        "pertanyaan": "Siapakah presiden Indonesia ke-6?",
+        "jawaban": "Susilo Bambang Yudhoyono"
+      },
+      {
+        "pertanyaan": "Apa ibu kota dari Spanyol?",
+        "jawaban": "Madrid"
+      },
+      {
+        "pertanyaan": "Siapakah tokoh fiksi pahlawan super yang menggunakan baju besi canggih?",
+        "jawaban": "Iron Man"
+      },
+      {
+        "pertanyaan": "Berapakah hasil dari 7 + 5?",
+        "jawaban": "12"
+      },
+      {
+        "pertanyaan": "Berapakah hasil dari 15 - 8?",
+        "jawaban": "7"
+      },
+      {
+        "pertanyaan": "Berapakah hasil dari 6 x 4?",
+        "jawaban": "24"
+      },
+      {
+        "pertanyaan": "Berapakah hasil dari 20 ÷ 5?",
+        "jawaban": "4"
+      },
+      {
+        "pertanyaan": "Berapakah hasil dari 9^2?",
+        "jawaban": "81"
+      },
+      {
+        "pertanyaan": "Berapakah hasil dari 25 % 8?",
+        "jawaban": "1"
+      },
+      {
+        "pertanyaan": "Berapakah hasil dari (4 + 5) x 3?",
+        "jawaban": "27"
+      },
+      {
+        "pertanyaan": "Berapakah hasil dari 12 + 6 - 3?",
+        "jawaban": "15"
+      },
+      {
+        "pertanyaan": "Berapakah hasil dari 18 ÷ 2 + 5?",
+        "jawaban": "14"
+      },
+      {
+        "pertanyaan": "Berapakah hasil dari 10^0?",
+        "jawaban": "1"
+      },
+      {
+        "pertanyaan": "Planet manakah yang terdekat dengan Matahari?",
+        "jawaban": "Merkurius"
+      },
+      {
+        "pertanyaan": "Planet manakah yang paling besar di Tata Surya?",
+        "jawaban": "Yupiter"
+      },
+      {
+        "pertanyaan": "Planet manakah yang memiliki cincin yang terlihat dengan mata telanjang?",
+        "jawaban": "Saturnus"
+      },
+      {
+        "pertanyaan": "Apa nama planet yang memiliki dua bulan yang bernama Phobos dan Deimos?",
+        "jawaban": "Mars"
+      },
+      {
+        "pertanyaan": "Apa nama planet dengan suhu permukaan yang paling panas di Tata Surya?",
+        "jawaban": "Venus"
+      },
+      {
+        "pertanyaan": "Planet manakah yang disebut sebagai 'Planet Merah' karena warnanya yang mencolok?",
+        "jawaban": "Mars"
+      },
+      {
+        "pertanyaan": "Siapakah planet terkecil di Tata Surya?",
+        "jawaban": "Pluto"
+      },
+      {
+        "pertanyaan": "Planet manakah yang memiliki cincin terangkat yang disebut 'Ring E'?",
+        "jawaban": "Saturnus"
+      },
+      {
+        "pertanyaan": "Apa nama planet yang memiliki iklim paling ekstrem dengan angin yang sangat kencang?",
+        "jawaban": "Neptunus"
+      },
+      {
+        "pertanyaan": "Planet manakah yang dikenal sebagai 'Planet Biru'?",
+        "jawaban": "Neptunus"
+      },
+      {
+        "pertanyaan": "Siapakah Proklamator Kemerdekaan Indonesia?",
+        "jawaban": "Soekarno dan Mohammad Hatta"
+      },
+      {
+        "pertanyaan": "Apa yang dimaksud dengan Pancasila?",
+        "jawaban": "Pancasila adalah dasar negara dan ideologi Indonesia yang terdiri dari lima sila: Ketuhanan Yang Maha Esa, Kemanusiaan yang Adil dan Beradab, Persatuan Indonesia, Kerakyatan yang Dipimpin oleh Hikmat Kebijaksanaan dalam Permusyawaratan/Perwakilan, dan Keadilan Sosial bagi Seluruh Rakyat Indonesia."
+      },
+      {
+        "pertanyaan": "Apa lambang negara Indonesia?",
+        "jawaban": "Garuda Pancasila"
+      },
+      {
+        "pertanyaan": "Siapakah Presiden pertama Indonesia?",
+        "jawaban": "Soekarno"
+      },
+      {
+        "pertanyaan": "Apa arti dari Bhinneka Tunggal Ika?",
+        "jawaban": "Bhinneka Tunggal Ika merupakan semboyan kebangsaan Indonesia yang berarti 'Berbeda-beda tetapi tetap satu' yang mengandung makna tentang persatuan dalam keanekaragaman."
+      },
+      {
+        "pertanyaan": "Apakah bahasa resmi yang digunakan di Indonesia?",
+        "jawaban": "Bahasa Indonesia"
+      },
+      {
+        "pertanyaan": "Siapakah Presiden Indonesia sekarang?",
+        "jawaban": "Joko Widodo"
+      },
+      {
+        "pertanyaan": "Apa yang dirayakan pada tanggal 17 Agustus?",
+        "jawaban": "Hari Kemerdekaan Indonesia"
+      },
+      {
+        "pertanyaan": "Apa fungsi dari Dewan Perwakilan Rakyat (DPR) dalam sistem pemerintahan Indonesia?",
+        "jawaban": "DPR merupakan lembaga legislatif yang berfungsi sebagai perwakilan rakyat dalam membuat undang-undang dan mengawasi pemerintahan."
+      },
+      {
+        "pertanyaan": "Siapakah Pahlawan Nasional Indonesia yang dikenal sebagai 'Bapak Pendidikan Nasional'?",
+        "jawaban": "Ki Hajar Dewantara"
+      },
+      {
+        "pertanyaan": "Siapakah hero dengan julukan 'Kisah Dalam Sebuah Pedang' di Mobile Legends?",
+        "jawaban": "Alucard"
+      },
+      {
+        "pertanyaan": "Apa nama hero dengan role Tanker dan memiliki kemampuan 'Savage' di Mobile Legends?",
+        "jawaban": "Tigreal"
+      },
+      {
+        "pertanyaan": "Hero apa yang memiliki kemampuan 'Wall Spikes' sebagai ultimate skillnya?",
+        "jawaban": "Franco"
+      },
+      {
+        "pertanyaan": "Apa role dari hero 'Fanny' dalam permainan Mobile Legends?",
+        "jawaban": "Assassin"
+      },
+      {
+        "pertanyaan": "Hero apa yang memiliki skill pasif 'Mecha Suppression' yang bisa mengurangi pertahanan lawan?",
+        "jawaban": "Bruno"
+      },
+      {
+        "pertanyaan": "Siapakah hero dengan kemampuan ultimate 'Order of the Phoenix' di Mobile Legends?",
+        "jawaban": "Lunox"
+      },
+      {
+        "pertanyaan": "Hero apa yang memiliki kemampuan 'Eye for an Eye' yang bisa mencuri HP lawan?",
+        "jawaban": "Dyrroth"
+      },
+      {
+        "pertanyaan": "Apa nama hero dengan role Mage yang memiliki kemampuan ultimate 'Curse of Crow'?",
+        "jawaban": "Kadita"
+      },
+      {
+        "pertanyaan": "Hero apa yang memiliki skill pasif 'Mecha Genius' yang memperkuat skill lainnya?",
+        "jawaban": "Baxia"
+      },
+      {
+        "pertanyaan": "Apa role dari hero 'Grock' dalam permainan Mobile Legends?",
+        "jawaban": "Tanker"
+      },
+      {
+        "pertanyaan": "Hero apa yang memiliki skill pasif 'We Are Angry' yang memberikan efek tambahan pada serangan dasarnya?",
+        "jawaban": "Chou"
+      },
+      {
+        "pertanyaan": "Apa nama hero dengan role Support yang memiliki kemampuan ultimate 'Chrono Dash'?",
+        "jawaban": "Kaja"
+      },
+      {
+        "pertanyaan": "Hero apa yang memiliki kemampuan 'Meteor Shower' sebagai ultimate skillnya?",
+        "jawaban": "Vexana"
+      },
+      {
+        "pertanyaan": "Siapakah hero dengan kemampuan ultimate 'Art of Thievery' di Mobile Legends?",
+        "jawaban": "Gusion"
+      },
+      {
+        "pertanyaan": "Apa role dari hero 'Harith' dalam permainan Mobile Legends?",
+        "jawaban": "Mage"
+      },
+      {
+        "pertanyaan": "Hero apa yang memiliki skill pasif 'Poison Sting' yang memberikan efek racun pada lawan?",
+        "jawaban": "Natalia"
+      },
+      {
+        "pertanyaan": "Apa nama hero dengan role Tanker yang memiliki kemampuan ultimate 'Wild Charge'?",
+        "jawaban": "Gatotkaca"
+      },
+      {
+        "pertanyaan": "Hero apa yang memiliki kemampuan 'Horn of the Apocalypse' sebagai ultimate skillnya?",
+        "jawaban": "Khaleed"
+      },
+      {
+        "pertanyaan": "Siapakah hero dengan kemampuan ultimate 'Ancestral Gift' di Mobile Legends?",
+        "jawaban": "Pharsa"
+      },
+      {
+        "pertanyaan": "Apa role dari hero 'Lesley' dalam permainan Mobile Legends?",
+        "jawaban": "Marksman"
+      },
+      {
+        "pertanyaan": "Apa nama hero dengan role Assassin yang memiliki kemampuan ultimate 'Last Insanity'?",
+        "jawaban": "Helcurt"
+      },
+      {
+        "pertanyaan": "Hero apa yang memiliki skill pasif 'Blessing of the Moon Goddess' yang memberikan efek tambahan pada serangan dasarnya?",
+        "jawaban": "Miya"
+      },
+      {
+        "pertanyaan": "Siapakah hero dengan kemampuan ultimate 'Sky Guardian' di Mobile Legends?",
+        "jawaban": "Vale"
+      },
+      {
+        "pertanyaan": "Hero apa yang memiliki kemampuan 'Ejector' sebagai ultimate skillnya?",
+        "jawaban": "Gatotkaca"
+      },
+      {
+        "pertanyaan": "Apa role dari hero 'Alice' dalam permainan Mobile Legends?",
+        "jawaban": "Mage"
+      },
+      {
+        "pertanyaan": "Hero apa yang memiliki skill pasif 'Camouflage' yang memungkinkan dia menjadi tak terlihat?",
+        "jawaban": "Lancelot"
+      },
+      {
+        "pertanyaan": "Apa nama hero dengan role Tanker yang memiliki kemampuan ultimate 'Time Journey'?",
+        "jawaban": "Atlas"
+      },
+      {
+        "pertanyaan": "Hero apa yang memiliki kemampuan 'Bouncing Ball' sebagai ultimate skillnya?",
+        "jawaban": "Ling"
+      },
+      {
+        "pertanyaan": "Siapakah hero dengan kemampuan ultimate 'Dance of Death' di Mobile Legends?",
+        "jawaban": "Silvanna"
+      },
+      {
+        "pertanyaan": "Apa role dari hero 'Harley' dalam permainan Mobile Legends?",
+        "jawaban": "Mage"
+      },
+      {
+        "pertanyaan": "Siapakah karakter wanita dengan kemampuan 'Deadly Whisper' yang dapat mengubah posisi secara diam-diam di Free Fire?",
+        "jawaban": "Hayato"
+      },
+      {
+        "pertanyaan": "Apa nama senjata jarak dekat (melee) yang sering digunakan di Free Fire?",
+        "jawaban": "Pan"
+      },
+      {
+        "pertanyaan": "Hero apa yang memiliki kemampuan ultimate 'Riptide Rhythm' yang memberikan efek tambahan pada serangan teman tim?",
+        "jawaban": "Dasha"
+      },
+      {
+        "pertanyaan": "Apa nama senjata tipe shotgun yang memiliki tingkat kerusakan tinggi di Free Fire?",
+        "jawaban": "M1014"
+      },
+      {
+        "pertanyaan": "Hero apa yang memiliki kemampuan 'Trapper' yang memasang perangkap untuk musuh?",
+        "jawaban": "Kapella"
+      },
+      {
+        "pertanyaan": "Apa nama senjata tipe sniper yang sering digunakan untuk menembak dari jarak jauh di Free Fire?",
+        "jawaban": "AWM"
+      },
+      {
+        "pertanyaan": "Hero apa yang memiliki kemampuan ultimate 'Master of All' yang memungkinkan dia berubah menjadi karakter yang berbeda?",
+        "jawaban": "Jota"
+      },
+      {
+        "pertanyaan": "Apa nama senjata tipe SMG (Submachine Gun) yang sering digunakan untuk pertempuran jarak dekat?",
+        "jawaban": "MP40"
+      },
+      {
+        "pertanyaan": "Hero apa yang memiliki kemampuan 'Deadly Rain' yang meningkatkan akurasi tembakan?",
+        "jawaban": "Wolfrahh"
+      },
+      {
+        "pertanyaan": "Apa nama senjata tipe AR (Assault Rifle) yang sering digunakan sebagai senjata serbaguna di Free Fire?",
+        "jawaban": "M4A1"
+      },
+      {
+        "pertanyaan": "Boyband Korea manakah yang dijuluki 'Kings of K-Pop' dan memiliki lagu hits seperti 'MIC Drop' dan 'DNA'?",
+        "jawaban": "BTS"
+      },
+      {
+        "pertanyaan": "Siapakah leader dari boyband Korea 'EXO' yang memiliki nama panggung Suho?",
+        "jawaban": "Kim Jun-myeon"
+      },
+      {
+        "pertanyaan": "Apa nama boyband Korea yang terdiri dari 7 anggota dan dikenal dengan lagu hits seperti 'Call Me Baby' dan 'Love Shot'?",
+        "jawaban": "EXO"
+      },
+      {
+        "pertanyaan": "Boyband Korea manakah yang memiliki fandom dengan nama 'ARMY'?",
+        "jawaban": "BTS"
+      },
+      {
+        "pertanyaan": "Apa nama boyband Korea yang terdiri dari 13 anggota dan dikenal dengan lagu hits seperti 'Don't Wanna Cry' dan 'Left & Right'?",
+        "jawaban": "SEVENTEEN"
+      },
+      {
+        "pertanyaan": "Siapakah leader dari boyband Korea 'SEVENTEEN' yang memiliki nama panggung S.Coups?",
+        "jawaban": "Choi Seungcheol"
+      },
+      {
+        "pertanyaan": "Boyband Korea manakah yang dikenal dengan lagu hits seperti 'Blood Sweat & Tears' dan 'Dope'?",
+        "jawaban": "BTS"
+      },
+      {
+        "pertanyaan": "Apa nama boyband Korea yang terdiri dari 7 anggota dan dikenal dengan lagu hits seperti 'Fire' dan 'Not Today'?",
+        "jawaban": "BTS"
+      },
+      {
+        "pertanyaan": "Boyband Korea manakah yang dijuluki 'The Nation's Pick' dan memiliki lagu hits seperti 'Tempo' dan 'Love Shot'?",
+        "jawaban": "EXO"
+      },
+      {
+        "pertanyaan": "Siapakah leader dari boyband Korea 'BTS' yang memiliki nama panggung RM?",
+        "jawaban": "Kim Nam-joon"
+      },
+      {
+        "pertanyaan": "Boyband Korea manakah yang terdiri dari 7 anggota dan dikenal dengan lagu hits seperti 'Go Go' dan 'Spring Day'?",
+        "jawaban": "BTS"
+      },
+      {
+        "pertanyaan": "Siapakah leader dari boyband Korea 'NCT' yang memiliki nama panggung Taeyong?",
+        "jawaban": "Lee Tae-yong"
+      },
+      {
+        "pertanyaan": "Apa nama boyband Korea yang terdiri dari 23 anggota dan memiliki sub-unit seperti 'NCT 127', 'NCT Dream', dan 'WayV'?",
+        "jawaban": "NCT"
+      },
+      {
+        "pertanyaan": "Boyband Korea manakah yang dijuluki 'Princes of K-Pop' dan memiliki lagu hits seperti 'Growl' dan 'Ko Ko Bop'?",
+        "jawaban": "EXO"
+      },
+      {
+        "pertanyaan": "Apa nama boyband Korea yang terdiri dari 9 anggota dan dikenal dengan lagu hits seperti 'Fancy' dan 'Feel Special'?",
+        "jawaban": "TWICE"
+      },
+      {
+        "pertanyaan": "Siapakah leader dari boyband Korea 'TWICE' yang memiliki nama panggung Jihyo?",
+        "jawaban": "Park Ji-soo"
+      },
+      {
+        "pertanyaan": "Boyband Korea manakah yang dikenal dengan lagu hits seperti 'I Need U' dan 'Fake Love'?",
+        "jawaban": "BTS"
+      },
+      {
+        "pertanyaan": "Apa nama boyband Korea yang terdiri dari 7 anggota dan dikenal dengan lagu hits seperti 'Home', 'Hero', dan 'Shoot Out'?",
+        "jawaban": "MONSTA X"
+      },
+      {
+        "pertanyaan": "Boyband Korea manakah yang dijuluki 'Monster Rookies' dan memiliki lagu hits seperti 'Crown' dan 'Puma'?",
+        "jawaban": "TXT"
+      },
+      {
+        "pertanyaan": "Siapakah leader dari boyband Korea 'TXT' yang memiliki nama panggung Soobin?",
+        "jawaban": "Choi Soo-bin"
+      },
+      {
+        "pertanyaan": "Girlband Korea manakah yang terdiri dari 4 anggota dan dikenal dengan lagu hits seperti 'Whistle' dan 'DDU-DU DDU-DU'?",
+        "jawaban": "BLACKPINK"
+      },
+      {
+        "pertanyaan": "Siapakah leader dari girlband Korea 'TWICE' yang memiliki nama panggung Jihyo?",
+        "jawaban": "Park Ji-soo"
+      },
+      {
+        "pertanyaan": "Apa nama girlband Korea yang terdiri dari 5 anggota dan dikenal dengan lagu hits seperti 'Wannabe' dan 'ICY'?",
+        "jawaban": "ITZY"
+      },
+      {
+        "pertanyaan": "Girlband Korea manakah yang dijuluki 'Nation's Girl Group' dan memiliki lagu hits seperti 'Gee' dan 'Into the New World'?",
+        "jawaban": "Girls' Generation (SNSD)"
+      },
+      {
+        "pertanyaan": "Apa nama girlband Korea yang terdiri dari 5 anggota dan dikenal dengan lagu hits seperti 'Fingertip' dan 'Navillera'?",
+        "jawaban": "GFRIEND"
+      },
+      {
+        "pertanyaan": "Siapakah leader dari girlband Korea 'BLACKPINK' yang memiliki nama panggung Jisoo?",
+        "jawaban": "Kim Ji-soo"
+      },
+      {
+        "pertanyaan": "Girlband Korea manakah yang dijuluki 'The Nation's Little Sister' dan memiliki lagu hits seperti 'Red Flavor' dan 'Psycho'?",
+        "jawaban": "Red Velvet"
+      },
+      {
+        "pertanyaan": "Apa nama girlband Korea yang terdiri dari 9 anggota dan dikenal dengan lagu hits seperti 'La Vie en Rose' dan 'Violeta'?",
+        "jawaban": "IZ*ONE"
+      },
+      {
+        "pertanyaan": "Girlband Korea manakah yang dikenal dengan lagu hits seperti 'Like OOH-AHH' dan 'TT'?",
+        "jawaban": "TWICE"
+      },
+      {
+        "pertanyaan": "Siapakah leader dari girlband Korea 'Red Velvet' yang memiliki nama panggung Irene?",
+        "jawaban": "Bae Joo-hyun"
+      },
+      {
+        "pertanyaan": "Apa nama girlband Korea yang terdiri dari 4 anggota dan dikenal dengan lagu hits seperti 'Lovesick Girls' dan 'How You Like That'?",
+        "jawaban": "BLACKPINK"
+      },
+      {
+        "pertanyaan": "Girlband Korea manakah yang dijuluki 'Maknae on Top' dan memiliki lagu hits seperti 'Lion' dan 'Cross'?",
+        "jawaban": "(G)I-DLE"
+      },
+      {
+        "pertanyaan": "Siapakah leader dari girlband Korea '(G)I-DLE' yang memiliki nama panggung Soyeon?",
+        "jawaban": "Jeon So-yeon"
+      },
+      {
+        "pertanyaan": "Girlband Korea manakah yang terdiri dari 5 anggota dan dikenal dengan lagu hits seperti 'As If It's Your Last' dan 'Kill This Love'?",
+        "jawaban": "BLACKPINK"
+      },
+      {
+        "pertanyaan": "Apa nama girlband Korea yang terdiri dari 6 anggota dan dikenal dengan lagu hits seperti 'Nonstop' dan 'Dingga'?",
+        "jawaban": "Oh My Girl"
+      },
+      {
+        "pertanyaan": "Girlband Korea manakah yang dijuluki 'Monster Rookies' dan memiliki lagu hits seperti 'La Di Da' dan 'Wannabe'?",
+        "jawaban": "EVERGLOW"
+      },
+      {
+        "pertanyaan": "Siapakah leader dari girlband Korea 'EVERGLOW' yang memiliki nama panggung E:U?",
+        "jawaban": "Park Ji-won"
+      },
+      {
+        "pertanyaan": "Girlband Korea manakah yang terdiri dari 5 anggota dan dikenal dengan lagu hits seperti 'Dun Dun' dan 'Black or White'?",
+        "jawaban": "EVERGLOW"
+      },
+      {
+        "pertanyaan": "Apa nama girlband Korea yang terdiri dari 7 anggota dan dikenal dengan lagu hits seperti 'HANN' dan 'DUMDi DUMDi'?",
+        "jawaban": "((G)I-DLE"
+      },
+      {
+        "pertanyaan": "Girlband Korea manakah yang dijuluki 'Queen of K-Pop' dan memiliki lagu hits seperti 'Bad Boy' dan 'Psycho'?",
+        "jawaban": "Red Velvet"
+      },
+      {
+        "pertanyaan": "Game populer yang dikembangkan oleh Mojang dan sering disingkat sebagai 'MC', apa judul lengkap dari game ini?",
+        "jawaban": "Minecraft"
+      },
+      {
+        "pertanyaan": "Game battle royale yang dikembangkan oleh Epic Games dan memiliki mode permainan 'Solo', 'Duo', dan 'Squad', apa judul game ini?",
+        "jawaban": "Fortnite"
+      },
+      {
+        "pertanyaan": "Game mobile yang dikembangkan oleh Supercell dan menghadirkan pertempuran antar pemain dalam mode 3 vs 3, apa judul game ini?",
+        "jawaban": "Brawl Stars"
+      },
+      {
+        "pertanyaan": "Game bergenre MOBA yang dikembangkan oleh Riot Games dan memiliki mode permainan 'Summoner's Rift', apa judul game ini?",
+        "jawaban": "League of Legends"
+      },
+      {
+        "pertanyaan": "Game petualangan aksi yang dikembangkan oleh Naughty Dog dan memiliki karakter utama bernama Nathan Drake, apa judul game ini?",
+        "jawaban": "Uncharted"
+      },
+      {
+        "pertanyaan": "Game aksi-petualangan yang dikembangkan oleh Rockstar Games dan memiliki karakter utama bernama Arthur Morgan, apa judul game ini?",
+        "jawaban": "Red Dead Redemption 2"
+      },
+      {
+        "pertanyaan": "Game bergenre RPG yang dikembangkan oleh CD Projekt Red dan memiliki karakter utama bernama Geralt of Rivia, apa judul game ini?",
+        "jawaban": "The Witcher 3: Wild Hunt"
+      },
+      {
+        "pertanyaan": "Game bergenre battle royale yang dikembangkan oleh PUBG Corporation dan pertama kali dikenal sebagai mod untuk game ARMA 2, apa judul game ini?",
+        "jawaban": "PlayerUnknown's Battlegrounds (PUBG)"
+      },
+      {
+        "pertanyaan": "Game bergenre sandbox yang dikembangkan oleh Rockstar Games dan memiliki mode permainan 'Story Mode' dan 'Online', apa judul game ini?",
+        "jawaban": "Grand Theft Auto V (GTA V)"
+      },
+      {
+        "pertanyaan": "Game bergenre horor bertema bertahan hidup yang dikembangkan oleh Frictional Games, apa judul game ini?",
+        "jawaban": "Amnesia: The Dark Descent"
+      },
+      {
+        "pertanyaan": "Game populer yang dikembangkan oleh Blizzard Entertainment dan termasuk dalam genre first-person shooter, apa judul game ini?",
+        "jawaban": "Overwatch"
+      },
+      {
+        "pertanyaan": "Game RPG klasik yang dikembangkan oleh Bethesda Game Studios dan memiliki dunia terbuka dengan tema post-apocalyptic, apa judul game ini?",
+        "jawaban": "Fallout 4"
+      },
+      {
+        "pertanyaan": "Game action-adventure yang dikembangkan oleh Santa Monica Studio dan mengisahkan petualangan dewa perang Kratos, apa judul game ini?",
+        "jawaban": "God of War"
+      },
+      {
+        "pertanyaan": "Game bergenre sandbox survival yang dikembangkan oleh Re-Logic, apa judul game ini?",
+        "jawaban": "Terraria"
+      },
+      {
+        "pertanyaan": "Game aksi-petualangan yang dikembangkan oleh Ubisoft Montreal dan memiliki setting dunia terbuka dengan tema pejuang siber, apa judul game ini?",
+        "jawaban": "Watch Dogs"
+      },
+      {
+        "pertanyaan": "Game petualangan horor yang dikembangkan oleh Capcom dan menghadirkan karakter ikonik Leon Kennedy dan Jill Valentine, apa judul game ini?",
+        "jawaban": "Resident Evil 2"
+      },
+      {
+        "pertanyaan": "Game simulasi kehidupan yang dikembangkan oleh Maxis dan diterbitkan oleh Electronic Arts, apa judul game ini?",
+        "jawaban": "The Sims 4"
+      },
+      {
+        "pertanyaan": "Game platformer aksi yang dikembangkan oleh Studio MDHR dan dikenal dengan gaya visualnya yang klasik, apa judul game ini?",
+        "jawaban": "Cuphead"
+      },
+      {
+        "pertanyaan": "Game survival horror yang dikembangkan oleh Red Barrels dan mengisahkan petualangan jurnalis yang menyelidiki tempat terpencil, apa judul game ini?",
+        "jawaban": "Outlast"
+      },
+      {
+        "pertanyaan": "Game bergenre battle royale yang dikembangkan oleh Respawn Entertainment dan menghadirkan perangkat permainan ala sci-fi, apa judul game ini?",
+        "jawaban": "Apex Legends"
+      },
+      {
+        "pertanyaan": "Apa yang disebut sebagai 'paru-paru dunia' karena menghasilkan oksigen dan berperan penting dalam regulasi iklim global?",
+        "jawaban": "Hutan hujan tropis"
+      },
+      {
+        "pertanyaan": "Apa nama fenomena alam yang menyebabkan terjadinya peristiwa banjir besar di wilayah-wilayah tertentu?",
+        "jawaban": "Pembentukan gletser"
+      },
+      {
+        "pertanyaan": "Apa yang disebut sebagai puncak tertinggi di dunia, mencapai ketinggian lebih dari 8.000 meter di atas permukaan laut?",
+        "jawaban": "Gunung Everest"
+      },
+      {
+        "pertanyaan": "Apa yang disebut sebagai lereng curam batuan yang membentuk tebing yang tinggi di sisi laut?",
+        "jawaban": "Klip"
+      },
+      {
+        "pertanyaan": "Apa nama ekosistem yang dikenal sebagai lahan basah yang berfungsi sebagai habitat bagi berbagai spesies unik seperti aligator dan burung bangau?",
+        "jawaban": "Sawah"
+      },
+      {
+        "pertanyaan": "Apa nama lautan terbesar di bumi, mencakup sekitar 30% dari total permukaan bumi?",
+        "jawaban": "Samudra Pasifik"
+      },
+      {
+        "pertanyaan": "Apa yang disebut sebagai area yang sangat kering dengan curah hujan yang rendah dan didominasi oleh pasir dan batu?",
+        "jawaban": "Padang pasir"
+      },
+      {
+        "pertanyaan": "Apa nama fenomena alam yang menyebabkan terbentuknya pelangi di langit setelah hujan?",
+        "jawaban": "Sinar matahari yang dipantulkan oleh tetesan air hujan"
+      },
+      {
+        "pertanyaan": "Apa yang disebut sebagai pergerakan lapisan-lapisan bumi yang menyebabkan terjadinya gempa bumi?",
+        "jawaban": "Pergerakan lempeng tektonik"
+      },
+      {
+        "pertanyaan": "Apa nama hewan mamalia terbesar di dunia yang hidup di lautan?",
+        "jawaban": "Paus biru"
+      },
+      {
+        "pertanyaan": "Apa yang disebut sebagai perasaan intens dan romantis yang melibatkan kasih sayang dan ketertarikan terhadap seseorang?",
+        "jawaban": "Cinta"
+      },
+      {
+        "pertanyaan": "Apa istilah yang digunakan untuk menggambarkan perasaan mencintai seseorang tanpa ada rasa balasan?",
+        "jawaban": "Cinta sepihak"
+      },
+      {
+        "pertanyaan": "Apa nama hormon yang sering dijuluki 'hormon cinta' karena berperan dalam mengatur perasaan cinta?",
+        "jawaban": "Oksitosin"
+      },
+      {
+        "pertanyaan": "Apa yang disebut sebagai perasaan cemburu karena takut kehilangan orang yang dicintai kepada orang lain?",
+        "jawaban": "Rasa cemburu"
+      },
+      {
+        "pertanyaan": "Apa istilah yang digunakan untuk menyebut perasaan cinta yang bersemu dan tidak tulus?",
+        "jawaban": "Cinta palsu"
+      },
+      {
+        "pertanyaan": "Apa nama hari perayaan di berbagai negara yang khusus diperuntukkan untuk merayakan cinta dan kasih sayang?",
+        "jawaban": "Hari Valentine"
+      },
+      {
+        "pertanyaan": "Apa istilah yang digunakan untuk menggambarkan perasaan jatuh cinta yang datang begitu saja secara tiba-tiba?",
+        "jawaban": "Cinta datang tak terduga"
+      },
+      {
+        "pertanyaan": "Apa yang disebut sebagai perasaan ingin bersama seseorang tanpa memedulikan halangan dan rintangan?",
+        "jawaban": "Cinta tanpa pamrih"
+      },
+      {
+        "pertanyaan": "Apa istilah yang digunakan untuk menggambarkan perasaan cinta yang menyatu dengan pikiran dan perasaan?",
+        "jawaban": "Cinta sejati"
+      },
+      {
+        "pertanyaan": "Apa yang disebut sebagai perasaan cinta yang kembali muncul setelah pernah merasakan patah hati?",
+        "jawaban": "Cinta yang terluka"
+      },
+      {
+        "pertanyaan": "Apa nama alat musik tiup yang terbuat dari logam dan sering digunakan dalam orkestra?",
+        "jawaban": "Trompet"
+      },
+      {
+        "pertanyaan": "Alat musik gesek yang memiliki empat senar dan sering digunakan dalam musik klasik, apa nama alat musik ini?",
+        "jawaban": "Biola"
+      },
+      {
+        "pertanyaan": "Alat musik perkusi yang terdiri dari serangkaian lonceng kecil yang diikat pada pita dan dipukul untuk menghasilkan bunyi, apa nama alat musik ini?",
+        "jawaban": "Angklung"
+      },
+      {
+        "pertanyaan": "Apa nama alat musik tiup kayu yang memiliki suara lembut dan sering digunakan dalam orkestra?",
+        "jawaban": "Klarinet"
+      },
+      {
+        "pertanyaan": "Alat musik gesek yang memiliki enam senar dan sering digunakan dalam musik rock dan pop, apa nama alat musik ini?",
+        "jawaban": "Gitar listrik"
+      },
+      {
+        "pertanyaan": "Alat musik dawai yang terdiri dari 88 tombol dan memiliki pedalkan, apa nama alat musik ini?",
+        "jawaban": "Piano"
+      },
+      {
+        "pertanyaan": "Apa nama alat musik perkusi yang terbuat dari kulit dan biasa dimainkan dengan tangan?",
+        "jawaban": "Djembe"
+      },
+      {
+        "pertanyaan": "Alat musik tiup yang terbuat dari kayu dan biasanya dimainkan dalam ansambel musik tradisional Jawa, apa nama alat musik ini?",
+        "jawaban": "Suling"
+      },
+      {
+        "pertanyaan": "Apa nama alat musik tiup yang terdiri dari pipa bambu dan sering digunakan dalam musik tradisional Bali?",
+        "jawaban": "Gender Wayang"
+      },
+      {
+        "pertanyaan": "Alat musik gesek yang memiliki lima senar dan sering digunakan dalam musik tradisional Jepang, apa nama alat musik ini?",
+        "jawaban": "Koto"
+      },
+      {
+        "pertanyaan": "Berapa hasil dari 5 + 3?",
+        "jawaban": "8"
+      },
+      {
+        "pertanyaan": "Hitunglah 7 + 2?",
+        "jawaban": "9"
+      },
+      {
+        "pertanyaan": "Tuliskan angka lima puluh enam dalam bentuk angka?",
+        "jawaban": "56"
+      },
+      {
+        "pertanyaan": "Apa hasil dari 12 - 5?",
+        "jawaban": "7"
+      },
+      {
+        "pertanyaan": "Berapakah hasil dari 3 x 4?",
+        "jawaban": "12"
+      },
+      {
+        "pertanyaan": "Tuliskan angka sembilan puluh delapan dalam bentuk angka?",
+        "jawaban": "98"
+      },
+      {
+        "pertanyaan": "Apakah 20 lebih besar dari 15?",
+        "jawaban": "Ya"
+      },
+      {
+        "pertanyaan": "Hitunglah 10 + 5 - 3?",
+        "jawaban": "12"
+      },
+      {
+        "pertanyaan": "Berapakah hasil dari 6 x 2?",
+        "jawaban": "12"
+      },
+      {
+        "pertanyaan": "Apa hasil dari 100 - 50?",
+        "jawaban": "50"
+      },
+      {
+        "pertanyaan": "Berapakah hasil dari 8 + 6?",
+        "jawaban": "14"
+      },
+      {
+        "pertanyaan": "Hitunglah 9 + 3?",
+        "jawaban": "12"
+      },
+      {
+        "pertanyaan": "Tuliskan angka tujuh puluh lima dalam bentuk angka?",
+        "jawaban": "75"
+      },
+      {
+        "pertanyaan": "Apa hasil dari 20 - 8?",
+        "jawaban": "12"
+      },
+      {
+        "pertanyaan": "Berapakah hasil dari 4 x 5?",
+        "jawaban": "20"
+      },
+      {
+        "pertanyaan": "Tuliskan angka sembilan puluh dalam bentuk angka?",
+        "jawaban": "90"
+      },
+      {
+        "pertanyaan": "Apakah 25 lebih besar dari 30?",
+        "jawaban": "Tidak"
+      },
+      {
+        "pertanyaan": "Hitunglah 15 + 5 - 4?",
+        "jawaban": "16"
+      },
+      {
+        "pertanyaan": "Berapakah hasil dari 7 x 3?",
+        "jawaban": "21"
+      },
+      {
+        "pertanyaan": "Apa hasil dari 50 - 20?",
+        "jawaban": "30"
+      },
+      {
+        "pertanyaan": "Apa arti dari kata 'book' dalam bahasa Indonesia?",
+        "jawaban": "Buku"
+      },
+      {
+        "pertanyaan": "Terjemahkan kata 'apple' ke dalam bahasa Indonesia?",
+        "jawaban": "Apel"
+      },
+      {
+        "pertanyaan": "Apa arti dari kata 'cat' dalam bahasa Indonesia?",
+        "jawaban": "Kucing"
+      },
+      {
+        "pertanyaan": "Terjemahkan kata 'house' ke dalam bahasa Indonesia?",
+        "jawaban": "Rumah"
+      },
+      {
+        "pertanyaan": "Apa arti dari kata 'tree' dalam bahasa Indonesia?",
+        "jawaban": "Pohon"
+      },
+      {
+        "pertanyaan": "Terjemahkan kata 'school' ke dalam bahasa Indonesia?",
+        "jawaban": "Sekolah"
+      },
+      {
+        "pertanyaan": "Apa arti dari kata 'sun' dalam bahasa Indonesia?",
+        "jawaban": "Matahari"
+      },
+      {
+        "pertanyaan": "Terjemahkan kata 'flower' ke dalam bahasa Indonesia?",
+        "jawaban": "Bunga"
+      },
+      {
+        "pertanyaan": "Apa arti dari kata 'car' dalam bahasa Indonesia?",
+        "jawaban": "Mobil"
+      },
+      {
+        "pertanyaan": "Terjemahkan kata 'bird' ke dalam bahasa Indonesia?",
+        "jawaban": "Burung"
+      },
+      {
+        "pertanyaan": "Item yang memberikan tambahan serangan fisik dan kecepatan serangan adalah?",
+        "jawaban": "Blade of Despair"
+      },
+      {
+        "pertanyaan": "Item yang meningkatkan serangan fisik dan lifesteal adalah?",
+        "jawaban": "Haas's Claws"
+      },
+      {
+        "pertanyaan": "Item yang memberikan tambahan serangan fisik dan kecepatan gerak adalah?",
+        "jawaban": "Swift Boots"
+      },
+      {
+        "pertanyaan": "Item yang meningkatkan serangan fisik dan critical chance adalah?",
+        "jawaban": "Scarlet Phantom"
+      },
+      {
+        "pertanyaan": "Item yang memberikan tambahan serangan fisik dan armor penetration adalah?",
+        "jawaban": "Blade of the Heptaseas"
+      },
+      {
+        "pertanyaan": "Item yang meningkatkan serangan fisik dan menambah efek bakar adalah?",
+        "jawaban": "Berserker's Fury"
+      },
+      {
+        "pertanyaan": "Item yang memberikan tambahan serangan fisik dan mengurangi cooldown skill adalah?",
+        "jawaban": "Hunter Strike"
+      },
+      {
+        "pertanyaan": "Item yang meningkatkan serangan fisik dan kecepatan serangan secara bertahap adalah?",
+        "jawaban": "Endless Battle"
+      },
+      {
+        "pertanyaan": "Item yang memberikan tambahan serangan fisik dan tambahan efek slow adalah?",
+        "jawaban": "Corrosion Scythe"
+      },
+      {
+        "pertanyaan": "Item yang meningkatkan serangan fisik dan efek true damage adalah?",
+        "jawaban": "Blade of the 7 Seas"
+      }
+]
