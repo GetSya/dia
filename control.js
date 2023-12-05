@@ -2335,7 +2335,7 @@ fakereply(rules)
                         }
                     break
                     
-                    case 'play':{
+                    /*case 'play':{
                         if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
                         limitAdd(sender, limit)
                         if (!q) return reply(`Masukan Text Setelah Perintah!\n\n*Example For Voice Not* : ${CmD} Jakarta Hari Ini - For revenge --vn\n*Example For Document :* ${CmD} Jakarta Hari Ini - For revenge -doc\n*Example For Video :* ${CmD} Jakarta Hari Ini - For revenge --video`)
@@ -2361,7 +2361,7 @@ fakereply(rules)
                             reply(`Bentar kebelet`)
                         }
                     } 
-                        break
+                        break*/
                     case 'ytmp3': case 'yta': case'ytaudio': {
                         if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
                         limitAdd(sender, limit)
@@ -2494,7 +2494,7 @@ fakereply(rules)
                         })
                     }
                     break
-                    /*case 'play': {
+                    case 'play': {
                         if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
                     limitAdd(sender, limit)
                         if (!q) return reply(`Masukan Text Setelah Perintah!\n\n*Example For Voice Not* : ${CmD} Jakarta Hari Ini - For revenge --vn\n*Example For Document :* ${CmD} Jakarta Hari Ini - For revenge -doc\n*Example For Video :* ${CmD} Jakarta Hari Ini - For revenge --video`)
@@ -2532,7 +2532,7 @@ fakereply(rules)
                         bob.sendMessage(m.chat, {image: {url: yt.thumbnail}, caption: `*[ YOUTUBE PLAY ]*\n\nTitle : ${yt.title}\nSize : 128kbps\nType : Default ( Audio )\n_Audio Sedang Dikirim..._`}, {quoted: m})
                         bob.sendMessage(m.chat, {audio: {url: dl_url}, mimetype: `audio/mp4`}, {quoted: m})
                     }}
-                    break*/
+                    break
                     case 'yts': case 'ytsearch': {
                         if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
                     limitAdd(sender, limit)
