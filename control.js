@@ -27,7 +27,6 @@ const fs = require('fs')
 const util = require('util')
 const path = require('path')
 const yts = require("yt-search");
-const ytmp4 = require("ytmp4");
 const dl = require('@bochilteam/scraper-sosmed');
 const JoApi = require('@phaticusthiccy/open-apis')
 const axios = require('axios')
@@ -35,7 +34,8 @@ const ytdl = require('ytdl-core')
 const gugel = require('googlethis')
 const fakeyou = require('fakeyou.js')
 const cheerio = require('cheerio')
-const rmvbg = require('removebg-wrapper')
+const rmvbg = require('removebg-wrapper')  
+
 const translate = require('@vitalets/google-translate-api')
 const ms = require("ms")
 const os = require("os")
@@ -82,8 +82,6 @@ const {
   auth: "r8_IrWhmFuiXDTW4y0ZVXvBB6ODmH56ifn1mTjWa", //Api Gueh
 });
 
-// Ganti dengan kunci API GPT-3.5 Anda
-const apiKey = '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'; 
 
 // Game
 let soal = [];
@@ -104,12 +102,14 @@ const tiktokresi = "2a78c6d3b550e355dc01cb366b146ab4" //Api Punya Gua anjing
 
 const { OpenAI } = require("openai");
 const openai = new OpenAI({
-    apiKey: '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',
+    apiKey: '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',
   });
+
 
 const { smsg, formatp, tanggal, formatDate, getTime, isUrl, sleep, clockString, runtime, fetchJson, getBuffer, jsonformat, format, parseMention, otpkode, makeid, getRandom, getGroupAdmins } = require('./lib/function')
 const { P } = require('pino')
 const { decode } = require('punycode')
+const { choices } = require('yargs')
 
 
 /// DATABASE
@@ -125,6 +125,7 @@ let chatbot = JSON.parse(fs.readFileSync('./assets/db/chatbot.json'));
 let limit = JSON.parse(fs.readFileSync('./assets/db/limit.json'));
 let balance = JSON.parse(fs.readFileSync('./assets/db/balance.json'));
 let glimit = JSON.parse(fs.readFileSync('./assets/db/glimit.json'));
+let mute = JSON.parse(fs.readFileSync('./assets/db/mute.json'))
 
 
 module.exports = bob = async (bob, m, chatUpdate, store, welcome, mentioned) => {
@@ -149,6 +150,8 @@ module.exports = bob = async (bob, m, chatUpdate, store, welcome, mentioned) => 
         const qmsg = (quoted.msg || quoted)
         const jam = moment.tz('asia/jakarta').format('HH:mm:ss')
 		const tgl = moment.tz('Asia/Jakarta').format('DD/MM/YY')
+        let dt = moment(Date.now()).tz('Asia/Jakarta').locale('id').format('a')
+		const ucapanWaktu = "Selamat "+dt.charAt(0).toUpperCase() + dt.slice(1)
         const isMedia = /image|video|sticker|audio/.test(mime)
 
         const chats = m.type === "conversation" && m.message.conversation ? m.message.conversation : m.type === "imageMessage" && m.message.imageMessage.caption ? m.message.imageMessage.caption : m.type === "videoMessage" && m.message.videoMessage.caption ? m.message.videoMessage.caption : m.type === "extendedTextMessage" && m.message.extendedTextMessage.text ? m.message.extendedTextMessage.text : m.type === "buttonsResponseMessage" && quotedMsg.fromMe && m.message.buttonsResponseMessage.selectedButtonId ? m.message.buttonsResponseMessage.selectedButtonId : 
@@ -157,6 +160,8 @@ module.exports = bob = async (bob, m, chatUpdate, store, welcome, mentioned) => 
         const mentionUser = m.type == "extendedTextMessage" ? m.message.extendedTextMessage.contextInfo.mentionedJid || [] : [] 
 
         // Group
+        const more = String.fromCharCode(8206)
+        const readmore = more.repeat(4001)
         const sender = m.isGroup ? (m.key.participant ? m.key.participant : m.participant) : m.key.remoteJid
         const groupMetadata = m.isGroup ? await bob.groupMetadata(m.chat).catch(e => {}) : ''
         const groupName = m.isGroup ? groupMetadata.subject : ''
@@ -167,6 +172,7 @@ module.exports = bob = async (bob, m, chatUpdate, store, welcome, mentioned) => 
         const isBotGroupAdmins = groupAdmins.includes(botNumber) || false
         const isAntiLink = m.isGroup ? antilink.includes(m.chat) : false
         const isToken = token.includes(q) || false
+        const isMuted = m.isGroup ? mute.includes(m.chat) : false
         const DaftarAnjay = daftar.includes(m.sender)
         const isWelcome = m.isGroup ? welcome.includes(m.chat) ? true : false : false
         const isChatBot = chatbot.includes(m.chat) ? true : false
@@ -194,6 +200,24 @@ module.exports = bob = async (bob, m, chatUpdate, store, welcome, mentioned) => 
             if (!m.key.fromMe) return
         }
 
+        
+        const konten = `Kamu adalah Jojo Bot, kamu merupakan sebuah Robot WhatsApp yang membantu semua user,
+        Jam sekarang : ${jam},
+        Tanggal sekarang : ${tgl},
+        Nomor User adalah : ${sender.split("@")[0]},
+        Nama User Adalah : ${pushname},
+        Nomor Owner Bot : 0882-1477-2441,
+        Harga Sewa Bot : 
+        Price List Jojo :
+        1 Minggu : -
+        1 Bulan : Rp. 10.000
+        Permanent : Rp. 20.000
+
+        Pembayaran Melalui
+        1. Spay : 0882-1329-2687
+        2. Gopay : 0882-1329-2687
+        3. Dana : 0882-1329-2687
+        `
 
         //** cmd
         const CmDPlugins = isCmd ? body.slice(1).trim().split(/ +/).shift().toLowerCase() : null
@@ -226,7 +250,7 @@ module.exports = bob = async (bob, m, chatUpdate, store, welcome, mentioned) => 
         		// Premium
 		_prem.expiredCheck(bob, premium)
 
-
+        
         // function
         async function instagram(url) {
             let res = await axios("https://indown.io/");
@@ -271,7 +295,15 @@ module.exports = bob = async (bob, m, chatUpdate, store, welcome, mentioned) => 
           }
 
          
-          
+          if (isMuted){
+            if (!isGroupAdmins && !isCreator) return
+            if (m.text.toLowerCase().startsWith(prefix+'unmute')){
+                let anu = mute.indexOf(m.chat)
+                mute.splice(anu, 1)
+                fs.writeFileSync('./assets/db/mute.json', JSON.stringify(mute))
+                m.reply(`Bot telah diunmute di group ini, Dan yang bisa pakai hanyalah admin`)
+            }
+        }
         // Anti link
         if (m.isGroup && !isCreator && isAntiLink && !isGroupAdmins && isBotGroupAdmins){
             if (body.includes(`https://chat.whatsapp.com`)) {
@@ -538,17 +570,6 @@ try {
     console.log(`Eror kak, Coba pakai server 2 ketik ${prefix}tiktok2 ${q} `)
     }
 }
-let fbdl = `https://www.facebook.com/${m.text.slice(25)}`
-
-if (m.text.includes(fbdl)) {
-    if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return console.log(`Limit beliau sudah habis jir`)
-                    limitAdd(sender, limit)
-var url = fbdl
-dl.savefrom(url).then ( data => {
-reply(`*[ FACEBOOK ]*\n\nTitle : ${ data[0].meta.title}\nSize : HD\n\n_Wait A Minute._`)
-bob.sendMessage(m.chat, {video: {url: data[0].hd.url}, caption: data[0].meta.title})
-})
-}
 let igdl = `https://www.instagram.com/${m.text.slice(26)}`
 
 if (m.text.includes(igdl)) {
@@ -566,21 +587,6 @@ bob.sendMessage(m.chat, {image: { url: i.url }})
 }).catch(() => reply(`Eror mas. P in owner coba`))
 }
 
-let twt = `https://twitter.com/${m.text.slice(20)}`
-
-if (m.text.includes(twt)) {
-    if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return console.log(`Limit beliau sudah habis jir`)
-                    limitAdd(sender, limit)
-var url = twt
-dl.savefrom(url).then( data => {
-reply(`*[ TWITTER ]*\n\nTitle : ${data[0].meta.title}\n\n_Wait A Minute._`)
-if (data[0].url[1].type === "mp4") {
-bob.sendMessage(m.chat, {video: {url: data[0].url[1].url}})
-} else if (data[0].url[1].type === "jpg") {
-bob.sendMessage(m.chat, {image: { url: data[0].url[1].url }})
-}
-}).catch(() => reply(`Eror mas. P in owner coba`))
-}
 
 let cp = `https://www.capcut.com/${m.text.slice(23)}`
 
@@ -602,76 +608,7 @@ premi = '*_OWNER BOT_*'
     premi = "*Premium User*"
 }
 var regis = '*X*'
-
-async function facebook(url) {
-    return new Promise((resolve, reject) => {
-        axios({
-            url: 'https://aiovideodl.ml/',
-            method: 'GET',
-            headers: {
-                "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
-                "cookie": "PHPSESSID=69ce1f8034b1567b99297eee2396c308; _ga=GA1.2.1360894709.1632723147; _gid=GA1.2.1782417082.1635161653"
-            }
-        }).then((src) => {
-            let a = cheerio.load(src.data)
-            let token = a('#token').attr('value')
-            axios({
-                url: 'https://aiovideodl.ml/wp-json/aio-dl/video-data/',
-                method: 'POST',
-                headers: {
-                    "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
-                    "cookie": "PHPSESSID=69ce1f8034b1567b99297eee2396c308; _ga=GA1.2.1360894709.1632723147; _gid=GA1.2.1782417082.1635161653"   
-                },
-                data: new URLSearchParams(Object.entries({ 'url': link, 'token': token }))
-            }).then(({ data }) => {
-                resolve(data)
-            })
-        })
-    })
-}
-
-async function joox(query) {
-    return new Promise((resolve, reject) => {
-      const time = Math.floor(new Date() / 1000)
-        axios.get('http://api.joox.com/web-fcgi-bin//web_search?lang=id&country=id&type=0&search_input=' + query + '&pn=1&sin=0&ein=29&_=' + time)
-          .then(({ data }) => {
-                let result = []
-                let hasil = []
-                let promoses = []
-                let ids = []
-                data.itemlist.forEach(result => {
-                    ids.push(result.songid)
-                });
-                for (let i = 0; i < data.itemlist.length; i++) {
-                    const get = 'http://api.joox.com/web-fcgi-bin/web_get_songinfo?songid=' + ids[i]
-                    promoses.push(
-                        axios.get(get, {
-                            headers: {
-                                Cookie: 'wmid=142420656; user_type=1; country=id; session_key=2a5d97d05dc8fe238150184eaf3519ad;'
-                            }
-                        })
-                            .then(({ data }) => {
-                                const res = JSON.parse(data.replace('MusicInfoCallback(', '').replace('\n)', ''))
-                                hasil.push({
-                                    lagu: res.msong,
-                                    album: res.malbum,
-                                    penyanyi: res.msinger,
-                                    publish: res.public_time,
-                                    img: res.imgSrc,
-                                    mp3: res.mp3Url
-                                })
-                                Promise.all(promoses).then(() => resolve({
-                                    creator: "WH MODS DEV",
-                                    status: true,
-                                    data: hasil,
-                                }))
-                            }).catch(reject)
-                    )
-                }
-            }).catch(reject)
-    })
-}
-
+  
 async function loading() {
     const { key } = await bob.sendMessage(m.chat, {text: '「▱▱▱▱▱▱▱▱▱▱」Loading...'}, { quoted: m });
          await delay(1000);
@@ -769,22 +706,21 @@ var LimitKu = `${getLimit(m.sender, limitCount, limit)}/${limitCount}`
 const menuku = 
 monospace(`Hallo ${pushname}
 
+${ucapanWaktu} @${sender.split("@")[0]}
 Nama : ${pushname}
 Poin : ${isPremium || isCreator ? 'Unlimited' : LimitKu}`) + `
-${premi}
+Status : ${premi}
 
 ╔══ 『 Main Menu 』
 ║
 ║- ${prefix}sewa
-║
 ║- ${prefix}owner
-║
+║- ${prefix}login
 ║- ${prefix}rules
-║
-║- ${prefix}premtoken Tokennya
 ║
 ╚════╝
 
+${readmore}
 ╔══ 『 Other Menu 』
 ║- ${prefix}quotes   💬
 ║- ${prefix}pinterest _< Pencarian >_
@@ -803,8 +739,6 @@ ${premi}
 ║- ${prefix}meme
 ║- ${prefix}toimg <Reply Sticker>
 ║- ${prefix}ssweb <Link>
-║- ${prefix}infogempa  🌍
-║- ${prefix}news  📰
 ║- ${prefix}tstik <Text>
 ║- ${prefix}removebg <Reply Image>
 ║- ${prefix}qc <Text>
@@ -872,6 +806,8 @@ ${premi}
 
 ╔══ 『 Group Menu 』
 ║- ${prefix}setppgc <Reply Image>
+║- ${prefix}mute
+║- ${prefix}unmute
 ║- ${prefix}welcome <on/off>
 ║- ${prefix}antilink <Enable/Disable>
 ║- ${prefix}hidetag <Text>
@@ -906,18 +842,8 @@ var tekos = `╔══ 『 Fitur Tambahan  』\n`
 for (let i = 0; i < commandsDB.length; i ++){
 tekos += `║- ${commandsDB[i].pesan}\n`
 }
-//_< Link MediaFire >_
-/*if (!chats) {
-    try {
-        var url = chats
-    var yt = await dl.youtubedl(url).catch(async () => await  dl.youtubedl(url))
-    var dl_url = await yt.audio['128kbps'].download()
-    bob.sendMessage(m.chat, {image: {url: yt.thumbnail}, caption: `*[ YOUTUBE MP3 ]*\n\nTitle : ${yt.title}\nSize : 128kbps\n_Audio Sedang Dikirim..._`})
-    bob.sendMessage(m.chat, {audio: {url: dl_url}, mimetype: 'audio/mp4'}, {quoted: m})
-    } catch (e) {
-        console.log(`awok`)
-    } 
-}*/
+
+
         switch (command) {
 
             /*case 'menu': {
@@ -1003,25 +929,33 @@ ${isi}
                 reply('success')
             }
             break
-            case 'menu': case 'dashboard': case 'help': case 'm': {
+            case 'menu': case 'dashboard': case 'help': {
                 let send = {
                     text: menuku,
                     mentions: [sender],
                     mimetype: 'application/pdf',
                     contextInfo: {
                         externalAdReply: {
-                            title: `${pushname}`,
-                            body: `Owner Bot : Arasya`,
+                            title: `Hello ${pushname}`,
+                            body: `-`,
                             thumbnail: fs.readFileSync(`./media/logo.png`),
                             sourceUrl: "https://chat.whatsapp.com/Famd1qzPzScBX4TSual41k",
-                            mediaUrl: "https://my.arsrfii.repl.co",
+                            mediaUrl: "https://chat.whatsapp.com/Famd1qzPzScBX4TSual41k",
                             renderLargerThumbnail: true,
                             showAdAttribution: false,
                             mediaType: 1
                         }
                     },
                 }
-                bob.sendMessage(m.chat, send, {quoted: fake2})
+                bob.sendMessage(m.chat, {text: menuku, mentions: [sender], contextInfo: {
+                    externalAdReply: {
+                        title: `Hello ${pushname}`,
+                        body: `-`,
+                        sourceUrl: "https://chat.whatsapp.com/Famd1qzPzScBX4TSual41k",
+                        showAdAttribution: true,
+                        mediaType: 1
+                    }
+                }}, {quoted: m})
                 }
                 break
             case 'public': {
@@ -1415,7 +1349,7 @@ ${CmD} Tangerang
                     fakereply(`Sukses.\nBot Telah Menyala Dan Sudah Terverifikasi.`)
                     }
                     break
-                    case 'jo':{
+                    case 'vn':{
                         if (isQuotedMsg) {
 
                             if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
@@ -1484,6 +1418,7 @@ ${CmD} Tangerang
                         if (!q) return reply(`Masukan Text!\nExample : ${prefix}menfess no|pesan`)
                         var number = q.split('|')[0] ? q.split('|')[0] : q
                         var textnyaku = q.split('|')[1] ? q.split('|')[1] : ''
+                        if (number.startsWith('08')) return reply(`Awali Dengan 62! bukan 08\nContoh : ${sender.split("@")[0]}`)
                         if (!number) return reply(`Masukan Nomernya.\nExample : ${CmD} ${sender.split("@")[0]}`)
                         if (!textnyaku) return reply(`Masukan Pesan nya.\nExample : ${CmD} ${sender.split("@")[0]}|Haii`)
                         if (m.isGroup)return reply('Hanya Bisa Di Gunakan Private Message')
@@ -2019,30 +1954,12 @@ ${CmD} Tangerang
                         if (!q) return reply(`Apa Yang Mau Di Ulas?\nExample : ${CmD} Kamu bisa apa?`)
                         if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
                     limitAdd(sender, limit)
-                        console.log("->[\x1b[1;32mNew\x1b[1;37m]", color(`Command ${CmD} Dari`, 'yellow'), color(pushname, 'lightblue'), `: "${m.text}"`)
                         bob.sendPresenceUpdate("composing", m.chat);
-                        try { 
-                            //isi disini
-                            const response = await fetch('https://api.openai.com/v1/chat/completions', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${apiKey}`,
-        },
-        body: JSON.stringify({
-            model: 'gpt-3.5-turbo',
-            messages: [
-                { role: 'system', content: konten },
-                { role: 'user', content: q },
-            ],
-        }),
-    });
-
-    const responseData = await response.json();
-   reply(responseData.choices[0].message.content)
-                } catch (e) {
-                    reply("Maaf, lagi dalam perbaikan")
-                } 
+                        const chatCompletion = await openai.chat.completions.create({
+                            messages: [{ role: 'user', content: q }, {role: "system", content: konten},],
+                            model: 'gpt-3.5-turbo',
+                          });
+                          reply(chatCompletion.choices[0].message.content)
                     }
                     break
                     case 'chatbot':{
@@ -2266,6 +2183,14 @@ ${CmD} Tangerang
                         reply('Sukses Membuka Edit Setting')
                      }
                      break
+                     case 'mute':
+                    if (!m.isGroup) return reply(mess.group)
+                    if (!isGroupAdmins && !isOwner) return reply(mess.admin)
+                    if (isMuted) return reply(`udah Dimute`)
+                    mute.push(m.chat)
+                    fs.writeFileSync('./assets/db/mute.json', JSON.stringify(mute, null, 2))
+                    reply(`Bot berhasil dimute di chat ini`)
+                    break
                      case 'setname': case 'setnamegc': {
                         if (!m.isGroup) return reply(global.mess.group)
                         if (!isBotGroupAdmins) return reply(global.mess.botAdmin)
@@ -2317,8 +2242,8 @@ ${CmD} Tangerang
                      break
                     //AKHIR GROUP
                     //Main
-                    case 'daftar':{
-                    if (DaftarAnjay) return reply(`Kamu Sudah Daftar!.`)
+                    case 'login':{
+                    if (DaftarAnjay) return reply(`Kamu Sudah Login!.`)
                     daftar.push(sender)
                     fs.writeFileSync('./assets/db/daftar.json', JSON.stringify(daftar))
                     giveLimit(sender, `10`, limit)
@@ -2384,40 +2309,78 @@ fakereply(rules)
                     break
                     // akhir
                     // DOWNLOADER 
-                    case 'ytmp4':{
+                    case 'ytmp4':
+                        {
+                            try {
+                                if (!q) return reply(`Masukan Text\nExample ${prefix}ytv https://youtu.be/GDND88fqt1o`)
+                                if (!q.includes('youtu.be') && !q.includes('youtube.com')) return reply(global.mess.linkinv)
+                                reply(global.mess.wait)
+                                var url = q
+                                var yt = await dl.youtubedl(url)
+                                var dl_url = await yt.video['720p'].download()
+                                setTimeout( () => {
+                                    bob.sendMessage(m.chat, {video: {url: dl_url}, caption: `*${yt.title}*\nResolusi : 720p`}, {quoted: m})
+                                }, 3000)
+                            } catch (e) {
+                                if (!q) return reply(`Masukan Text\nExample ${prefix}ytv https://youtu.be/GDND88fqt1o`)
+                                if (!q.includes('youtu.be') && !q.includes('youtube.com')) return reply(global.mess.linkinv)
+                                reply(global.mess.wait)
+                                var url = q
+                                var yt = await dl.youtubedl(url).catch(async () => await  dl.youtubedl(url))
+                                var dl_url = await yt.video['360p'].download()
+                                setTimeout( () => {
+                                    bob.sendMessage(m.chat, {video: {url: dl_url}, caption: `*${yt.title}*\nResolusi : 360p`}, {quoted: m})
+                                }, 3000)
+                            }
+                        }
+                    break
+                    
+                    case 'play':{
                         if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
                         limitAdd(sender, limit)
-                        if (!q) return reply(`Masukan Text\nExample ${CmD} https://youtu.be/GDND88fqt1o`)
-                        if (!q.includes('yout')) return reply(global.mess.linkinv)
-                        reply(global.mess.wait + `\nJika Tidak Dikirim, Maka Ukuran Video Terlalu Besar.`)
+                        if (!q) return reply(`Masukan Text Setelah Perintah!\n\n*Example For Voice Not* : ${CmD} Jakarta Hari Ini - For revenge --vn\n*Example For Document :* ${CmD} Jakarta Hari Ini - For revenge -doc\n*Example For Video :* ${CmD} Jakarta Hari Ini - For revenge --video`)
+                        reply(mess.wait)
                     try {
-                        var streamPipeline = promisify(pipeline);
-                    var pidioku = ytdl(q, {quality: 'highest'});
-                    var sampah = os.tmpdir();
-                    var writableStream = fs.createWriteStream(`${sampah}/${title}.mp4`);
-                    await streamPipeline(pidioku, writableStream);
-                    bob.sendMessage(m.chat, {video: {url: `${sampah}/${title}.mp4`}}, {quoted: m})
-                    } catch (error) {
-                        reply('Ukuran Video Terlalu Besar.')
-                    }
-                    }
-                    break
+                        var cariyutup = await yts(q)
+                        var url = cariyutup.all[0].url
+                        const judul = cariyutup.all[0].title
+                        var thumbnailnya = cariyutup.all[0].image
+                        var desc = cariyutup.all[0].description
+                        var randomku = otpkode(5)
+                        var teksyutup = `*[ DOWNLOAD YOUTUBE PLAY ]*\n\n 📛 Judul : ${judul}\n🔗 Link : ${url}\n📃 Deskripsi : ${desc}\n\nSedang Mengirim...`
+                        bob.sendMessage(m.chat, {image: {url: thumbnailnya}, caption: teksyutup}, {quoted: m})
+                        const audioStream = ytdl(url, {
+                            filter: 'audioonly',
+                            quality: 'highestaudio',
+                          }).pipe(fs.createWriteStream(`media/${randomku}.mp3`));
+                          await sleep(5000)
+                          bob.sendMessage(m.chat, {document: fs.readFileSync(`media/${randomku}.mp3`), mimetype: 'audio/mp3', caption: `Sukses!\n\nJudul : ${judul}\nUrl : ${url}`, fileName: judul + `.mp3`}, {quoted: m})
+                          await sleep(2000)
+                          fs.unlinkSync(`media/${randomku}.mp3`)
+                        } catch (error) {
+                            reply(`Bentar kebelet`)
+                        }
+                    } 
+                        break
                     case 'ytmp3': case 'yta': case'ytaudio': {
                         if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
                         limitAdd(sender, limit)
                         if (!q) return reply(`Masukan Text\nExample ${CmD} https://youtu.be/GDND88fqt1o`)
                         if (!q.includes('yout')) return reply(global.mess.linkinv)
                         reply(global.mess.wait)
-                        var streamPipeline = promisify(pipeline);
-                        var audioStream = ytdl(q, {
-                            filter: 'audioonly',
-                            quality: 'highestaudio',
-                          });
-                          var sampah = os.tmpdir();
-                          var writableStream = fs.createWriteStream(`${sampah}/${title}.mp3`);
-                        
-                          await streamPipeline(audioStream, writableStream);
-                          bob.sendMessage(m.chat, {audio: {url: `${sampah}/${title}.mp3`}, mimetype: 'audio/mp4'}, {quoted: m})
+                        try {
+                            var randomku = otpkode(5)
+                            const audioStream = ytdl(q, {
+                                filter: 'audioonly',
+                                quality: 'highestaudio',
+                              }).pipe(fs.createWriteStream(`media/${randomku}.mp3`));
+                              await sleep(5000)
+                              bob.sendMessage(m.chat, {audio: fs.readFileSync(`media/${randomku}.mp3`), mimetype: 'audio/mp4'}, {quoted: m})
+                              await sleep(2000)
+                              fs.unlinkSync(`media/${randomku}.mp3`)
+                            } catch (error) {
+                                reply(`Bentar kebelet`)
+                            }
                     }
                     break
                     case 'tt': case 'tiktok':  {
@@ -2531,30 +2494,6 @@ fakereply(rules)
                         })
                     }
                     break
-                    case 'play':{
-                        if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
-                        limitAdd(sender, limit)
-                        if (!q) return reply(`Masukan Text Setelah Perintah!\n\n*Example For Voice Not* : ${CmD} Jakarta Hari Ini - For revenge --vn\n*Example For Document :* ${CmD} Jakarta Hari Ini - For revenge -doc\n*Example For Video :* ${CmD} Jakarta Hari Ini - For revenge --video`)
-                        reply(mess.wait)
-                        var cariyutup = await yts(q)
-                        var url = cariyutup.all[0].url
-                        var judul = cariyutup.all[0].title
-                        var thumbnailnya = cariyutup.all[0].image
-                        var desc = cariyutup.all[0].description
-                        var teksyutup = `*[ DOWNLOAD YOUTUBE PLAY ]*\n\n 📛 Judul : ${judul}\n🔗 Link : ${url}\n📃 Deskripsi : ${desc}\n\nSedang Mengirim...`
-                        bob.sendMessage(m.chat, {image: {url: thumbnailnya}, caption: teksyutup}, {quoted: m})
-                        const streamPipeline = promisify(pipeline);
-                        const audioStream = ytdl(url, {
-                            filter: 'audioonly',
-                            quality: 'highestaudio',
-                          });
-                          const sampah = os.tmpdir();
-                          const writableStream = fs.createWriteStream(`${sampah}/${title}.mp3`);
-                        
-                          await streamPipeline(audioStream, writableStream);
-                          bob.sendMessage(m.chat, {audio: {url: `${sampah}/${title}.mp3`}, fileName: title, mimetype: 'audio/mp4'}, {quoted: m})
-                        }
-                        break
                     /*case 'play': {
                         if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
                     limitAdd(sender, limit)
@@ -2763,6 +2702,10 @@ fakereply(rules)
                     bob.sendMessage(m.chat, {document: fs.readFileSync('./assets/db/token.json'), fileName: `token.json`, mimetype: `json`})
                     await sleep(5000)
                     bob.sendMessage(m.chat, {document: fs.readFileSync('./assets/db/commands.json'), fileName: `commands.json`, mimetype: `json`})
+                    await sleep(5000)
+                    bob.sendMessage(m.chat, {document: fs.readFileSync('./assets/db/commands.json'), fileName: `commands.json`, mimetype: `json`})
+                    await sleep(5000)
+                    bob.sendMessage(m.chat, {document: fs.readFileSync('./assets/db/mute.json'), fileName: `mute.json`, mimetype: `json`})
                     }
                     break
                     //Akhir owner menu
@@ -2770,16 +2713,13 @@ fakereply(rules)
                     if ( isChatBot ) {
                         if (m.text) {
                             console.log("->[\x1b[1;32mNew\x1b[1;37m]", color('Question From', 'yellow'), color(pushname, 'lightblue'), `: "${m.text}"`)
-                            bob.sendPresenceUpdate("recording", m.chat);
+                            bob.sendPresenceUpdate("composing", m.chat);
                             try {
-                                const response = await openai.createChatCompletion({
-                                    model: "gpt-3.5-turbo",
-                                    messages: [
-                                        {role: "system", content: konten},
-                                        {role: "user", content: m.text}
-                                    ]
-                                })
-                                reply(response.data.choices[0].message.content)
+                                const chatCompletion = await openai.chat.completions.create({
+                                    messages: [{ role: 'user', content: m.text }, {role: "system", content: konten},],
+                                    model: 'gpt-3.5-turbo',
+                                  });
+                                  reply(chatCompletion.choices[0].message.content)
                     } catch (e) {
                         reply("Kasih waktu dikit kek buat baca.")
                     } 
