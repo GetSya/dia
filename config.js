@@ -17,6 +17,7 @@ global.author = 'Sticker Saya'
 global.limitCount = 25
 global.gamewaktu = 50
 global.prefa = ['#']
+global.apikey = `arasyaku`
 global.mess = {
     success: '✓ Success',
     admin: 'Fitur Khusus Admin Group!',

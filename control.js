@@ -27,17 +27,19 @@ const fs = require('fs')
 const util = require('util')
 const path = require('path')
 const yts = require("yt-search");
-const dl = require('@bochilteam/scraper-sosmed');
 const JoApi = require('@phaticusthiccy/open-apis')
 const axios = require('axios')
 const ytdl = require('ytdl-core')
 const gugel = require('googlethis')
 const fakeyou = require('fakeyou.js')
 const cheerio = require('cheerio')
+var Photooxy = require('@sl-code-lords/photooxy')
+var photooxy = new Photooxy()
+const text2png = require('text2png')
 const rmvbg = require('removebg-wrapper')  
-
 const translate = require('@vitalets/google-translate-api')
 const ms = require("ms")
+const driveDl = require('googledrive-dl');
 const os = require("os")
 const moment = require("moment-timezone");
 const { config, createAudioFromText } = require('tiktok-tts')
@@ -105,7 +107,7 @@ const openai = new OpenAI({
     apiKey: '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',
   });
 
-
+const linkiyan = `https://api.yanzbotz.my.id`
 const { smsg, formatp, tanggal, formatDate, getTime, isUrl, sleep, clockString, runtime, fetchJson, getBuffer, jsonformat, format, parseMention, otpkode, makeid, getRandom, getGroupAdmins } = require('./lib/function')
 const { P } = require('pino')
 const { decode } = require('punycode')
@@ -250,7 +252,18 @@ module.exports = bob = async (bob, m, chatUpdate, store, welcome, mentioned) => 
         		// Premium
 		_prem.expiredCheck(bob, premium)
 
-        
+        const mediafiredl = async (url) => {
+            const res = await axios.get(`https://www-mediafire-com.translate.goog/${url.replace('https://www.mediafire.com/','')}?_x_tr_sl=en&_x_tr_tl=fr&_x_tr_hl=en&_x_tr_pto=wapp`);
+            const $ = cheerio.load(res.data);
+            const link = $('#downloadButton').attr('href');
+            const name = $('body > main > div.content > div.center > div > div.dl-btn-cont > div.dl-btn-labelWrap > div.promoDownloadName.notranslate > div').attr('title').replaceAll(' ','').replaceAll('\n','');
+            const date = $('body > main > div.content > div.center > div > div.dl-info > ul > li:nth-child(2) > span').text()
+            const size = $('#downloadButton').text().replace('Download', '').replace('(', '').replace(')', '').replace('\n', '').replace('\n', '').replace('                         ', '').replaceAll(' ','');
+            let mime = '';
+            let rese = await axios.head(link)
+            mime = rese.headers['content-type']
+            return { name ,size ,date ,mime ,link };
+            }
         // function
         async function instagram(url) {
             let res = await axios("https://indown.io/");
@@ -610,65 +623,12 @@ premi = '*_OWNER BOT_*'
 var regis = '*X*'
   
 async function loading() {
-    const { key } = await bob.sendMessage(m.chat, {text: '「▱▱▱▱▱▱▱▱▱▱」Loading...'}, { quoted: m });
+    const { key } = await bob.sendMessage(m.chat, {text: '「▱▱▱▱▱▱▱▱▱▱」'}, { quoted: m });
          await delay(1000);
          await bob.sendMessage(m.chat, { text: '「▰▰▱▱▱▱▱▱▱▱」20%', edit: key})
-         await bob.sendMessage(m.chat, { text: '「▰▰▰▰▱▱▱▱▱▱」40%', edit: key})
          await bob.sendMessage(m.chat, { text: '「▰▰▰▰▰▰▱▱▱▱」60%', edit: key})
-         await bob.sendMessage(m.chat, { text: '「▰▰▰▰▰▰▰▰▱▱」80%', edit: key})
          await bob.sendMessage(m.chat, { text: '「▰▰▰▰▰▰▰▰▰▰」100%', edit: key})
         bob.sendMessage(m.chat, { text: '「▰▰▰▰▰▰▰▰▰▰」Success✓', edit: key})
-      }
-async function meriset2() {
-    const { key } = await bob.sendMessage(m.chat, {text: '「▱▱▱▱▱▱▱▱▱▱」Loading...'}, { quoted: m });
-         await delay(1000);
-         await bob.sendMessage(m.chat, { text: '「▰▰▱▱▱▱▱▱▱▱」20%', edit: key})
-         await delay(1000);
-         await bob.sendMessage(m.chat, { text: '「▰▰▰▰▱▱▱▱▱▱」40%', edit: key})
-         await delay(1000);
-         await bob.sendMessage(m.chat, { text: '「▰▰▰▰▰▰▱▱▱▱」60%', edit: key})
-         await bob.sendMessage(m.chat, { text: '「▰▰▰▰▰▰▰▰▱▱」80%', edit: key})
-         await bob.sendMessage(m.chat, { text: '「▰▰▰▰▰▰▰▰▰▰」100%', edit: key})
-        bob.sendMessage(m.chat, { text: '「▰▰▰▰▰▰▰▰▰▰」Success Mereset✓\Merestart Bot....', edit: key})
-      }
-async function loading2() {
-    const { key } = await bob.sendMessage(m.chat, {text: 'Mencari 🔍. 0%'}, { quoted: m });
-         await delay(1000);
-         await bob.sendMessage(m.chat, { text: 'Mencari 🔍. 10%', edit: key})
-         await bob.sendMessage(m.chat, { text: 'Mencari 🔍. 40%', edit: key})
-         await bob.sendMessage(m.chat, { text: 'Mencari 🔍. 60%', edit: key})
-         await bob.sendMessage(m.chat, { text: 'Mencari 🔍. 80%', edit: key})
-         await bob.sendMessage(m.chat, { text: 'Mencari 🔍. 100%', edit: key})
-        bob.sendMessage(m.chat, { text: 'Mencari 🔍.\nKetemu!', edit: key})
-      }
-async function meriset() {
-    const { key } = await bob.sendMessage(m.chat, {text: 'Mereset Poin.... = 0%'}, { quoted: m });
-         await delay(2000);
-         await bob.sendMessage(m.chat, { text: 'Mereset Poin.... = 5%', edit: key})
-         await bob.sendMessage(m.chat, { text: 'Mereset Poin.... = 10%', edit: key})
-         await bob.sendMessage(m.chat, { text: 'Mereset Poin.... = 15%', edit: key})
-         await bob.sendMessage(m.chat, { text: 'Mereset Poin.... = 20%', edit: key})
-         await bob.sendMessage(m.chat, { text: 'Mereset Poin.... = 25%', edit: key})
-         await delay(2000);
-         await bob.sendMessage(m.chat, { text: 'Mereset Poin.... = 30%', edit: key})
-         await bob.sendMessage(m.chat, { text: 'Mereset Poin.... = 35%', edit: key})
-         await bob.sendMessage(m.chat, { text: 'Mereset Poin.... = 40%', edit: key})
-         await bob.sendMessage(m.chat, { text: 'Mereset Poin.... = 45%', edit: key})
-         await bob.sendMessage(m.chat, { text: 'Mereset Poin.... = 50%', edit: key})
-         await delay(2000);
-         await bob.sendMessage(m.chat, { text: 'Mereset Poin.... = 55%', edit: key})
-         await bob.sendMessage(m.chat, { text: 'Mereset Poin.... = 60%', edit: key})
-         await bob.sendMessage(m.chat, { text: 'Mereset Poin.... = 65%', edit: key})
-         await bob.sendMessage(m.chat, { text: 'Mereset Poin.... = 70%', edit: key})
-         await bob.sendMessage(m.chat, { text: 'Mereset Poin.... = 75%', edit: key})
-         await delay(2000);
-         await bob.sendMessage(m.chat, { text: 'Mereset Poin.... = 80%', edit: key})
-         await bob.sendMessage(m.chat, { text: 'Mereset Poin.... = 85%', edit: key})
-         await bob.sendMessage(m.chat, { text: 'Mereset Poin.... = 90%', edit: key})
-         await bob.sendMessage(m.chat, { text: 'Mereset Poin.... = 95%', edit: key})
-         await bob.sendMessage(m.chat, { text: 'Mereset Poin.... = 100%', edit: key})
-        bob.sendMessage(m.chat, { text: 'Mereset Poin.... = SUKSES!', edit: key})
-        
       }
 function randomNomor(min, max = null) {
     if (max !== null) {
@@ -703,13 +663,17 @@ function randomNomor(min, max = null) {
             if (isCmd && m.isGroup) console.log('\x1b[1;31m~\x1b[1;37m>', '[\x1b[1;32m ✓ \x1b[1;37m]', color(pushname), 'use', color(command), 'in group', color(groupName), 'args :', color(args.length))
 
 var LimitKu = `${getLimit(m.sender, limitCount, limit)}/${limitCount}`
-const menuku = 
-monospace(`Hallo ${pushname}
+const menuku = `${ucapanWaktu} ${pushname}
 
-${ucapanWaktu} @${sender.split("@")[0]}
-Nama : ${pushname}
-Poin : ${isPremium || isCreator ? 'Unlimited' : LimitKu}`) + `
-Status : ${premi}
+❋─────────────────❋
+*⦿ Nama :* ${pushname}
+*⦿ Tag :* @${sender.split('@')[0]}
+*⦿ Status :* ${premi}
+*⦿ Jam :* ${jam}
+*⦿ Poin :* ${isPremium || isCreator ? 'Unlimited' : LimitKu}
+*⦿ Tanggal :* ${tgl}
+❋─────────────────❋
+${readmore}
 
 ╔══ 『 Main Menu 』
 ║
@@ -722,6 +686,7 @@ Status : ${premi}
 
 ${readmore}
 ╔══ 『 Other Menu 』
+║- ${prefix}sms <Nomor|Pesan|Jumlah>
 ║- ${prefix}quotes   💬
 ║- ${prefix}pinterest _< Pencarian >_
 ║- ${prefix}ppcp
@@ -739,7 +704,7 @@ ${readmore}
 ║- ${prefix}meme
 ║- ${prefix}toimg <Reply Sticker>
 ║- ${prefix}ssweb <Link>
-║- ${prefix}tstik <Text>
+║- ${prefix}ttp <Text>
 ║- ${prefix}removebg <Reply Image>
 ║- ${prefix}qc <Text>
 ║- ${prefix}tohd <Reply Image>
@@ -764,6 +729,25 @@ ${readmore}
 ║- ${prefix}style-logo <Text>
 ║- ${prefix}runner-logo <Text>
 ║- ${prefix}starwars-logo <Text>
+║- ${prefix}glitch <Text1>|<Text2>
+║- ${prefix}blackpink <Text>
+║- ${prefix}wolf <Text>
+║- ${prefix}shadow <Text>
+║- ${prefix}stone <Text>
+║- ${prefix}neon <Text>
+║- ${prefix}coffee <Text>
+║- ${prefix}cup <Text>
+║- ${prefix}underwater <Text>
+║- ${prefix}leaves <Text>
+╚════╝
+
+╔══ 『 Amazing Edit 』
+║- ${prefix}sketch <Caption/Reply Image>
+║- ${prefix}memory <Caption/Reply Image>
+║- ${prefix}birthday <Caption/Reply Image>
+║- ${prefix}bingkai <Caption/Reply Image>
+║- ${prefix}gambar <Caption/Reply Image>
+║- ${prefix}briliant <Caption/Reply Image>
 ╚════╝
 
 ╔══ 『 Game Menu 』
@@ -787,7 +771,6 @@ ${readmore}
 ║- ${prefix}poin
 ║- ${prefix}top
 ╚════╝
-
 
 ╔══ 『 Owner Menu 』
 ║- ${prefix}setpp <Reply Image>
@@ -827,6 +810,7 @@ ${readmore}
 
 ╔══ 『 Downloader Menu 』
 ║- ${prefix}igstory <Username>
+║- ${prefix}mediafire <Mediafire Download>
 ║- ${prefix}ytsearch <Song Title>
 ║- ${prefix}ytmp3 <Youtube Link>
 ║- ${prefix}ytmp4 <Youtube Link>
@@ -930,24 +914,7 @@ ${isi}
             }
             break
             case 'menu': case 'dashboard': case 'help': {
-                let send = {
-                    text: menuku,
-                    mentions: [sender],
-                    mimetype: 'application/pdf',
-                    contextInfo: {
-                        externalAdReply: {
-                            title: `Hello ${pushname}`,
-                            body: `-`,
-                            thumbnail: fs.readFileSync(`./media/logo.png`),
-                            sourceUrl: "https://chat.whatsapp.com/Famd1qzPzScBX4TSual41k",
-                            mediaUrl: "https://chat.whatsapp.com/Famd1qzPzScBX4TSual41k",
-                            renderLargerThumbnail: true,
-                            showAdAttribution: false,
-                            mediaType: 1
-                        }
-                    },
-                }
-                bob.sendMessage(m.chat, {text: menuku, mentions: [sender], contextInfo: {
+               /* bob.sendMessage(m.chat, {text: menuku, mentions: [sender], contextInfo: {
                     externalAdReply: {
                         title: `Hello ${pushname}`,
                         body: `-`,
@@ -955,7 +922,9 @@ ${isi}
                         showAdAttribution: true,
                         mediaType: 1
                     }
-                }}, {quoted: m})
+                }}, {quoted: m})*/
+                var link = fs.readFileSync(`./media/new-jobot.png`)
+                bob.sendMessage(m.chat, {image: link, caption: menuku, mentions: [sender]}, {quoted: m})
                 }
                 break
             case 'public': {
@@ -970,25 +939,241 @@ ${isi}
                 reply('Sukses Change To Self Usage')
             }
             break
-
-            case 'otpkode': case 'kodeotp': case 'getotp': {
-                var kodeku = otpkode(5)
-                
-                let buttons = [{ buttonId: `/thx ${kodeku}`, buttonText: { displayText: 'Terima Kasih :>' }, type: 1 }]
-
-                let buttonMessage = {
-                    text: "Kode OTP Kamu :\n\n" + `MYOTP${kodeku}`,
-                    footer: 'APPM',
-                    buttons: buttons,
-                    headerType: 2
+                //Flaming & PhotooxyLogo MAKER
+                case 'glitch':{
+                if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
+                limitAdd(m.sender, limit)
+                var text1 = q.split("|")[0]
+                var text2 = q.split("|")[1]
+                if (!text1) return reply(`Masukan Text Pertama!\nExample : ${CmD} ${pushname}|Jelek`)
+                if (!text2) return reply(`Masukan Text Kedua!\nExample : ${CmD} ${pushname}|Jelek`)
+                var image2 = await photooxy.create({
+                    url : 'https://photooxy.com/logo-and-text-effects/make-tik-tok-text-effect-375.html',
+                    text : [text1,text2]
+                    })
+                    var img2_buf = await photooxy.image_to_buffer(image2.url)
+                    bob.sendMessage(m.chat, {image: img2_buf, caption: `Sukses!`}, {quoted: m})
                 }
-                bob.sendMessage(m.chat, buttonMessage, {
-                    quoted: m
-                })
-            }
-            break;
-            
-                //Flaming Logo
+                break
+                case 'sketch': {
+                if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
+                limitAdd(m.sender, limit)
+                if (!isQuotedImage && !isImage ) return reply(`Reply Gambar Atau Kirim gambar dengan caption : ${CmD}`)
+                reply(mess.wait)
+                if (isQuotedImage || isImage ) {
+                var tete = await downloadAndSaveMediaMessage('image', 'media/sketch.jpg')
+                var image2 = await photooxy.create({
+                    url : 'https://photooxy.com/art-effects/create-pencil-sketch-effect-with-your-photo-online-1.html',
+                    images : ['media/sketch.jpg']
+                    })
+                    var img2_buf = await photooxy.image_to_buffer(image2.url)
+                    bob.sendMessage(m.chat, {image: img2_buf, caption: `Sukses!`}, {quoted: m})
+                    fs.unlinkSync('media/sketch.jpg')
+                }
+                }
+                break
+                case 'memory': case 'fotoku':{
+                if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
+                limitAdd(m.sender, limit)
+                if (!isQuotedImage && !isImage ) return reply(`Reply Gambar Atau Kirim gambar dengan caption : ${CmD}`)
+                reply(mess.wait)
+                if (isQuotedImage || isImage ) {
+                var tete = await downloadAndSaveMediaMessage('image', 'media/memory.jpg')
+                var image2 = await photooxy.create({
+                    url : 'https://photooxy.com/art-effects/memory-photo-frame-393.html',
+                    images : ['media/memory.jpg']
+                    })
+                    var img2_buf = await photooxy.image_to_buffer(image2.url)
+                    bob.sendMessage(m.chat, {image: img2_buf, caption: `Sukses!`}, {quoted: m})
+                    fs.unlinkSync('media/memory.jpg')
+                }
+                }
+                break
+                case 'birthday': {
+                if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
+                limitAdd(m.sender, limit)
+                if (!isQuotedImage && !isImage ) return reply(`Reply Gambar Atau Kirim gambar dengan caption : ${CmD}`)
+                reply(mess.wait)
+                if (isQuotedImage || isImage ) {
+                var tete = await downloadAndSaveMediaMessage('image', 'media/briliant')
+                var image2 = await photooxy.create({
+                    url : 'https://photooxy.com/birthday-frames/photo-frame-happy-birthday-candy-334.html',
+                    images : ['media/briliant']
+                    })
+                    var img2_buf = await photooxy.image_to_buffer(image2.url)
+                    bob.sendMessage(m.chat, {image: img2_buf, caption: `Sukses!`}, {quoted: m})
+                    fs.unlinkSync('media/briliant')
+                }
+                }
+                break
+                case 'briliant': {
+                if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
+                limitAdd(m.sender, limit)
+                if (!isQuotedImage && !isImage ) return reply(`Reply Gambar Atau Kirim gambar dengan caption : ${CmD}`)
+                reply(mess.wait)
+                if (isQuotedImage || isImage ) {
+                var tete = await downloadAndSaveMediaMessage('image', 'media/birthday.jpg')
+                var image2 = await photooxy.create({
+                    url : 'https://photooxy.com/photo-frames/brilliant-photo-frame-344.html',
+                    images : ['media/birthday.jpg']
+                    })
+                    var img2_buf = await photooxy.image_to_buffer(image2.url)
+                    bob.sendMessage(m.chat, {image: img2_buf, caption: `Sukses!`}, {quoted: m})
+                    fs.unlinkSync('media/birthday.jpg')
+                }
+                }
+                break
+                case 'gambar': {
+                if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
+                limitAdd(m.sender, limit)
+                if (!isQuotedImage && !isImage ) return reply(`Reply Gambar Atau Kirim gambar dengan caption : ${CmD}`)
+                reply(mess.wait)
+                if (isQuotedImage || isImage ) {
+                var tete = await downloadAndSaveMediaMessage('image', 'media/gambar.jpg')
+                var image2 = await photooxy.create({
+                    url : 'https://photooxy.com/other-design/photo-of-lead-art-337.html',
+                    images : ['media/gambar.jpg']
+                    })
+                    var img2_buf = await photooxy.image_to_buffer(image2.url)
+                    bob.sendMessage(m.chat, {image: img2_buf, caption: `Sukses!`}, {quoted: m})
+                    fs.unlinkSync('media/gambar.jpg')
+                }
+                }
+                break
+                case 'bingkai': {
+                if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
+                limitAdd(m.sender, limit)
+                if (!isQuotedImage && !isImage ) return reply(`Reply Gambar Atau Kirim gambar dengan caption : ${CmD}`)
+                reply(mess.wait)
+                if (isQuotedImage || isImage ) {
+                var tete = await downloadAndSaveMediaMessage('image', 'media/bingkai.jpg')
+                var image2 = await photooxy.create({
+                    url : 'https://photooxy.com/create-a-photo-frame-with-plastic-wrap-409.html',
+                    images : ['media/bingkai.jpg']
+                    })
+                    var img2_buf = await photooxy.image_to_buffer(image2.url)
+                    bob.sendMessage(m.chat, {image: img2_buf, caption: `Sukses!`}, {quoted: m})
+                    fs.unlinkSync('media/bingkai.jpg')
+                }
+                }
+                break
+                case 'blackpink': case 'bp':{
+                if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
+                limitAdd(m.sender, limit)
+                reply(mess.wait)
+                if (!q) return reply(`Masukan Text Pertama!\nExample : ${CmD} ${pushname}`)
+                var image2 = await photooxy.create({
+                    url : 'https://photooxy.com/create-blackpink-style-logo-effects-online-for-free-417.html',
+                    text : [q]
+                    })
+                    var img2_buf = await photooxy.image_to_buffer(image2.url)
+                    bob.sendMessage(m.chat, {image: img2_buf, caption: `Sukses!`}, {quoted: m})
+                }
+                break
+                case 'stone':{
+                if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
+                limitAdd(m.sender, limit)
+                reply(mess.wait)
+                if (!q) return reply(`Masukan Text Pertama!\nExample : ${CmD} ${pushname}`)
+                var image2 = await photooxy.create({
+                    url : 'https://photooxy.com/online-3d-white-stone-text-effect-utility-411.html',
+                    text : [q]
+                    })
+                    var img2_buf = await photooxy.image_to_buffer(image2.url)
+                    bob.sendMessage(m.chat, {image: img2_buf, caption: `Sukses!`}, {quoted: m})
+                }
+                break
+                case 'neon':{
+                if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
+                limitAdd(m.sender, limit)
+                reply(mess.wait)
+                if (!q) return reply(`Masukan Text Pertama!\nExample : ${CmD} ${pushname}`)
+                var image2 = await photooxy.create({
+                    url : 'https://photooxy.com/logo-and-text-effects/make-smoky-neon-glow-effect-343.html',
+                    text : [q]
+                    })
+                    var img2_buf = await photooxy.image_to_buffer(image2.url)
+                    bob.sendMessage(m.chat, {image: img2_buf, caption: `Sukses!`}, {quoted: m})
+                }
+                break
+                case 'shadow':{
+                if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
+                limitAdd(m.sender, limit)
+                reply(mess.wait)
+                if (!q) return reply(`Masukan Text Pertama!\nExample : ${CmD} ${pushname}`)
+                var image2 = await photooxy.create({
+                    url : 'https://photooxy.com/logo-and-text-effects/shadow-text-effect-in-the-sky-394.html',
+                    text : [q]
+                    })
+                    var img2_buf = await photooxy.image_to_buffer(image2.url)
+                    bob.sendMessage(m.chat, {image: img2_buf, caption: `Sukses!`}, {quoted: m})
+                }
+                break
+                case 'cup':{
+                if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
+                limitAdd(m.sender, limit)
+                reply(mess.wait)
+                if (!q) return reply(`Masukan Text Pertama!\nExample : ${CmD} ${pushname}`)
+                var image2 = await photooxy.create({
+                    url : 'https://photooxy.com/logo-and-text-effects/put-text-on-the-cup-387.html',
+                    text : [q]
+                    })
+                    var img2_buf = await photooxy.image_to_buffer(image2.url)
+                    bob.sendMessage(m.chat, {image: img2_buf, caption: `Sukses!`}, {quoted: m})
+                }
+                break
+                case 'coffee':{
+                if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
+                limitAdd(m.sender, limit)
+                reply(mess.wait)
+                if (!q) return reply(`Masukan Text Pertama!\nExample : ${CmD} ${pushname}`)
+                var image2 = await photooxy.create({
+                    url : 'https://photooxy.com/logo-and-text-effects/put-any-text-in-to-coffee-cup-371.html',
+                    text : [q]
+                    })
+                    var img2_buf = await photooxy.image_to_buffer(image2.url)
+                    bob.sendMessage(m.chat, {image: img2_buf, caption: `Sukses!`}, {quoted: m})
+                }
+                break
+                case 'underwater':{
+                if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
+                limitAdd(m.sender, limit)
+                reply(mess.wait)
+                if (!q) return reply(`Masukan Text Pertama!\nExample : ${CmD} ${pushname}`)
+                var image2 = await photooxy.create({
+                    url : 'https://photooxy.com/logo-and-text-effects/creating-an-underwater-ocean-363.html',
+                    text : [q]
+                    })
+                    var img2_buf = await photooxy.image_to_buffer(image2.url)
+                    bob.sendMessage(m.chat, {image: img2_buf, caption: `Sukses!`}, {quoted: m})
+                }
+                break
+                case 'leaves':{
+                if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
+                limitAdd(m.sender, limit)
+                reply(mess.wait)
+                if (!q) return reply(`Masukan Text Pertama!\nExample : ${CmD} ${pushname}`)
+                var image2 = await photooxy.create({
+                    url : 'https://photooxy.com/logo-and-text-effects/create-a-layered-leaves-typography-text-effect-354.html',
+                    text : [q]
+                    })
+                    var img2_buf = await photooxy.image_to_buffer(image2.url)
+                    bob.sendMessage(m.chat, {image: img2_buf, caption: `Sukses!`}, {quoted: m})
+                }
+                break
+                case 'wolf':{
+                if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
+                limitAdd(m.sender, limit)
+                reply(mess.wait)
+                if (!q) return reply(`Masukan Text Pertama!\nExample : ${CmD} ${pushname}`)
+                var image2 = await photooxy.create({
+                    url : 'https://photooxy.com/logo-and-text-effects/create-a-wolf-metal-text-effect-365.html',
+                    text : [q]
+                    })
+                    var img2_buf = await photooxy.image_to_buffer(image2.url)
+                    bob.sendMessage(m.chat, {image: img2_buf, caption: `Sukses!`}, {quoted: m})
+                }
+                break
                 case 'sketch-logo': {
                     if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
                     if (!q) throw (`Silahkan Masukan Text\nExample : #sketch-logo arasyaku`)
@@ -1191,9 +1376,9 @@ _Hasil :_ `
                     case 'removebg': case 'rb':{
                     if (!isPremium) return reply(`Fitur Ini Hanya Di Gunakan Oleh Pengguna Premium`)
                     if (!isQuotedImage && !isImage)return reply(`Kirim Gambar dengan caption ${CmD} atau reply gambar dengan text ${CmD}!`)
-                    if (isQuotedImage || isImage ) {
+                    if (isQuotedImage || iMediasImage ) {
                     reply(global.mess.wait + `\nTunggu 5 Detik`)
-                    var tete = await downloadAndSaveMediaMessage('image', 'rmvbg.jpg')
+                    var tete = await downloadAndSaveMessage('image', 'rmvbg.jpg')
                     var tot = await upload(fs.readFileSync('rmvbg.jpg'))
                     rmvbg.rbFromImageUrl(tot, `5CwCfA9u2xaY9RYfuqpD7wXe`) //ini api punya guehhhhh
                     await sleep(5000)
@@ -1328,10 +1513,6 @@ ${CmD} Tangerang
                         var img = fs.readFileSync('./media/icon.png')
                         console.log(img)
                         bob.sendMessage(m.chat, {text: hasil.quotes + `\n\n` + `~ ${hasil.author}`}, {quoted: m})
-                        config(tiktokresi);
-                        createAudioFromText(hasil.quotes, 'quotes', 'id_001')
-                        await sleep(3000)
-                        bob.sendMessage(m.chat, {audio: fs.readFileSync(`quotes.mp3`), mimetype: 'audio/mp4', ptt: true}, {quoted: m})
                     }
                     break
                     case 'tts': case 'sbot' :{
@@ -1512,49 +1693,17 @@ ${CmD} Tangerang
                     bob.sendMessage(m.chat, {caption: q, image: {url: `https://image.thum.io/get/width/1900/crop/1000/fullpage/` + q}})
                     }
                     break
-                    case 'gempa': case 'infogempa': {
-                        if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
-                    limitAdd(sender, limit)
-                        dl.gempa().then ( data => {
-                            var text = `*[ INFO GEMPA TERKINI ]*\n\n*Locate :* ${data[0].locate}\n*Warning :* ${data[0].warning[0]}\n*Tanggal :* ${data[0].date}\n*Magnitude :* ${data[0].magnitude}\n*Jarak :* ${data[0].depth}\n*Desk :* ${data[0].location}`
-                            sendbut(m.chat, text, `#dashboard`, `Back To Menu 🔙`, tgl + ' ' + jam)
-                            bob.sendMessage(m.chat, {text: text}, {quoted: m})
-                        })
-                    }
-                    break
-                    case 'news': case 'liputan6': {
-                        if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
-                    limitAdd(sender, limit)
-                        if (!m.isGroup) {
-                        
-                        var teskd = `YOUTUBE SEARCH\n\n`
-                        dl.liputan6().then ( data => {
-                        var liput = data
-                        var jumlah = 15
-                        var list = []
-                        for (let i = 0; i < jumlah; i++) {
-                        list.push({
-                        title: liput[i].title, rowId: `.liputanku ${liput[i].title}@${liput[i].link}@${liput[i].description}@${liput[i].label}`, description: liput[i].description})
-                        }
-                        var sections = [{title: `Hallo ${pushname} 👋`, rows:list}]
-                        var listms = { text: `*NEWS BY JOJO*\n\n` + monospace(`Baca Berita Hari Ini, Untuk Menginformasi Dan Mengupdate Seluruh Berita Indonesia Maupun Diluar Negara.`), footer: tgl + ' ' + jam, buttonText: "Tekan Disini", sections }
-                        bob.sendMessage(m.chat, listms, {quoted:m})
-                    })
-                    } else if (m.isGroup) {
-                    dl.liputan6().then( data => {
-                        let liputku = data
-                        var jumlah = 10
-                        if (liputku.length < jumlah) jumlah = liputku.length
-                        var no = 0
-                        let txt = `*NEWS BY JO*\n\n` + monospace(`Baca Berita Hari Ini, Untuk Menginformasi Dan Mengupdate Seluruh Berita Indonesia Maupun Diluar Negara.`)
-                        for (let i = 0; i < jumlah; i++) {
-                        no += 1
-                        txt += `\n\n\n*ツ No Urutan : ${no.toString()}*\nツ *Title :* ${liputku[i].title}\nツ *Link :* ${liputku[i].link}\nツ *Deskripsi :* ${liputku[i].description}\nツ *Label :* ${liputku[i].label}`
-                        }
-                        sendbut(m.chat, txt, `/menu`, `Back To Menu 🔙`, tgl + ' ' + jam)
-                        })
-                    }}
-                    break
+                    case 'sms':{
+                        if(!isPremium) return reply(`Perintah Ini Hanya dapat digunakan oleh pengguna premium`)
+                               if (args.length < 1) return reply(`Penggunaan ${prefix}sms 62xnxx|psan|jumlah`)
+                                if (args[0].startsWith('62')) return reply('Awali nomor dengan 08') 
+                                var nomor = q.split("|")[0];
+                                var pesann = q.split("|")[1];
+                                var jumlahh = q.split("|")[2];
+                                 axios.post("https://pesan.inipulsa.my.id/sms.php?c=sms&a=kirim", `phone=${nomor}&message=${pesann}& submit=${jumlahh}`)
+                                reply(`Sukses mengirim sms ke nomer ${nomor}`)
+                               }
+                     break
                     case 'google': case 'ggl':{
                     if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
                     limitAdd(sender, limit)
@@ -1741,12 +1890,13 @@ ${CmD} Tangerang
                         }
                     } 
                     break
-                    case 'tstik': case 'tstick': case 'ttp':{
-                        if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
+                    case 'ttp':{
+                    if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
+                    if (!q) return reply(`Berikan Text Setelah Perintah!\nExample : ${CmD} ${pushname}`)
                     limitAdd(sender, limit)
-                        if (!q) return reply(`Masukan Text!\nExample : ${CmD} Aku`)
-                        reply(`Bentar`)
-                        let encmedia = await bob.sendImageAsSticker(m.chat, `https://www6.flamingtext.com/net-fu/proxy_form.cgi?&imageoutput=true&script=comics-logo&doScale=true&scaleWidth=500&scaleHeight=500&fontsize=160&text=${q}`, m, { packname: global.packname, author: global.author })
+                    var tetnya = text2png(q, {color: `white`})
+                    var buffer = Buffer.from(tetnya, "base64")
+                    bob.sendImageAsSticker(m.chat, buffer, m, { packname: global.packname, author: pushname })
                     }
                     break
                     ///BANK 
@@ -1950,6 +2100,7 @@ ${CmD} Tangerang
                         }
                     }
                     break
+                    
                     case 'ai': case 'gpt': case 'chatgpt':{
                         if (!q) return reply(`Apa Yang Mau Di Ulas?\nExample : ${CmD} Kamu bisa apa?`)
                         if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
@@ -2309,38 +2460,12 @@ fakereply(rules)
                     break
                     // akhir
                     // DOWNLOADER 
-                    case 'ytmp4':
-                        {
-                            try {
-                                if (!q) return reply(`Masukan Text\nExample ${prefix}ytv https://youtu.be/GDND88fqt1o`)
-                                if (!q.includes('youtu.be') && !q.includes('youtube.com')) return reply(global.mess.linkinv)
-                                reply(global.mess.wait)
-                                var url = q
-                                var yt = await dl.youtubedl(url)
-                                var dl_url = await yt.video['720p'].download()
-                                setTimeout( () => {
-                                    bob.sendMessage(m.chat, {video: {url: dl_url}, caption: `*${yt.title}*\nResolusi : 720p`}, {quoted: m})
-                                }, 3000)
-                            } catch (e) {
-                                if (!q) return reply(`Masukan Text\nExample ${prefix}ytv https://youtu.be/GDND88fqt1o`)
-                                if (!q.includes('youtu.be') && !q.includes('youtube.com')) return reply(global.mess.linkinv)
-                                reply(global.mess.wait)
-                                var url = q
-                                var yt = await dl.youtubedl(url).catch(async () => await  dl.youtubedl(url))
-                                var dl_url = await yt.video['360p'].download()
-                                setTimeout( () => {
-                                    bob.sendMessage(m.chat, {video: {url: dl_url}, caption: `*${yt.title}*\nResolusi : 360p`}, {quoted: m})
-                                }, 3000)
-                            }
-                        }
-                    break
                     
-                    /*case 'play':{
+                    case 'play':{
                         if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
                         limitAdd(sender, limit)
                         if (!q) return reply(`Masukan Text Setelah Perintah!\n\n*Example For Voice Not* : ${CmD} Jakarta Hari Ini - For revenge --vn\n*Example For Document :* ${CmD} Jakarta Hari Ini - For revenge -doc\n*Example For Video :* ${CmD} Jakarta Hari Ini - For revenge --video`)
                         reply(mess.wait)
-                    try {
                         var cariyutup = await yts(q)
                         var url = cariyutup.all[0].url
                         const judul = cariyutup.all[0].title
@@ -2349,6 +2474,7 @@ fakereply(rules)
                         var randomku = otpkode(5)
                         var teksyutup = `*[ DOWNLOAD YOUTUBE PLAY ]*\n\n 📛 Judul : ${judul}\n🔗 Link : ${url}\n📃 Deskripsi : ${desc}\n\nSedang Mengirim...`
                         bob.sendMessage(m.chat, {image: {url: thumbnailnya}, caption: teksyutup}, {quoted: m})
+                    try {
                         const audioStream = ytdl(url, {
                             filter: 'audioonly',
                             quality: 'highestaudio',
@@ -2358,10 +2484,28 @@ fakereply(rules)
                           await sleep(2000)
                           fs.unlinkSync(`media/${randomku}.mp3`)
                         } catch (error) {
-                            reply(`Bentar kebelet`)
+                            reply(`Server Sibuk, Jojo Request yang laen dulu!`)
                         }
                     } 
-                        break*/
+                        break
+                        case 'ytmp4':{
+                            if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
+                            limitAdd(sender, limit)
+                            if (!q) return reply(`Masukan Text\nExample ${CmD} https://youtu.be/GDND88fqt1o`)
+                            if (!q.includes('yout')) return reply(global.mess.linkinv)
+                            reply(global.mess.wait + `\nJika Tidak Dikirim, Maka Ukuran Video Terlalu Besar.`)
+                        try {
+                            var streamPipeline = promisify(pipeline);
+                        var pidioku = ytdl(q, {quality: 'highest'});
+                        var sampah = os.tmpdir();
+                        var writableStream = fs.createWriteStream(`${sampah}/${title}.mp4`);
+                        await streamPipeline(pidioku, writableStream);
+                        bob.sendMessage(m.chat, {video: {url: `${sampah}/${title}.mp4`}}, {quoted: m})
+                        } catch (error) {
+                            reply('Ukuran Video Terlalu Besar.')
+                        }
+                        }
+                        break
                     case 'ytmp3': case 'yta': case'ytaudio': {
                         if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
                         limitAdd(sender, limit)
@@ -2381,6 +2525,15 @@ fakereply(rules)
                             } catch (error) {
                                 reply(`Bentar kebelet`)
                             }
+                    }
+                    break
+                    case 'mediafire':{
+                    if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
+                    limitAdd(sender, limit)
+                    reply(mess.wait)
+                    mediafiredl(q).then ( data => {
+                        bob.sendMessage(m.chat, {document: {url: data.link}, mimetype: data.mime, fileName: data.name, caption: `Name : ${data.name}\nSize : ${data.size}\nTanggal : ${data.date}\nFormat : ${data.mime}`}, {quoted: m})
+                    })
                     }
                     break
                     case 'tt': case 'tiktok':  {
@@ -2481,58 +2634,6 @@ fakereply(rules)
                     }
                     }).catch(() => reply(`Story Eror!, Mungkin karena di private atau username tidak ada dan mungkin bisa saja dia tidak buat story`))
 			    break
-                    case 'mediafire': {
-                        if (!isPremium) return reply(`Fitur Tersebut Khusus Pengguna Premium`)
-                        if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
-                    limitAdd(sender, limit)
-                        if (!q) return reply(`Masukan Text\nExample ${CmD} https://www.mediafire.com/file/l8b3te4g1p8z354/module.zip/file`)
-                        if (!q.includes('mediafire.com')) return reply(global.mess.linkinv)
-                        reply(global.mess.wait)
-                        dl.mediafiredl(q).then ( data => {
-                            reply(`*[ MEDIA FIRE DOWNLOADER ]*\n\nName File : ${data.filename}\nSize : ${data.filesizeH}\n\n_Media Sedang Dikirim!_`)
-                            bob.sendMessage(m.chat, {document: {url: data.url}, mimetype: 'zip', fileName: data.filename})
-                        })
-                    }
-                    break
-                    case 'play': {
-                        if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
-                    limitAdd(sender, limit)
-                        if (!q) return reply(`Masukan Text Setelah Perintah!\n\n*Example For Voice Not* : ${CmD} Jakarta Hari Ini - For revenge --vn\n*Example For Document :* ${CmD} Jakarta Hari Ini - For revenge -doc\n*Example For Video :* ${CmD} Jakarta Hari Ini - For revenge --video`)
-                        reply(mess.wait)
-                        var pasu = `ptt`
-
-                        if (q.includes('--vn')) {
-                        var ytserc = await yts(q.replace('--vn', ''))
-                        var url = ytserc.all[0].url
-                        var yt = await dl.youtubedl(url).catch(async () => await  dl.youtubedl(url))
-                        var dl_url = await yt.audio['128kbps'].download()
-                        bob.sendMessage(m.chat, {image: {url: yt.thumbnail}, caption: `*[ YOUTUBE PLAY ]*\n\nTitle : ${yt.title}\nSize : 128kbps\nType : Voice Not\n_Audio Sedang Dikirim..._`}, {quoted: m})
-                        bob.sendMessage(m.chat, {audio: {url: dl_url}, mimetype: `audio/mp4`, ptt: true}, {quoted: m})
-                    } else 
-                    if (q.includes('--doc')) {
-                        var ytserc = await yts(q.replace('--doc', ''))
-                        var url = ytserc.all[0].url
-                        var yt = await dl.youtubedl(url).catch(async () => await  dl.youtubedl(url))
-                        var dl_url = await yt.audio['128kbps'].download()
-                        bob.sendMessage(m.chat, {image: {url: yt.thumbnail}, caption: `*[ YOUTUBE PLAY ]*\n\nTitle : ${yt.title}\nSize : 128kbps\nType : Document\n_Audio Sedang Dikirim..._`}, {quoted: m})
-                        bob.sendMessage(m.chat, {document: {url: dl_url}, fileName: yt.title + `.mp3`, caption: yt.title + `\nhttps://my.arsrfii.repl.co`, mimetype: `audio/mp3`})
-                    } else 
-                    if (q.includes('--video')) {
-                        var ytserc = await yts(q.replace('--video', ''))
-                        var url = ytserc.all[0].url
-                        var yt = await dl.youtubedl(url).catch(async () => await  dl.youtubedl(url))
-                        var dl_url = await yt.video['720p'].download()
-                        bob.sendMessage(m.chat, {image: {url: yt.thumbnail}, caption: `*[ YOUTUBE PLAY ]*\n\nTitle : ${yt.title}\nSize : 128kbps\nType : Video\nVideo Sedang Dikirim..._`}, {quoted: m})
-                        bob.sendMessage(m.chat, {video: {url: dl_url}, caption: yt.title + `\nhttps://my.arsrfii.repl.co`}, {quoted: m})
-                    } else {
-                        var ytserc = await yts(q)
-                        var url = ytserc.all[0].url
-                        var yt = await dl.youtubedl(url).catch(async () => await  dl.youtubedl(url))
-                        var dl_url = await yt.audio['128kbps'].download()
-                        bob.sendMessage(m.chat, {image: {url: yt.thumbnail}, caption: `*[ YOUTUBE PLAY ]*\n\nTitle : ${yt.title}\nSize : 128kbps\nType : Default ( Audio )\n_Audio Sedang Dikirim..._`}, {quoted: m})
-                        bob.sendMessage(m.chat, {audio: {url: dl_url}, mimetype: `audio/mp4`}, {quoted: m})
-                    }}
-                    break
                     case 'yts': case 'ytsearch': {
                         if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
                     limitAdd(sender, limit)
