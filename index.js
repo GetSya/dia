@@ -145,9 +145,9 @@ async function startBot() {
             var pp_user = `https://telegra.ph/file/6ea2e0f36eae5ea3a5465.jpg`
           }
           if (data.action == "add") {
-            bob.sendMessage(data.id, {image: {url: pp_user}, caption: `Hallo @${i.split("@")[0]}, Selamat Datang Di Grup ${metadata.subject}`, mentions: [i]})
+            bob.sendMessage(data.id, {text: `Hallo @${i.split("@")[0]}, Selamat Datang Di Grup ${metadata.subject}`, mentions: [i]})
           } else if (data.action == "remove") {
-            bob.sendMessage(data.id, {image: {url: pp_user}, caption: `Selamat Tinggal @${i.split("@")[0]}`, mentions: [i]})
+            bob.sendMessage(data.id, {text: `Selamat Tinggal @${i.split("@")[0]}`, mentions: [i]})
           }
           }
         } catch (e) {
