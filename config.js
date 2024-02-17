@@ -26,6 +26,7 @@ global.mess = {
     group: 'Fitur Digunakan Hanya Untuk Group!',
     private: 'Fitur Digunakan Hanya Untuk Private Chat!',
     bot: 'Fitur Khusus Pengguna Nomor Bot',
+    reg: 'Anda Belom Login, Silahkan Login terlebih dahulu dengan cara ketik /login',
     wait: 'Tunggu Sebentar Yah Kak!\nSedang Jojo Proses nih',    
     linkinv: 'Link Tidak Valid. Masukan Link Dengan Benar.',    
 }
