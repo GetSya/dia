@@ -2907,6 +2907,8 @@ fakereply(rules)
                     bob.sendMessage(m.chat, {document: fs.readFileSync('./assets/db/commands.json'), fileName: `commands.json`, mimetype: `json`})
                     await sleep(5000)
                     bob.sendMessage(m.chat, {document: fs.readFileSync('./assets/db/mute.json'), fileName: `mute.json`, mimetype: `json`})
+                    await sleep(5000)
+                    bob.sendMessage(m.chat, {document: fs.readFileSync('./assets/db/register.json'), fileName: `register.json`, mimetype: `json`})
                     }
                     break
                     //Akhir owner menu
