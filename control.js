@@ -104,7 +104,7 @@ const tiktokresi = "2a78c6d3b550e355dc01cb366b146ab4" //Api Punya Gua anjing
 
 const { OpenAI } = require("openai");
 const openai = new OpenAI({
-    apiKey: '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',
+    apiKey: `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`,
   });
 
 const linkiyan = `https://api.yanzbotz.my.id`
@@ -114,7 +114,9 @@ const { decode } = require('punycode')
 const { choices } = require('yargs')
 
 
-/// DATABASE
+
+
+/// DATABASE    
 let antilink = JSON.parse(fs.readFileSync('./assets/db/antilink.json'));
 let truth = JSON.parse(fs.readFileSync('./assets/db/truth.json'));
 let dare = JSON.parse(fs.readFileSync('./assets/db/dare.json'));
@@ -680,6 +682,7 @@ ${readmore}
 ║- ${prefix}sewa
 ║- ${prefix}owner
 ║- ${prefix}login
+║- ${prefix}register
 ║- ${prefix}rules
 ║
 ╚════╝
@@ -801,8 +804,6 @@ ${readmore}
 ║- ${prefix}setname <Text>
 ║- ${prefix}setdesc <Text>
 ║- ${prefix}open  🔓
-║- ${prefix}locked  🔒
-║- ${prefix}unlocked  🔓
 ║- ${prefix}close  🔒
 ║- ${prefix}totag <Reply Image/Text/Video/Sticker/Audio>
 ║- ${prefix}promote <Reply Message>
@@ -1562,9 +1563,9 @@ ${CmD} Tangerang
                     limitAdd(sender, limit)
                         if (!args.length === "12") return reply(`Text Terlalu Panjang`)
                         config(tiktokresi);
-                        createAudioFromText(q, 'myAudio', 'id_001')
+                        createAudioFromText(q, 'media/myAudio', 'id_001')
                         await sleep(3000)
-                        bob.sendMessage(m.chat, {audio: fs.readFileSync(`myAudio.mp3`), mimetype: 'audio/mp4', ptt: true}, {quoted: m})
+                        bob.sendMessage(m.chat, {audio: fs.readFileSync(`media/myAudio.mp3`), mimetype: 'audio/mp4', ptt: true}, {quoted: m})
                     }
                     break
                     case 'on':{
@@ -2189,7 +2190,7 @@ ${CmD} Tangerang
                     }
                     break
                     
-                    case 'ai': case 'gpt': case 'chatgpt':{
+                    /*case 'ai': case 'gpt': case 'chatgpt':{
                 if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
                 if (!q) return reply(`Apa Yang Mau Di Ulas?\nExample : ${CmD} Kamu bisa apa?`)
                         if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
@@ -2200,6 +2201,36 @@ ${CmD} Tangerang
                             model: 'gpt-3.5-turbo',
                           });
                           reply(chatCompletion.choices[0].message.content)
+                    }
+                    break*/
+                    case 'ai': case 'jo':{
+                    if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
+                    if (!q) return reply(`Apa Yang Mau Di Ulas?\nExample : ${CmD} Kamu bisa apa?`)
+                    if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
+                    limitAdd(sender, limit) 
+                    const options = {
+                    method: 'POST',
+                    url: 'https://unlimited-chatgpt-3-5.p.rapidapi.com/chatgpt-3.5',
+                    params: {
+                        question: q
+                    },
+                    headers: {
+                        'content-type': 'application/json',
+                        'X-RapidAPI-Key': '4eb7ed2cb4mshd854e87074199abp134b2ajsn55caadb5e0f2',
+                        'X-RapidAPI-Host': 'unlimited-chatgpt-3-5.p.rapidapi.com'
+                    },
+                    data: {
+                        key1: 'value',
+                        key2: 'value'
+                    }
+                    };
+
+                    try {
+                        const response = await axios.request(options);
+                        reply(response.data)
+                    } catch (error) {
+                        reply(`Server Sedang Sibuk.`)
+                    }
                     }
                     break
                     case 'chatbot':{
@@ -2363,68 +2394,6 @@ ${CmD} Tangerang
                         bob.sendMessage(m.chat, { text: teks, mentions: mems}, { quoted: m })
                      }
                      break
-                     case 'promote': case 'admin': {
-                        if (!m.isGroup) return reply(global.mess.group)
-                        if (!isBotGroupAdmins) return reply(global.mess.botAdmin)
-                        if (!isGroupAdmins) return reply(global.mess.admin)
-                        if (!quoted) return reply('Reply Pesan')
-                         if (quoted) {
-                        number = quoted.sender
-                        bob.groupParticipantsUpdate(m.chat, [number], "promote")
-                        .then( res => bob.sendMessage(m.chat, {text: `Sukses Admin Baru : @${quoted.sender.split("@")[0]}`, mentions: [quoted.sender]}, {quoted: m}))
-                        .catch( err => bob.sendMessage(m.chat, {text: `Sukses Admin Baru : @${quoted.sender.split("@")[0]}`, mentions: [quoted.sender]}, {quoted: m}))
-                        } else {
-                        reply(`balas pesan member yang ingin dijadikan admin grup`)
-                        }
-                     }
-                     break
-                     case 'demote': case 'unadmin': {
-                        if (!m.isGroup) return reply(global.mess.group)
-                        if (!isBotGroupAdmins) return reply(global.mess.botAdmin)
-                        if (!isGroupAdmins) return reply(global.mess.admin)
-                        if (!quoted) return reply('Reply Pesan')
-                         if (quoted) {
-                        number = quoted.sender
-                        bob.groupParticipantsUpdate(m.chat, [number], "demote")
-                        .then( res => bob.sendMessage(m.chat, {text: `Sukses Menyingkirkan Admin : @${quoted.sender.split("@")[0]}`, mentions: [quoted.sender]}, {quoted: m}))
-                        .catch( err => bob.sendMessage(m.chat, {text: `Sukses Menyingkirkan Admin : @${quoted.sender.split("@")[0]}`, mentions: [quoted.sender]}, {quoted: m}))
-                        } else {
-                        reply(`balas pesan member yang ingin dijadikan admin grup`)
-                        }
-                     }
-                     break
-                     case 'closegc': case 'close': case 'tutup': {
-                        if (!m.isGroup) return reply(global.mess.group)
-                        if (!isBotGroupAdmins) return reply(global.mess.botAdmin)
-                        if (!isGroupAdmins) return reply(global.mess.admin)
-                        bob.groupSettingUpdate(m.chat, 'announcement')
-                        reply('Sukses Menutup Grup')
-                     }
-                     break
-                     case 'opengc': case 'open': case 'buka': {
-                        if (!m.isGroup) return reply(global.mess.group)
-                        if (!isBotGroupAdmins) return reply(global.mess.botAdmin)
-                        if (!isGroupAdmins) return reply(global.mess.admin)
-                        bob.groupSettingUpdate(m.chat, 'not_announcement')
-                        reply('Sukses Membuka Grup')
-                     }
-                     break
-                     case 'lock': case 'locked': case 'kunci': {
-                        if (!m.isGroup) return reply(global.mess.group)
-                        if (!isBotGroupAdmins) return reply(global.mess.botAdmin)
-                        if (!isGroupAdmins) return reply(global.mess.admin)
-                        bob.groupSettingUpdate(m.chat, 'locked')
-                        reply('Sukses Mengunci Edit Setting')
-                     }
-                     break
-                     case 'unlock': case 'unlocked': {
-                        if (!m.isGroup) return reply(global.mess.group)
-                        if (!isBotGroupAdmins) return reply(global.mess.botAdmin)
-                        if (!isGroupAdmins) return reply(global.mess.admin)
-                        bob.groupSettingUpdate(m.chat, 'unlocked')
-                        reply('Sukses Membuka Edit Setting')
-                     }
-                     break
                      case 'mute':
                     if (!m.isGroup) return reply(mess.group)
                     if (!isGroupAdmins && !isOwner) return reply(mess.admin)
@@ -2433,15 +2402,6 @@ ${CmD} Tangerang
                     fs.writeFileSync('./assets/db/mute.json', JSON.stringify(mute, null, 2))
                     reply(`Bot berhasil dimute di chat ini`)
                     break
-                     case 'setname': case 'setnamegc': {
-                        if (!m.isGroup) return reply(global.mess.group)
-                        if (!isBotGroupAdmins) return reply(global.mess.botAdmin)
-                        if (!isGroupAdmins) return reply(global.mess.admin)
-                        if (!q) return reply(`Masukan Text Nama Group!\n${prefix}setname Dia kekasih mu yang Baru`)
-                        bob.groupUpdateSubject(m.chat, q)
-                        reply(`Nama Grup DiGanti :\n${q}`)
-                     }
-                     break
                      case 'setdesc': case 'setdesk': {
                         if (!m.isGroup) return reply(global.mess.group)
                         if (!isBotGroupAdmins) return reply(global.mess.botAdmin)
@@ -2456,30 +2416,101 @@ ${CmD} Tangerang
                         bob.sendMessage(m.chat, { delete: { fromMe: true, id: quoted.id, remoteJid: m.chat }})
                      }
                      break
-                     case 'kick': case 'keluar': {
-                        if (!m.isGroup) return reply(global.mess.group)
-                        if (!isBotGroupAdmins) return reply(global.mess.botAdmin)
-                        if (!isGroupAdmins) return reply(global.mess.admin)
-                        if (!quoted) return reply('Reply Pesan')
-                        bob.groupParticipantsUpdate(
-                            m.chat, 
-                            [quoted.sender],
-                            "remove" // replace this parameter with "remove", "demote" or "promote"
-                        )
-                        ngetag(`Sukses Mengeluarkan @${quoted.sender.split("@")[0]}`, [quoted.sender])
+                     case 'add':{
+                    if (!m.isGroup) return reply(global.mess.group)
+                    if (!isBotGroupAdmins) return reply(global.mess.botAdmin)
+                    if (!isGroupAdmins) return reply(global.mess.admin)
+                    if (!q) {
+                        bob.groupParticipantsUpdate(m.chat, [quoted.sender], "add")
+                        ngetag(`Menambahkan @${quoted.sender.split('@')[0]}.`, [quoted.sender], true)
+                    } else {
+                        if (args[0].startsWith('08')) return reply(`Awali Dengan 62! bukan 08\nContoh : ${sender.split("@")[0]}`)
+                        bob.groupParticipantsUpdate(m.chat, [args[0] + `@s.whatsapp.net`], "add").catch(err => reply(`Gagal`))
+                    }
                      }
                      break
-                     case 'add': case 'tambahkan': {
+                     case 'kick':{
+                    if (!m.isGroup) return reply(global.mess.group)
+                    if (!isBotGroupAdmins) return reply(global.mess.botAdmin)
+                    if (!isGroupAdmins) return reply(global.mess.admin)
+                    if (!q) {
+                        bob.groupParticipantsUpdate(m.chat, [quoted.sender], "remove")
+                        ngetag(`Sukses Mengeluarkan @${quoted.sender.split('@')[0]}`, [quoted.sender], true)
+                    } else {
+                        reply(`Reply Messagenya`)
+                    }
+                     }
+                     break
+                     case 'promote':{
                         if (!m.isGroup) return reply(global.mess.group)
                         if (!isBotGroupAdmins) return reply(global.mess.botAdmin)
                         if (!isGroupAdmins) return reply(global.mess.admin)
-                        if (!quoted) return reply('Reply Pesan')
-                        bob.groupParticipantsUpdate(
-                            m.chat, 
-                            [quoted.sender],
-                            "add" // replace this parameter with "remove", "demote" or "promote"
-                        )
-                        ngetag(`Hallo @${quoted.sender.split("@")[0]} Selamat Datang`, [quoted.sender])
+                        if (!q) {
+                            bob.groupParticipantsUpdate(m.chat, [quoted.sender], "promote")
+                            ngetag(`Menambahkan @${quoted.sender.split('@')[0]} Sebagai Admin.`, [quoted.sender], true)
+                        } else {
+                            if (args[0].startsWith('08')) return reply(`Awali Dengan 62! bukan 08\nContoh : ${sender.split("@")[0]}`)
+                            bob.groupParticipantsUpdate(m.chat, [args[0] + `@s.whatsapp.net`], "promote").catch(err => reply(`Gagal`))
+                        }
+                         }
+                         break
+                         case 'demote':{
+                            if (!m.isGroup) return reply(global.mess.group)
+                            if (!isBotGroupAdmins) return reply(global.mess.botAdmin)
+                            if (!isGroupAdmins) return reply(global.mess.admin)
+                            if (!q) {
+                                bob.groupParticipantsUpdate(m.chat, [quoted.sender], "demote")
+                                ngetag(`Menurunkan Jabatan Admin Kepada : @${quoted.sender.split('@')[0]}`, [quoted.sender], true)
+                            } else {
+                                reply(`Reply Messagenya`)
+                            }
+                             }
+                             break
+                     case 'setname':{
+                        if (!m.isGroup) return reply(global.mess.group)
+                        if (!isBotGroupAdmins) return reply(global.mess.botAdmin)
+                        if (!isGroupAdmins) return reply(global.mess.admin)
+                        bob.groupUpdateSubject(m.chat, q)
+                        reply(`Sukses Mengubah Judul Grup.`)
+                     }
+                     break
+                     case 'linkgc':{
+                        if (!m.isGroup) return reply(global.mess.group)
+                        if (!isBotGroupAdmins) return reply(global.mess.botAdmin)
+                        var code = await bob.groupInviteCode(m.chat)
+                        reply(`Link GC : \nhttps://chat.whatsapp.com/`+ code)
+                     }
+                     break
+                     case 'opengc':{
+                        if (!m.isGroup) return reply(global.mess.group)
+                        if (!isGroupAdmins) return reply(global.mess.admin)
+                        if (!isBotGroupAdmins) return reply(global.mess.botAdmin)
+                        bob.groupSettingUpdate(m.chat, 'not_announcement')
+                     }
+                     break
+                     case 'close':{
+                        if (!m.isGroup) return reply(global.mess.group)
+                        if (!isGroupAdmins) return reply(global.mess.admin)
+                        if (!isBotGroupAdmins) return reply(global.mess.botAdmin)
+                        bob.groupSettingUpdate(m.chat, 'announcement')
+                     }
+                     break
+                     case 'leave':{
+                        if (!isGroupAdmins) return reply(global.mess.admin)
+                        if (!isCreator) return reply(mess.owner)
+                        bob.groupLeave(m.chat)
+                     }
+                     break
+                     case 'join':{
+                        if (isCreator) return reply(mess.own)
+                        var linkaja = args[0].split("/")[3]
+                        var responsenya = bob.groupAcceptInvite(linkaja)
+                        reply(`Sukses Masuk Ke Grup : ${q}`)
+                     }
+                     break
+                     case 'invite':{
+                        var response = await bob.groupAcceptInviteV4(sender, m.chat)
+                        reply(response)
                      }
                      break
                     //AKHIR GROUP
