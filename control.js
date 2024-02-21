@@ -29,6 +29,7 @@ const path = require('path')
 const yts = require("yt-search");
 const JoApi = require('@phaticusthiccy/open-apis')
 const axios = require('axios')
+const apiku = require('betabotz-tools')
 const ytdl = require('ytdl-core')
 const gugel = require('googlethis')
 const fakeyou = require('fakeyou.js')
@@ -711,7 +712,8 @@ ${readmore}
 ║- ${prefix}ttp <Text>
 ║- ${prefix}removebg <Reply Image>
 ║- ${prefix}qc <Text>
-║- ${prefix}tohd <Reply Image>
+║- ${prefix}remini <Reply Image>
+║- ${prefix}stalkig username
 ║- ${prefix}take <PackName|Author>
 ║- ${prefix}tts <Text>
 ║- ${prefix}listprem
@@ -1705,11 +1707,9 @@ ${CmD} Tangerang
                     bob.sendMessage(m.chat, {image: {url: linkjs.url}}, {quoted: m})
                     }
                     break
-                    case 'esrgan': case 'tohd': case 'bagusin':{
+                    /*
+                    case 'esrgan': case 'remini': case 'tohd': case 'bagusin':{
                         if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
-                    limitAdd(sender, limit)
-                    limitAdd(sender, limit)
-                    limitAdd(sender, limit)
                     limitAdd(sender, limit)
                         if (!isImage && !isQuotedImage) return reply(`Reply Gambar Atau Kirim Gambar dengan caption ${CmD}`)
                         reply(global.mess.wait + `\nTunggu 1 Menit Kurang`)
@@ -1732,6 +1732,25 @@ ${CmD} Tangerang
                             } catch (e) {
                             m.reply(`Eror! ukuran gambar terlalu besar atau tidak ada gambar yang dikirim dengan caption ${CmD}`)
                             }
+                    }
+                    break*/
+                    case 'remini': case 'tohd':{
+                    if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
+                    if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
+                    limitAdd(sender, limit)
+                    reply(mess.wait)
+                    try {
+                    if (isImage || isQuotedImage) {
+                        var kdm = otpkode(5)
+                        var donglot = await downloadAndSaveMediaMessage("image", kdm + ".jpg")
+                        var tot = await upload(fs.readFileSync(kdm + '.jpg'))
+                        apiku.remini(tot).then ( data => {
+                            bob.sendMessage(m.chat, {image: {url : data.image_data}, caption: `Sukses.\nSize : ${data.image_size}`})
+                        })
+                        await fs.unlinkSync(kdm + ".jpg")
+                    }} catch (error) {
+                        reply(`Gagal Upload Gambar`)
+                    }
                     }
                     break
   
@@ -2203,34 +2222,15 @@ ${CmD} Tangerang
                           reply(chatCompletion.choices[0].message.content)
                     }
                     break*/
-                    case 'ai': case 'jo':{
-                    if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
-                    if (!q) return reply(`Apa Yang Mau Di Ulas?\nExample : ${CmD} Kamu bisa apa?`)
-                    if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
-                    limitAdd(sender, limit) 
-                    const options = {
-                    method: 'POST',
-                    url: 'https://unlimited-chatgpt-3-5.p.rapidapi.com/chatgpt-3.5',
-                    params: {
-                        question: q
-                    },
-                    headers: {
-                        'content-type': 'application/json',
-                        'X-RapidAPI-Key': '4eb7ed2cb4mshd854e87074199abp134b2ajsn55caadb5e0f2',
-                        'X-RapidAPI-Host': 'unlimited-chatgpt-3-5.p.rapidapi.com'
-                    },
-                    data: {
-                        key1: 'value',
-                        key2: 'value'
-                    }
-                    };
-
-                    try {
-                        const response = await axios.request(options);
-                        reply(response.data)
-                    } catch (error) {
-                        reply(`Server Sedang Sibuk.`)
-                    }
+                    case 'ai':{
+                        if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
+                        if (!q) return reply(`Apa Yang Mau Di Ulas?\nExample : ${CmD} Kamu bisa apa?`)
+                        if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
+                        limitAdd(sender, limit)
+                        bob.sendPresenceUpdate("composing", m.chat);
+                        apiku.openai(q).then ( data => {
+                            bob.sendMessage(m.chat, {text: data.result}, {quoted: m})
+                        } )
                     }
                     break
                     case 'chatbot':{
@@ -2315,6 +2315,16 @@ ${CmD} Tangerang
                             console.log(e)
                             return
                             }
+                }
+                break
+                case 'igstalk': case 'stalkig':{
+                if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
+                if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
+                limitAdd(sender, limit)
+                apiku.stalkig(args[0]).then ( data => {
+                var teksig = `*[ INSTAGRAM STALKER ]*\n\nUsername : ${data.result.user_info.username}\nLink : https://instagram.com/${data.result.user_info.username}\nFull Name : ${data.result.user_info.full_name}\nBio : ${data.result.user_info.biography}\nPrivasi : ${data.result.user_info.is_private}\nPostingan : ${data.result.user_info.posts}\nFollowers : ${data.result.user_info.followers}\nFollowing : ${data.result.user_info.following}`
+                bob.sendMessage(m.chat, {image: {url: data.result.user_info.profile_pic_url}, caption: teksig})
+                } ).catch(() => reply(`Username Tidak Ada ❌`))
                 }
                 break
                     case 'hidetag': {
