@@ -3,8 +3,9 @@
    * Contact Me on wa.me/6288292024190
    * Follow https://github.com/DikaArdnt
 */
+require('./config')
 require('module-alias/register')
-const { default: WASocket, useMultiFileAuthState, DisconnectReason, fetchLatestBaileysVersion, generateForwardMessageContent, prepareWAMessageMedia, generateWAMessageFromContent, generateMessageID, downloadContentFromMessage, makeInMemoryStore, jidDecode, proto } = require("@whiskeysockets/baileys")
+const { default: WASocket, useMultiFileAuthState, DisconnectReason, fetchLatestBaileysVersion, generateForwardMessageContent, prepareWAMessageMedia, generateWAMessageFromContent, generateMessageID, downloadContentFromMessage, makeInMemoryStore, getAggregateVotesInPollMessage, jidDecode, proto } = require("@whiskeysockets/baileys")
 const pino = require('pino')
 const { Boom } = require('@hapi/boom')
 const fs = require('fs')
@@ -77,7 +78,7 @@ async function startBot() {
         defaultQueryTimeoutMs: 0, // atur jangka waktu query (0: tidak ada batas)
         keepAliveIntervalMs: 10000, // interval ws
         generateHighQualityLinkPreview: true, // menambah kualitas thumbnail preview
-        browser: ['Multi Device','Safari','1.0.0'],
+        browser: ['Jojo [ BOT ]','Safari','1.0.0'],
         // patch dibawah untuk tambahan jika hydrate/list tidak bekerja
         patchMessageBeforeSending: (message) => {
 
@@ -128,7 +129,7 @@ async function startBot() {
         if (mek.key.id.startsWith('BAE5') && mek.key.id.length === 16) return
         if (mek.key.id.startsWith('Sya')) return
         m = smsg(bob, mek, store)
-        require("./control")(bob, m, chatUpdate, store, welcome)
+        require("./control.js")(bob, m, chatUpdate, store, welcome)
         } catch (err) {
             console.log(err)
         }
@@ -416,7 +417,6 @@ async function startBot() {
 	let buffer = Buffer.isBuffer(path) ? path : /^data:.*?\/.*?;base64,/i.test(path) ? Buffer.from(path.split`,`[1], 'base64') : /^https?:\/\//.test(path) ? await (await getBuffer(path)) : fs.existsSync(path) ? fs.readFileSync(path) : Buffer.alloc(0)
         return await bob.sendMessage(jid, { image: buffer, caption: caption, ...options }, { quoted })
     }
-
     /**
      * 
      * @param {*} jid 
@@ -661,6 +661,23 @@ async function startBot() {
         }
 
     }
+
+    //*------------------------------------------------------------------------------------------------------------------------------------------------------------------*//                       
+                // respon polling
+                
+async function getMessage(key) {
+    if (store) {
+        const smsg = await store.loadMessage(key.remoteJid, key.id)
+        return smsg?.message
+    }  
+    return {
+        conversation: "@arsrfii"
+    }  
+}       
+                
+bob.sendPoll = (jid, name = '', values = [], selectableCount = 1) => { return bob.sendMessage(jid, { poll: { name, values, selectableCount }}) }               
+
+//*------------------------------------------------------------------------------------------------------------------------------------------------------------------*//  
 
     return bob
 }
