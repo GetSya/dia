@@ -691,7 +691,7 @@ ${readmore}
 ${readmore}
 ╔══ 『 Other Menu 』
 ║- ${prefix}sms <Nomor|Pesan|Jumlah>
-║- ${prefix}quotes   💬
+║- ${prefix}quotes 
 ║- ${prefix}pinterest _< Pencarian >_
 ║- ${prefix}ppcp
 ║- ${prefix}tomp3
@@ -902,9 +902,14 @@ ${isi}
             reply('success')        
             }
             break 
-            case 'owner': {
+            case 'owner1': {
                 sendContact(m.chat, global.owner[0], 'Arasyaa [ OWNER SEWA ]')
+               
+            }
+            break
+            case 'owner2': {
                 sendContact(m.chat, global.owner[1], 'Tria [ OWNER SUPPORT ]')
+               
             }
             break
             case 'deleteplugins': {
@@ -918,7 +923,7 @@ ${isi}
                 reply('success')
             }
             break
-            case 'menu': case 'dashboard': case 'help': {
+            case 'allmenu': {
                /* bob.sendMessage(m.chat, {text: menuku, mentions: [sender], contextInfo: {
                     externalAdReply: {
                         title: `Hello ${pushname}`,
@@ -1556,7 +1561,13 @@ ${CmD} Tangerang
                         var hasil = pickRandom(kotes2)
                         var img = fs.readFileSync('./media/icon.png')
                         console.log(img)
-                        bob.sendMessage(m.chat, {text: hasil.quotes + `\n\n` + `~ ${hasil.author}`}, {quoted: m})
+                        var btn =  [
+                            {
+                             "name": "quick_reply",
+                             "buttonParamsJson": "{\"display_text\":\"Berikan Lagi\",\"id\":\"#quotes\"}"
+                           }
+                        ]
+                        bob.sendButton(m.chat, hasil.quotes + `\n\n` + `~ ${hasil.author}`,'@arsrfii','> Quotes',btn)
                     }
                     break
                     case 'tts': case 'sbot' :{
@@ -1592,6 +1603,35 @@ ${CmD} Tangerang
                             reply(`Masukan Text Setelah Perintah!\nExample : ${CmD} 皆さんこんにちは、私の名前はアラシャ・ラフィです`)
                         }
                     
+                    }
+                    break
+                    case 'menu': case 'help':  {
+                        var menunya = `╔═⧎ *${global.botName}* ⧎═\n║\n╠═⧎ Hallo *${pushname}*\n║\n╠═⧎ Aku Adalah *${global.botName}* \n║ Silahkan Pilih List Menu\n║ Untuk Melihat Daftar Menu.\n║ Dan Pilih Rating Bot\n║ Untuk Rating Bot ${global.botName}\n║\n╠═⧎ *Harap Login Terlebih*\n║ *Dahulu Sebelum Memulai Bot* \n║ *JOJO Untuk Mendapatkan* \n║ *Limit Dan Balance!*\n║\n╚═⧎ Thanks For Using ${global.botName}\n❋─────────────────❋\n\n「 *${tgl}* 」\n「 *${jam}* 」 `
+                        var btn =  [
+                            {
+                             "name": "quick_reply",
+                             "buttonParamsJson": "{\"display_text\":\"Menampilkan List Menu\",\"id\":\"#allmenu\"}"
+                           }, 
+                            {
+                             "name": "quick_reply",
+                             "buttonParamsJson": "{\"display_text\":\"Login\",\"id\":\"#login\"}"
+                           }, 
+                           {
+                            "name": "cta_url",
+                            "buttonParamsJson": "{\"display_text\":\"Instagram Owner\",\"url\":\"https://instagram.com/arsrfii\"}"
+                          },
+                          {
+                            name: "single_select",
+                            buttonParamsJson: JSON.stringify({title:"Donasi",
+                              sections:[{"rows":[
+                                {title:"Owner Arasya ( OWNER SEWA )", description:"@arsrfii\nhttps://wa.me/6288214772441",id:"#owner1"},
+                                {title:"Owner Tria ( OWNER SUPPORT )",description:"@lestarii.tr\nhttps://wa.me/6281909494055",id:"#owner2"}
+                              ]}]
+                            })
+                          },
+                  
+                        ]
+                        bob.sendButton(m.chat, menunya,'@arsrfii', `> *_Haii ${pushname}_*\n` ,btn)
                     }
                     break
                     case 'ttsjp': case 'jpbot' :{
@@ -2614,7 +2654,7 @@ fakereply(rules)
                           }).pipe(fs.createWriteStream(`media/${randomku}.mp3`));
                           await sleep(5000)
                           bob.sendMessage(m.chat, {audio: fs.readFileSync(`media/${randomku}.mp3`), mimetype: 'audio/mp4'}, {quoted: m})
-                          await sleep(2000)
+                          await sleep(10000)
                           fs.unlinkSync(`media/${randomku}.mp3`)
                         } catch (error) {
                             reply(`Server Sibuk, Jojo Request yang laen dulu!`)
@@ -2655,7 +2695,7 @@ fakereply(rules)
                               }).pipe(fs.createWriteStream(`media/${randomku}.mp3`));
                               await sleep(5000)
                               bob.sendMessage(m.chat, {audio: fs.readFileSync(`media/${randomku}.mp3`), mimetype: 'audio/mp4'}, {quoted: m})
-                              await sleep(2000)
+                              await sleep(10000)
                               fs.unlinkSync(`media/${randomku}.mp3`)
                             } catch (error) {
                                 reply(`Bentar kebelet`)

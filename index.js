@@ -393,6 +393,39 @@ async function startBot() {
         }
         bob.sendMessage(jid, buttonMessage, { quoted, ...options })
     }
+
+    bob.sendButton = async(jid, body_teks, footer_teks, header_teks, list_button) => {
+        let msg = generateWAMessageFromContent(jid, {
+   viewOnceMessage: {
+     message: {
+         "messageContextInfo": {
+           "deviceListMetadata": {},
+           "deviceListMetadataVersion": 2
+         },
+         interactiveMessage: proto.Message.InteractiveMessage.create({
+           body: proto.Message.InteractiveMessage.Body.create({
+             text: body_teks
+           }),
+           footer: proto.Message.InteractiveMessage.Footer.create({
+             text: footer_teks
+           }),
+           header: proto.Message.InteractiveMessage.Header.create({
+             title: header_teks,
+             subtitle: "test",
+             hasMediaAttachment: false
+           }),
+           nativeFlowMessage: proto.Message.InteractiveMessage.NativeFlowMessage.create({
+             buttons: list_button,
+           })
+         })
+     }
+   }
+ }, {})
+ 
+ await bob.relayMessage(jid, msg.message, {
+   messageId: msg.key.id
+ })
+ }
     
     /**
      * 

@@ -18,7 +18,7 @@
     "@phaticusthiccy/open-apis": "^1.8.5",
     "@sl-code-lords/photooxy": "^1.0.1",
     "@vitalets/google-translate-api": "^9.2.0",
-    "@whiskeysockets/baileys": "^6.6.0",
+    "@whiskeysockets/baileys": "^6.6.1",
     "awesome-phonenumber": "^2.64.0",
     "axios": "^0.24.0",
     "bard-ai": "^2.0.3",
