@@ -17,6 +17,7 @@
     "@bochilteam/scraper-sosmed": "^1.0.5",
     "@phaticusthiccy/open-apis": "^1.8.5",
     "@sl-code-lords/photooxy": "^1.0.1",
+    "@tobyg74/tiktok-api-dl": "^1.1.4",
     "@vitalets/google-translate-api": "^9.2.0",
     "@whiskeysockets/baileys": "^6.6.1",
     "awesome-phonenumber": "^2.64.0",

@@ -32,6 +32,7 @@ const axios = require('axios')
 const apiku = require('betabotz-tools')
 const ytdl = require('ytdl-core')
 const gugel = require('googlethis')
+const tiktoku = require("@tobyg74/tiktok-api-dl")
 const fakeyou = require('fakeyou.js')
 const cheerio = require('cheerio')
 var Photooxy = require('@sl-code-lords/photooxy')
@@ -887,7 +888,7 @@ tekos += `║- ${commandsDB[i].pesan}\n`
             break */
             
             case 'addplugins': {
-                if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
+                // if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
                 if (!isCreator) return reply(mess.owner)
                   let name = q.split("|")[0]
                   let isi = q.split("|")[1]
@@ -951,7 +952,7 @@ ${isi}
             break
                 //Flaming & PhotooxyLogo MAKER
                 case 'glitch':{
-                if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
+                // if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
                 if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
                 limitAdd(m.sender, limit)
                 var text1 = q.split("|")[0]
@@ -967,7 +968,7 @@ ${isi}
                 }
                 break
                 case 'sketch': {
-                if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
+                // if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
                 if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
                 limitAdd(m.sender, limit)
                 if (!isQuotedImage && !isImage ) return reply(`Reply Gambar Atau Kirim gambar dengan caption : ${CmD}`)
@@ -985,7 +986,7 @@ ${isi}
                 }
                 break
                 case 'memory': case 'fotoku':{
-                if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
+                // if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
                 if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
                 limitAdd(m.sender, limit)
                 if (!isQuotedImage && !isImage ) return reply(`Reply Gambar Atau Kirim gambar dengan caption : ${CmD}`)
@@ -1003,7 +1004,7 @@ ${isi}
                 }
                 break
                 case 'birthday': {
-                    if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
+                    // if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
                 if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
                 limitAdd(m.sender, limit)
                 if (!isQuotedImage && !isImage ) return reply(`Reply Gambar Atau Kirim gambar dengan caption : ${CmD}`)
@@ -1021,7 +1022,7 @@ ${isi}
                 }
                 break
                 case 'briliant': {
-                if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
+                // if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
                 if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
                 limitAdd(m.sender, limit)
                 if (!isQuotedImage && !isImage ) return reply(`Reply Gambar Atau Kirim gambar dengan caption : ${CmD}`)
@@ -1039,7 +1040,7 @@ ${isi}
                 }
                 break
                 case 'gambar': {
-                if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
+                // if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
                 if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
                 limitAdd(m.sender, limit)
                 if (!isQuotedImage && !isImage ) return reply(`Reply Gambar Atau Kirim gambar dengan caption : ${CmD}`)
@@ -1057,7 +1058,7 @@ ${isi}
                 }
                 break
                 case 'bingkai': {
-                if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
+                // if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
                 if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
                 limitAdd(m.sender, limit)
                 if (!isQuotedImage && !isImage ) return reply(`Reply Gambar Atau Kirim gambar dengan caption : ${CmD}`)
@@ -1075,7 +1076,7 @@ ${isi}
                 }
                 break
                 case 'blackpink': case 'bp':{
-                if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
+                // if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
                 if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
                 limitAdd(m.sender, limit)
                 reply(mess.wait)
@@ -1089,7 +1090,7 @@ ${isi}
                 }
                 break
                 case 'stone':{
-                if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
+                // if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
                 if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
                 limitAdd(m.sender, limit)
                 reply(mess.wait)
@@ -1103,7 +1104,7 @@ ${isi}
                 }
                 break
                 case 'neon':{
-                if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
+                // if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
                 if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
                 limitAdd(m.sender, limit)
                 reply(mess.wait)
@@ -1117,7 +1118,7 @@ ${isi}
                 }
                 break
                 case 'shadow':{
-                if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
+                // if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
                 if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
                 limitAdd(m.sender, limit)
                 reply(mess.wait)
@@ -1131,7 +1132,7 @@ ${isi}
                 }
                 break
                 case 'cup':{
-                if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
+                // if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
                 if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
                 limitAdd(m.sender, limit)
                 reply(mess.wait)
@@ -1145,7 +1146,7 @@ ${isi}
                 }
                 break
                 case 'coffee':{
-                if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
+                // if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
                 if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
                 limitAdd(m.sender, limit)
                 reply(mess.wait)
@@ -1159,7 +1160,7 @@ ${isi}
                 }
                 break
                 case 'underwater':{
-                if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
+                // if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
                 if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
                 limitAdd(m.sender, limit)
                 reply(mess.wait)
@@ -1173,7 +1174,7 @@ ${isi}
                 }
                 break
                 case 'leaves':{
-                if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
+                // if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
                 if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
                 limitAdd(m.sender, limit)
                 reply(mess.wait)
@@ -1187,7 +1188,7 @@ ${isi}
                 }
                 break
                 case 'wolf':{
-                if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
+                // if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
                 if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
                 limitAdd(m.sender, limit)
                 reply(mess.wait)
@@ -1201,7 +1202,7 @@ ${isi}
                 }
                 break
                 case 'sketch-logo': {
-                if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
+                // if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
                 if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
                     if (!q) throw (`Silahkan Masukan Text\nExample : #sketch-logo arasyaku`)
                     reply('Tunggu Sebentar!\nSedang Membuat 🔃')
@@ -1210,7 +1211,7 @@ ${isi}
                 }
                     break
                 case 'comic-logo': {
-                if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
+                // if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
                 if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
                     if (!q) throw (`Silahkan Masukan Text\nExample : #comic-logo arasyaku`)
                     reply('Tunggu Sebentar!\nSedang Membuat 🔃')
@@ -1219,7 +1220,7 @@ ${isi}
                 }
                     break
                 case 'water-logo': {
-                if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
+                // if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
                 if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
                     limitAdd(sender, limit)
                     if (!q) throw (`Silahkan Masukan Text\nExample : #water-logo arasyaku`)
@@ -1228,7 +1229,7 @@ ${isi}
                 }
                     break
                 case 'style-logo': {
-                if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
+                // if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
                 if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
                     limitAdd(sender, limit)
                     if (!q) throw (`Silahkan Masukan Text\nExample : #style-logo arasyaku`)
@@ -1237,7 +1238,7 @@ ${isi}
                 }
                     break
                 case 'runner-logo': {
-                if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
+                // if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
                 if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
                     limitAdd(sender, limit)
                     if (!q) throw (`Silahkan Masukan Text\nExample : #runner-logo arasyaku`)
@@ -1246,7 +1247,7 @@ ${isi}
                 }
                     break
                 case 'starwars-logo': {
-                if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
+                // if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
                 if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
                     limitAdd(sender, limit)
                     if (!q) throw (`Silahkan Masukan Text\nExample : #starwars-logo arasyaku`)
@@ -1255,7 +1256,7 @@ ${isi}
                 }
                     break
                     case 'qr':{
-                if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
+                // if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
                 if (!q) throw (`Silahkan Masukan Text\nExample : ${CmD} Mine`)
                     if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
                     limitAdd(sender, limit)
@@ -1267,7 +1268,7 @@ ${isi}
                     break
                     // Game
                     case 'tebakgambar': {
-                if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
+                // if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
                 if (isPlayGame(m.chat, tebakgambar)) return reply(m.chat, `Masih ada game yang belum diselesaikan`, tebakgambar[getGamePosi(m.chat, tebakgambar)].m)
                         var tg = JSON.parse(fs.readFileSync('./assets/tebakgambar.json'))
                     var data = pickRandom(tg)
@@ -1281,7 +1282,7 @@ ${isi}
                     })}
                     break
                     case 'tebakkata': {
-                if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
+                // if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
                 if (isPlayGame(m.chat, tebakkata)) return reply(m.chat, `Masih ada game yang belum diselesaikan`, tebakkata[getGamePosi(m.chat, tebakkata)].m)
                     var tg = JSON.parse(fs.readFileSync('./assets/tebakkata.json'))
                     var data = pickRandom(tg)
@@ -1295,7 +1296,7 @@ ${isi}
                     })}
                     break
                     case 'tod': case 'truth': case 'dare':{
-                if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
+                // if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
                 if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
                     limitAdd(sender, limit)
                         var randomtod = ["TRUTH","DARE"]
@@ -1331,7 +1332,7 @@ _Hasil :_ `
                      }
                     break
                     case 'siapakahaku': {
-                if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
+                // if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
                 if (isPlayGame(m.chat, siapakahaku)) return reply(m.chat, `Masih ada game yang belum diselesaikan`, siapakahaku[getGamePosi(m.chat, siapakahaku)].m)
                     var tg = JSON.parse(fs.readFileSync('./assets/siapakahaku.json'))
                     var data = pickRandom(tg)
@@ -1346,7 +1347,7 @@ _Hasil :_ `
                     })}
                     break
                     case 'caklontong': {
-                if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
+                // if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
                 if (isPlayGame(m.chat, caklontong)) return reply(m.chat, `Masih ada game yang belum diselesaikan`, caklontong[getGamePosi(m.chat, caklontong)].m)
                     var tg = JSON.parse(fs.readFileSync('./assets/caklontong.json'))
                     var data = pickRandom(tg)
@@ -1360,7 +1361,7 @@ _Hasil :_ `
 
                     })}
                     case 'soal': {
-                if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
+                // if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
                 if (isPlayGame(m.chat, soal)) return reply(m.chat, `Masih ada game yang belum diselesaikan`, soal[getGamePosi(m.chat, soal)].m)
                     var tg = JSON.parse(fs.readFileSync('./assets/soal.json'))
                     var data = pickRandom(tg)
@@ -1375,7 +1376,7 @@ _Hasil :_ `
                     })}
                     break
                     case 'tebakkimia': {
-                if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
+                // if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
                 if (isPlayGame(m.chat, teki)) return reply(m.chat, `Masih ada game yang belum diselesaikan`, teki[getGamePosi(m.chat, teki)].m)
                     var tg = JSON.parse(fs.readFileSync('./assets/tebakkimia.json'))
                     var data = pickRandom(tg)
@@ -1390,7 +1391,7 @@ _Hasil :_ `
                     })}
                     break
                     case 'tebaklagu': {
-                if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
+                // if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
                 if (isPlayGame(m.chat, tebaklagu)) return reply(m.chat, `Masih ada game yang belum diselesaikan`, tebaklagu[getGamePosi(m.chat, tebaklagu)].m)
                     var tg = JSON.parse(fs.readFileSync('./assets/tebaklagu.json'))
                     var data = pickRandom(tg)
@@ -1407,7 +1408,7 @@ _Hasil :_ `
                     // Akhir Game
                     //Lain Lain
                     case 'hentai':{
-                if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
+                // if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
                 if (!isPremium) return reply(`Fitur Ini Hanya Di Gunakan Oleh Pengguna Premium`)
                     var nfsmw = JSON.parse(fs.readFileSync(`./assets/nsfw/hentai.json`))
                     var randnfsmw = pickRandom(nfsmw)
@@ -1416,7 +1417,7 @@ _Hasil :_ `
                     }
                     break
                     case 'removebg': case 'rb':{
-                if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
+                // if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
                 if (!isPremium) return reply(`Fitur Ini Hanya Di Gunakan Oleh Pengguna Premium`)
                     if (!isQuotedImage && !isImage)return reply(`Kirim Gambar dengan caption ${CmD} atau reply gambar dengan text ${CmD}!`)
                     if (isQuotedImage || iMediasImage ) {
@@ -1432,7 +1433,7 @@ _Hasil :_ `
                     }
                     break
                     case 'tomp3': {
-                if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
+                // if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
                 if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
                         limitAdd(sender, limit)
                         if (!/video/.test(mime) && !/audio/.test(mime)) return reply(`Kirim/Reply Video/Audio Yang Ingin Dijadikan MP3 Dengan Caption ${prefix + command}`)
@@ -1453,7 +1454,7 @@ _Hasil :_ `
                     }
                     break
                     case 'bajingan':{
-                if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
+                // if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
                 if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
                     limitAdd(sender, limit)
                     if (!q) return reply(`Masukan Nama\nExample : ${CmD} ${pushname}`)
@@ -1464,7 +1465,7 @@ _Hasil :_ `
                     case 'sholatku':
                         case 'jadwalsholat':
                             case 'sholat': {
-                if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
+                // if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
                 if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
                     limitAdd(sender, limit)
                     var tglsholat = moment.tz('Asia/Jakarta').format('YY/MM/DD')
@@ -1528,7 +1529,7 @@ ${CmD} Tangerang
                     }
                     break
                     case 'toimg':{
-                if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
+                // if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
                 if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
                     limitAdd(sender, limit)
                         if (!/webp/.test(mime)) return m.reply(`Reply sticker dengan caption *${prefix + command}*`)
@@ -1544,7 +1545,7 @@ ${CmD} Tangerang
                     }
                     break
                     case 'translate': case 'tr':{
-                if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
+                // if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
                 if (!isQuotedMsg) return reply(`Reply Pesan.`)
                         if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
                     limitAdd(sender, limit)
@@ -1554,7 +1555,7 @@ ${CmD} Tangerang
                     }
                     break
                     case 'quotes': {
-                if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
+                // if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
                 if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
                     limitAdd(sender, limit)
                         var kotes2 = JSON.parse(fs.readFileSync('./assets/quotes.json'))
@@ -1571,7 +1572,7 @@ ${CmD} Tangerang
                     }
                     break
                     case 'tts': case 'sbot' :{
-                if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
+                // if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
                 if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
                     limitAdd(sender, limit)
                         if (!args.length === "12") return reply(`Text Terlalu Panjang`)
@@ -1635,7 +1636,7 @@ ${CmD} Tangerang
                     }
                     break
                     case 'ttsjp': case 'jpbot' :{
-                if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
+                // if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
                 if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
                     limitAdd(sender, limit)
                         if (!args.length === "12") return reply(`Text Terlalu Panjang`)
@@ -1646,7 +1647,7 @@ ${CmD} Tangerang
                     }
                     break
                     case 'decode':{
-                if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
+                // if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
                 if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
                     limitAdd(sender, limit)
                     if (!q) return reply(`Format salah!\n\nKirim perintah: ${prefix}decode *text*\nContoh: ${prefix}debinary 01110100 01100101 01110011`)
@@ -1658,7 +1659,7 @@ ${CmD} Tangerang
                     }
                     break
                     case 'encode':{
-                if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
+                // if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
                 if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
                     limitAdd(sender, limit)
                     if (!q) return reply(`Format salah!\n\nKirim perintah: ${prefix}encode *text*\nContoh: ${prefix}encode i Love you`)
@@ -1673,7 +1674,7 @@ ${CmD} Tangerang
                     }
                     break
                     case 'songb': {
-                if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
+                // if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
                 if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
                     limitAdd(sender, limit)
                         config(tiktokresi);
@@ -1683,7 +1684,7 @@ ${CmD} Tangerang
                     }
                     break
                     case 'menfess': {
-                if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
+                // if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
                 if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
                     limitAdd(sender, limit)
                         if (!q) return reply(`Masukan Text!\nExample : ${prefix}menfess no|pesan`)
@@ -1701,7 +1702,7 @@ ${CmD} Tangerang
                     } 
                     break
                     case 'ppcp':{
-                if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
+                // if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
                 if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
                     limitAdd(sender, limit)
                     var ppcpnya =  await fetchJson(`https://raw.githubusercontent.com/VamsesOfficial/database2/master/image/ppcp.js`)
@@ -1718,7 +1719,7 @@ ${CmD} Tangerang
                     }
                     break
                     case 'pinterest': case 'pin': {
-                if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
+                // if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
                 if (!q) return reply(`Masukan Text\nExample : ${prefix}pinterest Pegunungan`)
                     reply(global.mess.wait)
                         var jumlah;
@@ -1741,7 +1742,7 @@ ${CmD} Tangerang
                     }
                     break
                     case 'waifu':{
-                if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
+                // if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
                 var linkjs = await fetchJson(`https://api.waifu.pics/sfw/waifu`)
                     reply(`Mencari Waifu Kamu... 🔍`)
                     bob.sendMessage(m.chat, {image: {url: linkjs.url}}, {quoted: m})
@@ -1775,7 +1776,7 @@ ${CmD} Tangerang
                     }
                     break*/
                     case 'remini': case 'tohd':{
-                    if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
+                    // if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
                     if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
                     limitAdd(sender, limit)
                     reply(mess.wait)
@@ -1795,7 +1796,7 @@ ${CmD} Tangerang
                     break
   
                     case 'ssweb': case 'ss': {
-                if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
+                // if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
                 if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
                     limitAdd(sender, limit)
                     if (!q) return reply(`Masukan Text!\nExample ${CmD} https://youtube.com`)
@@ -1805,7 +1806,7 @@ ${CmD} Tangerang
                     }
                     break
                     case 'sms':{
-                if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
+                // if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
                 if(!isPremium) return reply(`Perintah Ini Hanya dapat digunakan oleh pengguna premium`)
                                if (args.length < 1) return reply(`Penggunaan ${prefix}sms 62xnxx|psan|jumlah`)
                                 if (args[0].startsWith('62')) return reply('Awali nomor dengan 08') 
@@ -1817,7 +1818,7 @@ ${CmD} Tangerang
                                }
                      break
                     case 'google': case 'ggl':{
-                if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
+                // if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
                 if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
                     limitAdd(sender, limit)
                     gugel.search(q).then ( data => {
@@ -1827,7 +1828,7 @@ ${CmD} Tangerang
                     }
                     break
                     case 'stiksearch': case 'searchstik':{
-                if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
+                // if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
                 if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
                     limitAdd(sender, limit)
                     var linkstik = stickersearch(q)
@@ -1837,7 +1838,7 @@ ${CmD} Tangerang
                     }).catch( err => reply(`Sticker Nya Gada.`))}
                     break
                     case 'liputanku': {
-                if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
+                // if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
                 var title = q.split("@")[0]
                     var link = q.split("@")[1]
                     var desk = q.split("@")[2]
@@ -1847,7 +1848,7 @@ ${CmD} Tangerang
                     }
                     break
                     case 'addstik': {
-                if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
+                // if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
                 if (isQuotedSticker) {
                     var donglod = await downloadAndSaveMediaMessage(`sticker`, `sticker/${q}.webp`)
                     reply(`sukses`)
@@ -1871,7 +1872,7 @@ ${CmD} Tangerang
                          }
                          break
                          case 'take': case 'swm': case 'stickerwm': case 'ambil': {
-                if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
+                // if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
                 if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
                     limitAdd(sender, limit)
                         try {
@@ -1904,7 +1905,7 @@ ${CmD} Tangerang
                            }}}
                              break
                     case 'tourl': {
-                if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
+                // if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
                 if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
                     limitAdd(sender, limit)
                         if (!isImage && !isQuotedImage) return reply(`Reply Gambar Atau Kirim Gambar dengan caption ${prefix}tourl`)
@@ -1926,7 +1927,7 @@ ${CmD} Tangerang
                     break
 
                     case 'stcmeme': case 'smeme': {
-                if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
+                // if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
                 if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
                     limitAdd(sender, limit)
                         if (!isImage && !isQuotedImage && !isQuotedSticker) return reply(`Reply Gambar Atau Kirim Gambar dengan caption ${prefix}stcmeme Kamu|Wibu`)
@@ -2010,7 +2011,7 @@ ${CmD} Tangerang
                     } 
                     break
                     case 'memegen': case 'memeg': {
-                if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
+                // if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
                 if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
                     limitAdd(sender, limit)
                         if (!isImage && !isQuotedImage) return reply(`Reply Gambar Atau Kirim Gambar dengan caption ${prefix}memegen Kamu|Wibu`)
@@ -2031,7 +2032,7 @@ ${CmD} Tangerang
                     } 
                     break
                     case 'ttp':{
-                if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
+                // if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
                 if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
                     if (!q) return reply(`Berikan Text Setelah Perintah!\nExample : ${CmD} ${pushname}`)
                     limitAdd(sender, limit)
@@ -2057,7 +2058,7 @@ ${CmD} Tangerang
                     }
                     break*/
                     case 'meme':{
-                if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
+                // if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
                 if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
                     limitAdd(sender, limit)
                     var link = JSON.parse(fs.readFileSync(`./assets/darkjokes.json`))
@@ -2066,7 +2067,7 @@ ${CmD} Tangerang
                     }
                     break
                     case 'emojimix':{
-                if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
+                // if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
                 if (!q) return reply(`Masukan Emojinya, Misalnya\n${CmD} 🤣+😎`)
                         try {
                         var emoji = q.split("+")[0]
@@ -2099,7 +2100,7 @@ ${CmD} Tangerang
                     }
                     break
                     case 'limit': case 'poin': {
-                if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
+                // if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
                 var limitPrib = `${getLimit(m.sender, limitCount, limit)}/${limitCount}`
                   //  reply(`Limit : ${limitPrib}\nBalance : $${getBalance(m.sender, balance)}\n\nKamu dapat membeli poin dengan cara ketik ${prefix}buypoin`)
                     var textbro = 
@@ -2110,7 +2111,7 @@ ${CmD} Tangerang
                     }
                     break
                     case 'top':{
-                if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
+                // if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
                 limit.sort((a, b) => (a.limit < b.limit) ? 1 : -1)
                         let top = '*── 「 TOP PAKAI 」 ──*\n\n'
                         let arrTop = []
@@ -2172,7 +2173,7 @@ ${CmD} Tangerang
                     //akhir
                     //GROUP MENU
                     case 'setppgc': case 'setppgrup':{
-                if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
+                // if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
                 if (!isGroupAdmins) return reply(global.mess.admin)
                     if (!/image/.test(mime)) return reply( `Kirim/Reply Image Dengan Caption ${prefix + command}`)
                     if (/webp/.test(mime)) return reply( `Kirim/Reply Image Dengan Caption ${prefix + command}`)
@@ -2200,7 +2201,7 @@ ${CmD} Tangerang
                     case 'infogrup':
                         case 'groupinfo':
                             case 'gcinfo':{
-                if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
+                // if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
                 var id_gc = groupMetadata.id
                     var judul_gc = groupMetadata.subject
                     var desc = groupMetadata.desc
@@ -2250,7 +2251,7 @@ ${CmD} Tangerang
                     break
                     
                     /*case 'ai': case 'gpt': case 'chatgpt':{
-                if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
+                // if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
                 if (!q) return reply(`Apa Yang Mau Di Ulas?\nExample : ${CmD} Kamu bisa apa?`)
                         if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
                     limitAdd(sender, limit)
@@ -2263,7 +2264,7 @@ ${CmD} Tangerang
                     }
                     break*/
                     case 'ai':{
-                        if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
+                        // if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
                         if (!q) return reply(`Apa Yang Mau Di Ulas?\nExample : ${CmD} Kamu bisa apa?`)
                         if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
                         limitAdd(sender, limit)
@@ -2274,7 +2275,7 @@ ${CmD} Tangerang
                     }
                     break
                     case 'chatbot':{
-                if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
+                // if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
                 if (q.toLowerCase() === "on") {
                           if (isChatBot) return reply(`ChatBot Telah aktif`)
                           chatbot.push(m.chat)
@@ -2311,7 +2312,7 @@ ${CmD} Tangerang
             }
                 break
                 case 'chat': case 'qc': case 'fm': {
-                if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
+                // if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
                 if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
                     limitAdd(sender, limit)
                     try{
@@ -2358,7 +2359,7 @@ ${CmD} Tangerang
                 }
                 break
                 case 'igstalk': case 'stalkig':{
-                if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
+                // if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
                 if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
                 limitAdd(sender, limit)
                 apiku.stalkig(args[0]).then ( data => {
@@ -2634,7 +2635,7 @@ fakereply(rules)
                     // DOWNLOADER 
                     
                     case 'play':{
-                if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
+                // if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
                 if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
                         limitAdd(sender, limit)
                         if (!q) return reply(`Masukan Text Setelah Perintah!\n\n*Example For Voice Not* : ${CmD} Jakarta Hari Ini - For revenge --vn\n*Example For Document :* ${CmD} Jakarta Hari Ini - For revenge -doc\n*Example For Video :* ${CmD} Jakarta Hari Ini - For revenge --video`)
@@ -2662,7 +2663,7 @@ fakereply(rules)
                     } 
                         break
                         case 'ytmp4':{
-                if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
+                // if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
                 if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
                             limitAdd(sender, limit)
                             if (!q) return reply(`Masukan Text\nExample ${CmD} https://youtu.be/GDND88fqt1o`)
@@ -2681,7 +2682,7 @@ fakereply(rules)
                         }
                         break
                     case 'ytmp3': case 'yta': case'ytaudio': {
-                if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
+                // if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
                 if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
                         limitAdd(sender, limit)
                         if (!q) return reply(`Masukan Text\nExample ${CmD} https://youtu.be/GDND88fqt1o`)
@@ -2703,7 +2704,7 @@ fakereply(rules)
                     }
                     break
                     case 'mediafire':{
-                if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
+                // if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
                 if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
                     limitAdd(sender, limit)
                     reply(mess.wait)
@@ -2715,15 +2716,15 @@ fakereply(rules)
                     case 'tt': case 'tiktok':  {
                         try {
                             
-                if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
+                // if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
                 if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
                             limitAdd(sender, limit)
                         if (!q) return reply(`Masukan Text\nExample ${prefix}tiktok https://vm.tiktok.com/ZS8CoY9UX/`)
                         if (!q.includes('tiktok')) return reply(global.mess.linkinv)
                         reply(global.mess.wait)
-                    TiktokDL(q).then ( data => {
-                        bob.sendMessage(m.chat, {caption: `Server 1`, video: {url: data.result.video[1]}}, {quoted: m})
-                    })
+                        tiktoku.Downloader(q, { version: "v2"}).then ( data => { 
+                            bob.sendMessage(m.chat, {video: {url: data.result.video}, caption: `Sukses Mendownload Video TikTok.`}, {quoted: m})
+                            })
                 } catch (e) {
                     reply(`Eror kak, Coba pakai server 2 ketik ${prefix}tiktok2 ${q} `)
                 }
@@ -2732,22 +2733,22 @@ fakereply(rules)
                     case 'ttmp3': case 'tiktokmp3':  {
                         try {
                             
-                if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
+                // if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
                 if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
                             limitAdd(sender, limit)
                         if (!q) return reply(`Masukan Text\nExample ${prefix}tiktok https://vm.tiktok.com/ZS8CoY9UX/`)
                         if (!q.includes('tiktok')) return reply(global.mess.linkinv)
                         reply(global.mess.wait)
-                    TiktokDL(q).then ( data => {
-                        bob.sendMessage(m.chat, {audio: {url: data.result.music[0]}, mimetype: 'audio/mp4'}, {quoted: m})
-                    })
+                        tiktoku.Downloader(q, { version: "v2"}).then ( data => { 
+                            bob.sendMessage(m.chat, {audio: {url: data.result.music}, mimetype: 'audio/mp4'}, {quoted: m})
+                            })
                 } catch (e) {
                     reply(`Eror kak, Coba pakai server 2 ketik ${prefix}tiktok2 ${q} `)
                 }
                     }
                     break
                     case 'tt2': case 'tiktok2':  {
-                if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
+                // if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
                 try {
                             
                             if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
@@ -2755,16 +2756,16 @@ fakereply(rules)
                         if (!q) return reply(`Masukan Text\nExample ${prefix}tiktok https://vm.tiktok.com/ZS8CoY9UX/`)
                         if (!q.includes('tiktok')) return reply(global.mess.linkinv)
                         reply(global.mess.wait)
-                    TiktokDL(q).then ( data => {
-                        bob.sendMessage(m.chat, {caption: `Server 2`, video: {url: data.result.video[0]}}, {quoted: m})
-                    })
+                        tiktoku.Downloader(q, { version: "v2"}).then ( data => { 
+                            bob.sendMessage(m.chat, {video: {url: data.result.video}, caption: `Sukses Mendownload Video TikTok.`}, {quoted: m})
+                            })
                 } catch (e) {
                     reply(`Eror kak, Coba pakai server 3 ketik ${prefix}tiktok3 ${q} `)
                 }
                     }
                     break
                     case 'tt3': case 'tiktok3':  {
-                if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
+                // if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
                 try {
                             
                             if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
@@ -2772,16 +2773,16 @@ fakereply(rules)
                         if (!q) return reply(`Masukan Text\nExample ${prefix}tiktok https://vm.tiktok.com/ZS8CoY9UX/`)
                         if (!q.includes('tiktok')) return reply(global.mess.linkinv)
                         reply(global.mess.wait)
-                    TiktokDL(q).then ( data => {
-                        bob.sendMessage(m.chat, {caption: `Server 3`, video: {url: data.result.video[2]}}, {quoted: m})
-                    })
+                        tiktoku.Downloader(q, { version: "v3"}).then ( data => { 
+                            bob.sendMessage(m.chat, {video: {url: data.result.video}, caption: `Sukses Mendownload Video TikTok.`}, {quoted: m})
+                            })
                 } catch (e) {
                     reply(`Eror kak, Coba pakai server 1 ketik ${prefix}tiktok ${q} `)
                 }
                     }
                     break
                     case 'igdl': case 'instagram': case 'ig':
-                if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
+                // if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
                 if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
                     limitAdd(sender, limit)
                     if (!q)return reply(`Berikan Link\nExample : ${CmD} link`)
@@ -2800,7 +2801,7 @@ fakereply(rules)
 			    break
 
                     case 'igstory': case 'igs':
-                if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
+                // if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
                 if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
                     limitAdd(sender, limit)
                     if (!q)return reply(`Berikan Username nya\nExample : ${CmD} arsrfii`)
@@ -2817,7 +2818,7 @@ fakereply(rules)
                     }).catch(() => reply(`Story Eror!, Mungkin karena di private atau username tidak ada dan mungkin bisa saja dia tidak buat story`))
 			    break
                     case 'yts': case 'ytsearch': {
-                if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
+                // if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
                 if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
                     limitAdd(sender, limit)
                     if (!q) return reply(`Masukan Text\nExample ${prefix}yts Jakarta Hari Ini - For Revenge`)
