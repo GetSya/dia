@@ -552,9 +552,9 @@ if (m.text.includes(tt)) {
                     limitAdd(sender, limit)
                 var url = tt
                 try {
-                TiktokDL(url).then ( data => {
-                bob.sendMessage(m.chat, {video: {url: data.result.video[1]}}, {quoted: m})
-                })
+                    tiktoku.Downloader(url, { version: "v2"}).then ( data => { 
+                        bob.sendMessage(m.chat, {video: {url: data.result.video}, caption: `Sukses Mendownload Video TikTok.`}, {quoted: m})
+                        })
                 } catch (e) {
                 console.log(`Eror kak, Coba pakai server 2 ketik ${prefix}tiktok2 ${q} `)
                 }
@@ -566,9 +566,9 @@ if (m.text.includes(tt2)) {
                     limitAdd(sender, limit)
 var url = tt2
 try {
-    TiktokDL(url).then ( data => {
-    bob.sendMessage(m.chat, {video: {url: data.result.video[1]}}, {quoted: m})
-    })
+    tiktoku.Downloader(url, { version: "v2"}).then ( data => { 
+        bob.sendMessage(m.chat, {video: {url: data.result.video}, caption: `Sukses Mendownload Video TikTok.`}, {quoted: m})
+        })
     } catch (e) {
     console.log(`Eror kak, Coba pakai server 2 ketik ${prefix}tiktok2 ${q} `)
     }
@@ -580,9 +580,9 @@ if (m.text.includes(tt3)) {
                     limitAdd(sender, limit)
 var url = tt3
 try {
-    TiktokDL(url).then ( data => {
-    bob.sendMessage(m.chat, {video: {url: data.result.video[1]}}, {quoted: m})
-    })
+    tiktoku.Downloader(url, { version: "v2"}).then ( data => { 
+        bob.sendMessage(m.chat, {video: {url: data.result.video}, caption: `Sukses Mendownload Video TikTok.`}, {quoted: m})
+        })
     } catch (e) {
     console.log(`Eror kak, Coba pakai server 2 ketik ${prefix}tiktok2 ${q} `)
     }
@@ -1607,7 +1607,7 @@ ${CmD} Tangerang
                     }
                     break
                     case 'menu': case 'help':  {
-                        var menunya = `╔═⧎ *${global.botName}* ⧎═\n║\n╠═⧎ Hallo *${pushname}*\n║\n╠═⧎ Aku Adalah *${global.botName}* \n║ Silahkan Pilih List Menu\n║ Untuk Melihat Daftar Menu.\n║ Dan Pilih Rating Bot\n║ Untuk Rating Bot ${global.botName}\n║\n╠═⧎ *Harap Login Terlebih*\n║ *Dahulu Sebelum Memulai Bot* \n║ *JOJO Untuk Mendapatkan* \n║ *Limit Dan Balance!*\n║\n╚═⧎ Thanks For Using ${global.botName}\n❋─────────────────❋\n\n「 *${tgl}* 」\n「 *${jam}* 」 `
+                        var menunya = `╔═⧎ *${global.botName}* ⧎═\n║\n╠═⧎ Hallo *${pushname}*\n║\n╠═⧎ Aku Adalah *${global.botName}* \n║ Silahkan Pilih List Menu\n║ Untuk Melihat Daftar Menu.\n║ Dan Pilih Rating Bot\n║ Untuk Rating Bot ${global.botName}\n║\n╠═⧎ *Harap Login Terlebih*\n║ *Dahulu Sebelum Memulai Bot* \n║ *JOJO Untuk Mendapatkan* \n║ *Limit Dan Balance!*\n║\n╚═⧎ Thanks For Using ${global.botName}\n❋─────────────────❋\n\n「 *${tgl}* 」\n「 *${jam}* 」\n\n> Join Grup JOJO :\n\n_https://chat.whatsapp.com/IwuZiVC1zuCIuYsdLprOCP_`
                         var btn =  [
                             {
                              "name": "quick_reply",
