@@ -26,6 +26,7 @@ const {
 const fs = require('fs')
 const util = require('util')
 const path = require('path')
+const nayan = require('nayan-server')
 const yts = require("yt-search");
 const JoApi = require('@phaticusthiccy/open-apis')
 const axios = require('axios')
@@ -69,6 +70,9 @@ const { exec, spawn, execSync } = require("child_process")
 const tictac = require("./lib/tictac");
 const _prem = require("./lib/premium");
 const Replicate = require('replicate')
+const { NextChat } = require("nextchat");
+const next = new NextChat();
+const { ChatSession, CompletionService } = require('langxlang')
 const {
     toAudio,
     toPTT,
@@ -553,7 +557,7 @@ if (m.text.includes(tt)) {
                 var url = tt
                 try {
                     tiktoku.Downloader(url, { version: "v2"}).then ( data => { 
-                        bob.sendMessage(m.chat, {video: {url: data.result.video}, caption: `Sukses Mendownload Video TikTok.`}, {quoted: m})
+                        bob.sendMessage(sender, {video: {url: data.result.video}, caption: `Sukses Mendownload Video TikTok.`}, {quoted: m})
                         })
                 } catch (e) {
                 console.log(`Eror kak, Coba pakai server 2 ketik ${prefix}tiktok2 ${q} `)
@@ -567,7 +571,7 @@ if (m.text.includes(tt2)) {
 var url = tt2
 try {
     tiktoku.Downloader(url, { version: "v2"}).then ( data => { 
-        bob.sendMessage(m.chat, {video: {url: data.result.video}, caption: `Sukses Mendownload Video TikTok.`}, {quoted: m})
+        bob.sendMessage(sender, {video: {url: data.result.video}, caption: `Sukses Mendownload Video TikTok.`}, {quoted: m})
         })
     } catch (e) {
     console.log(`Eror kak, Coba pakai server 2 ketik ${prefix}tiktok2 ${q} `)
@@ -581,7 +585,7 @@ if (m.text.includes(tt3)) {
 var url = tt3
 try {
     tiktoku.Downloader(url, { version: "v2"}).then ( data => { 
-        bob.sendMessage(m.chat, {video: {url: data.result.video}, caption: `Sukses Mendownload Video TikTok.`}, {quoted: m})
+        bob.sendMessage(sender, {video: {url: data.result.video}, caption: `Sukses Mendownload Video TikTok.`}, {quoted: m})
         })
     } catch (e) {
     console.log(`Eror kak, Coba pakai server 2 ketik ${prefix}tiktok2 ${q} `)
@@ -770,6 +774,7 @@ ${readmore}
 
 ╔══ 『 Premium Menu 』
 ║- ${prefix}hentai
+║- ${prefix}ai-img
 ║- ${prefix}addfitur _< Nama Fitur|Respons >_
 ║- ${prefix}delfitur _< Nama Fitur >_
 ╚════╝
@@ -922,6 +927,36 @@ ${isi}
                     reply('terjadi kesalahan *(⁠>⁠0⁠<⁠；⁠)*\nhallo owner perhatian nama plugins yang ingin di hapus') 
                 }
                 reply('success')
+            }
+            break
+            
+            case 'menu': case 'help':  {
+                var menunya = `╔═⧎ *${global.botName}* ⧎═\n║\n╠═⧎ Hallo *${pushname}*\n║\n╠═⧎ Aku Adalah *${global.botName}* \n║ Silahkan Pilih List Menu\n║ Untuk Melihat Daftar Menu.\n║ Dan Pilih Rating Bot\n║ Untuk Rating Bot ${global.botName}\n║\n╠═⧎ *Harap Login Terlebih*\n║ *Dahulu Sebelum Memulai Bot* \n║ *JOJO Untuk Mendapatkan* \n║ *Limit Dan Balance!*\n║\n╚═⧎ Thanks For Using ${global.botName}\n❋─────────────────❋\n\n「 *${tgl}* 」\n「 *${jam}* 」`
+                var btn =  [
+                    {
+                     "name": "quick_reply",
+                     "buttonParamsJson": "{\"display_text\":\"Menampilkan List Menu\",\"id\":\"#allmenu\"}"
+                   }, 
+                    {
+                     "name": "quick_reply",
+                     "buttonParamsJson": "{\"display_text\":\"Login\",\"id\":\"#login\"}"
+                   }, 
+                   {
+                    "name": "cta_url",
+                    "buttonParamsJson": "{\"display_text\":\"Instagram Owner\",\"url\":\"https://instagram.com/arsrfii\"}"
+                  },
+                  {
+                    name: "single_select",
+                    buttonParamsJson: JSON.stringify({title:"Owner Bot Jojo",
+                      sections:[{"rows":[
+                        {title:"Owner Arasya ( OWNER SEWA )", description:"@arsrfii\nhttps://wa.me/6288214772441",id:"#owner1"},
+                        {title:"Owner Tria ( OWNER SUPPORT )",description:"@lestarii.tr\nhttps://wa.me/6281909494055",id:"#owner2"}
+                      ]}]
+                    })
+                  },
+          
+                ]
+                bob.sendButton(m.chat, menunya,'\n> Join Grup JOJO :\n\n_https://chat.whatsapp.com/IwuZiVC1zuCIuYsdLprOCP_', `> *_Haii ${pushname}_*\n` ,btn)
             }
             break
             case 'allmenu': {
@@ -1424,7 +1459,7 @@ _Hasil :_ `
                     reply(global.mess.wait + `\nTunggu 5 Detik`)
                     var tete = await downloadAndSaveMessage('image', 'rmvbg.jpg')
                     var tot = await upload(fs.readFileSync('rmvbg.jpg'))
-                    rmvbg.rbFromImageUrl(tot, `5CwCfA9u2xaY9RYfuqpD7wXe`) //ini api punya guehhhhh
+                    rmvbg.rbFromImageUrl(tot, `J8SQ9cK7HAC7HSGBEDz5XBP3`) //ini api punya guehhhhh
                     await sleep(5000)
                     bob.sendMessage(m.chat, {caption: `AI-` + otpkode(6) + `.png`, image: fs.readFileSync('output-2.png')}, {quoted: m})
                     }
@@ -1606,35 +1641,6 @@ ${CmD} Tangerang
                     
                     }
                     break
-                    case 'menu': case 'help':  {
-                        var menunya = `╔═⧎ *${global.botName}* ⧎═\n║\n╠═⧎ Hallo *${pushname}*\n║\n╠═⧎ Aku Adalah *${global.botName}* \n║ Silahkan Pilih List Menu\n║ Untuk Melihat Daftar Menu.\n║ Dan Pilih Rating Bot\n║ Untuk Rating Bot ${global.botName}\n║\n╠═⧎ *Harap Login Terlebih*\n║ *Dahulu Sebelum Memulai Bot* \n║ *JOJO Untuk Mendapatkan* \n║ *Limit Dan Balance!*\n║\n╚═⧎ Thanks For Using ${global.botName}\n❋─────────────────❋\n\n「 *${tgl}* 」\n「 *${jam}* 」\n\n> Join Grup JOJO :\n\n_https://chat.whatsapp.com/IwuZiVC1zuCIuYsdLprOCP_`
-                        var btn =  [
-                            {
-                             "name": "quick_reply",
-                             "buttonParamsJson": "{\"display_text\":\"Menampilkan List Menu\",\"id\":\"#allmenu\"}"
-                           }, 
-                            {
-                             "name": "quick_reply",
-                             "buttonParamsJson": "{\"display_text\":\"Login\",\"id\":\"#login\"}"
-                           }, 
-                           {
-                            "name": "cta_url",
-                            "buttonParamsJson": "{\"display_text\":\"Instagram Owner\",\"url\":\"https://instagram.com/arsrfii\"}"
-                          },
-                          {
-                            name: "single_select",
-                            buttonParamsJson: JSON.stringify({title:"Donasi",
-                              sections:[{"rows":[
-                                {title:"Owner Arasya ( OWNER SEWA )", description:"@arsrfii\nhttps://wa.me/6288214772441",id:"#owner1"},
-                                {title:"Owner Tria ( OWNER SUPPORT )",description:"@lestarii.tr\nhttps://wa.me/6281909494055",id:"#owner2"}
-                              ]}]
-                            })
-                          },
-                  
-                        ]
-                        bob.sendButton(m.chat, menunya,'@arsrfii', `> *_Haii ${pushname}_*\n` ,btn)
-                    }
-                    break
                     case 'ttsjp': case 'jpbot' :{
                 // if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
                 if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
@@ -1779,6 +1785,7 @@ ${CmD} Tangerang
                     // if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
                     if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
                     limitAdd(sender, limit)
+                    if (!isImage && !isQuotedImage) return reply(`Kirim gambar dengan caption ${CmD} atau Reply Gambar dengan text ${CmD}`)
                     reply(mess.wait)
                     try {
                     if (isImage || isQuotedImage) {
@@ -1981,15 +1988,33 @@ ${CmD} Tangerang
                     if (!password) return reply(`Masukan Password nya!\nExample : ${CmD} ${pushname}|JojoGanz`)
                     if (checkRegister(username, regulti) === true) return reply(`Username Sudah ada ❌`)
                     addRegis(username, password, sender, kodeunik, regulti)
-                    reply(`*[ DAFTAR USER ]*\nAnda Berhasil Register dengan data :\n\nUsername : ${username}\nPassword : ${password}\nNomor : ${sender.split("@")[0]}\nUNIK KODE : ${kodeunik}\n\nAnda Bisa Login Dengan Cara ${prefix}login`)
+                    bob.sendMessage(m.chat, {text: `*[ DAFTAR USER ]*\nAnda Berhasil Register dengan data :\n\nUsername : ${username}\nPassword : ${password}\nNomor : ${sender.split("@")[0]}\nUNIK KODE : ${kodeunik}\n\nAnda Bisa Login Dengan Cara ${prefix}login`}, {quoted: fake})
                     }
                     break
+                    case 'reg-on': {
+                    if (checkLogin(sender, loginulti) === true) return reply(`Anda Sudah Login, Jadi tidak dapat untuk meregister`)
+                    var username = q.split('|')[0] ? q.split('|')[0] : q
+                    var password = q.split('|')[1] ? q.split('|')[1] : ''
+                    var kodeunik = `LGN${otpkode(6)}JO`
+                    addRegis(username, password, sender, kodeunik, regulti)
+                    var btn =  [{"name": "quick_reply",
+                    "buttonParamsJson": `{\"display_text\":\"Login 👤\",\"id\":\"#login\"}`
+                    }]
+                    bob.sendButton(sender, `*[ DAFTAR USER ]*\nAnda Berhasil Register dengan data :\n\nUsername : ${username}\nPassword : ${password}\nNomor : ${sender.split("@")[0]}\nUNIK KODE : ${kodeunik}\n\nAnda Bisa Login Dengan Cara Klik Tombol Dibawah ini`,'', `> *_Haii ${pushname}_*\n` ,btn)
+                    reply(`Sukses Mendaftar.\nDetail Pendaftaran SUdah Terkirim Melalui Private Message`)
+                        }
+                        break
                     case 'login': {
-                    if (checkLogin(sender, regulti) === false) return reply(`Anda Belom Register, Silahkan Register terlebih dahulu dengan cara ketik\n${prefix}register Username|Password`)
+                    var kodeunik = `REG${otpkode(6)}JO`
+                    var btn =  [{"name": "quick_reply",
+                    "buttonParamsJson": `{\"display_text\":\"Register Otomatis\",\"id\":\"#reg-on ${pushname}|${kodeunik}\"}`
+                    }]
+                    if (checkLogin(sender, regulti) === false) return bob.sendButton(m.chat, `Anda Belom Register, Silahkan Register terlebih dahulu dengan cara ketik\n${prefix}register Username|Password\n\nAtau anda bisa Register Otomatis dengan cara tekan tombol dibawah`,'', `> *_Haii ${pushname}_*\n` ,btn)
                     addLogin(`true`, `true`, sender, `true`, loginulti)
                     const { key } = await bob.sendMessage(m.chat, {text: 'Sedang Mengambil Data 🔍'}, { quoted: m });
                     await delay(2000);
                     bob.sendMessage(m.chat, { text: '*[ Login ]*\nAnda Berhasil Login.', edit: key})
+                    
                     }
                     break
                     case 'stcmeme2': case 'smeme2': {
@@ -2249,38 +2274,42 @@ ${CmD} Tangerang
                         }
                     }
                     break
-                    
-                    /*case 'ai': case 'gpt': case 'chatgpt':{
-                // if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
-                if (!q) return reply(`Apa Yang Mau Di Ulas?\nExample : ${CmD} Kamu bisa apa?`)
+                    case 'ai-img':{
+                        if (!isPremium) return reply(`Fitur Ini Hanya Di Gunakan Oleh Pengguna Premium`)
+                        if (!q) return reply(`Apa Yang Mau Di Ulas?\nExample : ${CmD} Kamu bisa apa?`)
                         if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
-                    limitAdd(sender, limit)
-                        bob.sendPresenceUpdate("composing", m.chat);
-                        const chatCompletion = await openai.chat.completions.create({
-                            messages: [{ role: 'user', content: q }, {role: "system", content: konten},],
-                            model: 'gpt-3.5-turbo',
-                          });
-                          reply(chatCompletion.choices[0].message.content)
+                        limitAdd(sender, limit)
+                        reply(mess.wait)
+                        nayan.imagine(q).then ( data => {
+                            bob.sendMessage(m.chat, {image: {url: data.image_url}, caption: `Sukses Membuat.\nPrompt : ${q}`})
+                            })
                     }
-                    break*/
+                    break
                     case 'ai':{
                         // if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
                         if (!q) return reply(`Apa Yang Mau Di Ulas?\nExample : ${CmD} Kamu bisa apa?`)
                         if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
                         limitAdd(sender, limit)
-                        bob.sendPresenceUpdate("composing", m.chat);
-                        apiku.openai(q).then ( data => {
-                            bob.sendMessage(m.chat, {text: data.result}, {quoted: m})
-                        } )
+                        try {
+                        const service = new CompletionService({gemini: [`AIzaSyD9aD12un3L9CVK49fhC4JkkrlNGZgQ6vQ`] })
+                        const [response] = await service.requestCompletion(
+                            'gemini-1.0-pro', '', q
+                        )
+                        reply(response.text)
+                        } catch(e) {
+                        next.gemini(q).then ( data => {
+                        reply(data.message)
+                        })
+                        }
                     }
                     break
-                    case 'chatbot':{
+                    case 'chatai':{
                 // if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
                 if (q.toLowerCase() === "on") {
                           if (isChatBot) return reply(`ChatBot Telah aktif`)
                           chatbot.push(m.chat)
                           fs.writeFileSync('./assets/db/chatbot.json', JSON.stringify(chatbot, null, 2))
-                          reply(`Sukses mengaktifkan BOT GPT di grup ini`)
+                          reply(`Sukses mengaktifkan ChatBot di grup ini`)
                         } else if (q.toLowerCase() === "off") {
                           if (!isChatBot) return reply(`CHATBOT GPT telah nonaktif`)
                           var posi = chatbot.indexOf(m.chat)
@@ -2290,6 +2319,15 @@ ${CmD} Tangerang
                         } else {
                           reply(`Pilih on atau off\nExample : ${CmD} on`)
                         }
+                    }
+                    break
+                    case 'chatbot':{
+                        var btn =  [{"name": "quick_reply",
+                        "buttonParamsJson": "{\"display_text\":\"On\",\"id\":\"#chatai on\"}"
+                        }, {"name": "quick_reply",
+                        "buttonParamsJson": "{\"display_text\":\"Off\",\"id\":\"#chatai off\"}"
+                        },]
+                        bob.sendButton(m.chat, `Silahkan Pilih Opsi Berikut`,'', `> *_Haii ${pushname}_*\n` ,btn)
                     }
                     break
                     case 'antilink': {
@@ -2714,20 +2752,21 @@ fakereply(rules)
                     }
                     break
                     case 'tt': case 'tiktok':  {
-                        try {
-                            
                 // if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
                 if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
                             limitAdd(sender, limit)
                         if (!q) return reply(`Masukan Text\nExample ${prefix}tiktok https://vm.tiktok.com/ZS8CoY9UX/`)
                         if (!q.includes('tiktok')) return reply(global.mess.linkinv)
                         reply(global.mess.wait)
-                        tiktoku.Downloader(q, { version: "v2"}).then ( data => { 
-                            bob.sendMessage(m.chat, {video: {url: data.result.video}, caption: `Sukses Mendownload Video TikTok.`}, {quoted: m})
-                            })
-                } catch (e) {
-                    reply(`Eror kak, Coba pakai server 2 ketik ${prefix}tiktok2 ${q} `)
-                }
+                        tiktoku.Downloader(q, {version: "v2"}).then(data => {
+                            if (data.result.type === "video") {
+                                bob.sendMessage(m.chat, {video: {url: data.result.video}, caption: `Sukses Download TikTok Video.`})
+                            } else if (data.result.type === "image") {
+                                for ( let i of data.result.images ) {
+                                    bob.sendMessage(m.chat, {image: {url: i}})
+                                }
+                            }
+                        })//.catch(() => reply(`ERORR. Postingan tidak Tersedia`))
                     }
                     break
                     case 'ttmp3': case 'tiktokmp3':  {
@@ -2744,40 +2783,6 @@ fakereply(rules)
                             })
                 } catch (e) {
                     reply(`Eror kak, Coba pakai server 2 ketik ${prefix}tiktok2 ${q} `)
-                }
-                    }
-                    break
-                    case 'tt2': case 'tiktok2':  {
-                // if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
-                try {
-                            
-                            if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
-                            limitAdd(sender, limit)
-                        if (!q) return reply(`Masukan Text\nExample ${prefix}tiktok https://vm.tiktok.com/ZS8CoY9UX/`)
-                        if (!q.includes('tiktok')) return reply(global.mess.linkinv)
-                        reply(global.mess.wait)
-                        tiktoku.Downloader(q, { version: "v2"}).then ( data => { 
-                            bob.sendMessage(m.chat, {video: {url: data.result.video}, caption: `Sukses Mendownload Video TikTok.`}, {quoted: m})
-                            })
-                } catch (e) {
-                    reply(`Eror kak, Coba pakai server 3 ketik ${prefix}tiktok3 ${q} `)
-                }
-                    }
-                    break
-                    case 'tt3': case 'tiktok3':  {
-                // if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
-                try {
-                            
-                            if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
-                            limitAdd(sender, limit)
-                        if (!q) return reply(`Masukan Text\nExample ${prefix}tiktok https://vm.tiktok.com/ZS8CoY9UX/`)
-                        if (!q.includes('tiktok')) return reply(global.mess.linkinv)
-                        reply(global.mess.wait)
-                        tiktoku.Downloader(q, { version: "v3"}).then ( data => { 
-                            bob.sendMessage(m.chat, {video: {url: data.result.video}, caption: `Sukses Mendownload Video TikTok.`}, {quoted: m})
-                            })
-                } catch (e) {
-                    reply(`Eror kak, Coba pakai server 1 ketik ${prefix}tiktok ${q} `)
                 }
                     }
                     break
@@ -3000,13 +3005,13 @@ fakereply(rules)
                             console.log("->[\x1b[1;32mNew\x1b[1;37m]", color('Question From', 'yellow'), color(pushname, 'lightblue'), `: "${m.text}"`)
                             bob.sendPresenceUpdate("composing", m.chat);
                             try {
-                                const chatCompletion = await openai.chat.completions.create({
-                                    messages: [{ role: 'user', content: m.text }, {role: "system", content: konten},],
-                                    model: 'gpt-3.5-turbo',
-                                  });
-                                  reply(chatCompletion.choices[0].message.content)
+                                const service = new CompletionService({gemini: [`AIzaSyD9aD12un3L9CVK49fhC4JkkrlNGZgQ6vQ`] })
+                        const [response] = await service.requestCompletion(
+                            'gemini-1.0-pro', '', m.text
+                        )
+                        reply(response.text)
                     } catch (e) {
-                        reply("Kasih waktu dikit kek buat baca.")
+                        console.log()
                     } 
                 }  
             }
