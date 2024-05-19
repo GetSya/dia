@@ -80,28 +80,6 @@ async function startBot() {
         generateHighQualityLinkPreview: true, // menambah kualitas thumbnail preview
         browser: ['Jojo [ BOT ]','Safari','1.0.0'],
         // patch dibawah untuk tambahan jika hydrate/list tidak bekerja
-        patchMessageBeforeSending: (message) => {
-
-                const requiresPatch = !!(
-                  message.buttonsMessage
-              	  || message.templateMessage
-              		|| message.listMessage
-                );
-                if (requiresPatch) {
-                    message = {
-                        viewOnceMessage: {
-                            message: {
-                                messageContextInfo: {
-                                    deviceListMetadataVersion: 2,
-                                    deviceListMetadata: {},
-                                },
-                                ...message,
-                            },
-                        },
-                    };
-                }
-                return message;
-    },
     getMessage: async (key) => {
         if (store) {
            const msg = await store.loadMessage(key.remoteJid, key.id)
@@ -642,6 +620,41 @@ async function startBot() {
         await bob.relayMessage(jid, waMessage.message, { messageId:  waMessage.key.id })
         return waMessage
     }
+
+    bob.sendListButtonv2 = async (jid, text, list, footer, image, quoted, options = {}) => {
+      let msg000 = generateWAMessageFromContent(jid, {viewOnceMessage: {
+          message: {
+              "messageContextInfo": {
+                "deviceListMetadata": {},
+                "deviceListMetadataVersion": 2
+              },
+              interactiveMessage: proto.Message.InteractiveMessage.create({
+                body: proto.Message.InteractiveMessage.Body.create({
+                  text: text, 
+                }),
+                footer: proto.Message.InteractiveMessage.Footer.create({
+                  text: footer, 
+                }),
+                nativeFlowMessage: proto.Message.InteractiveMessage.NativeFlowMessage.create({
+                  buttons: [{
+                      name: "single_select",
+                      buttonParamsJson: JSON.stringify(list)
+                    }
+                 ],
+                }), 
+                contextInfo: {
+                        mentionedJid: [m.sender], 
+                        forwardingScore: 999,
+                        isForwarded: true
+                      }
+              })
+          }
+        }
+      }, {userJid: m.chat, quoted: m})
+      bob.relayMessage(msg000.key.remoteJid, msg000.message, {
+        messageId: msg000.key.id, quoted: m,
+        })
+        }
 
     bob.cMod = (jid, copy, text = '', sender = bob.user.id, options = {}) => {
         //let copy = message.toJSON()

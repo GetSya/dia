@@ -141,7 +141,7 @@ let mute = JSON.parse(fs.readFileSync('./assets/db/mute.json'))
 
 module.exports = bob = async (bob, m, chatUpdate, store, welcome, mentioned) => {
     try {
-        const body = (m.mtype === 'conversation') ? m.message.conversation : (m.mtype == 'imageMessage') ? m.message.imageMessage.caption : (m.mtype == 'videoMessage') ? m.message.videoMessage.caption : (m.mtype == 'extendedTextMessage') ? m.message.extendedTextMessage.text : (m.mtype == 'buttonsResponseMessage') ? m.message.buttonsResponseMessage.selectedButtonId : (m.mtype == 'listResponseMessage') ? m.message.listResponseMessage.singleSelectReply.selectedRowId : (m.mtype == 'templateButtonReplyMessage') ? m.message.templateButtonReplyMessage.selectedId : (m.mtype === 'messageContextInfo') ? (m.message.buttonsResponseMessage?.selectedButtonId || m.message.listResponseMessage?.singleSelectReply.selectedRowId || m.text) : ''
+        const body = (m.mtype === 'conversation') ? m.message.conversation : (m.mtype == 'imageMessage') ? m.message.imageMessage.caption : (m.mtype == 'videoMessage') ? m.message.videoMessage.caption : (m.mtype == 'extendedTextMessage') ? m.message.extendedTextMessage.text : (m.mtype == 'buttonsResponseMessage') ? m.message.buttonsResponseMessage.selectedButtonId : (m.mtype == "interactiveResponseMessage") ? JSON.parse(m.message[m.mtype].nativeFlowResponseMessage?.paramsJson).id : (m.mtype == 'templateButtonReplyMessage') ? m.message.templateButtonReplyMessage.selectedId : (m.mtype === 'messageContextInfo') ? (m.message.buttonsResponseMessage?.selectedButtonId || m.message.listResponseMessage?.singleSelectReply.selectedRowId || m.text) : ''
         const content = JSON.stringify(m.message)
         var budy = (typeof m.text == 'string' ? m.text : '')
         const prefix = prefa ? /^[°•π÷×¶∆£¢€¥®™+✓_=|~!?@#$%/^&.©^]/gi.test(body) ? body.match(/^[°•π÷×¶/∆£¢€¥®™+✓_=|~!?@#$%^&.©^]/gi)[0] : "/" : prefa ?? global.prefix
@@ -526,7 +526,7 @@ if (isPlayGame(m.chat, teki) ) {
     //Auto Respon
     for (var i = 0; i < commandsDB.length ; i++) {
         if (body.toLowerCase() === commandsDB[i].pesan) {
-            fakereply(commandsDB[i].balasan)
+            reply(commandsDB[i].balasan)
         }
           }
 
@@ -931,32 +931,68 @@ ${isi}
             break
             
             case 'menu': case 'help':  {
-                var menunya = `╔═⧎ *${global.botName}* ⧎═\n║\n╠═⧎ Hallo *${pushname}*\n║\n╠═⧎ Aku Adalah *${global.botName}* \n║ Silahkan Pilih List Menu\n║ Untuk Melihat Daftar Menu.\n║ Dan Pilih Rating Bot\n║ Untuk Rating Bot ${global.botName}\n║\n╠═⧎ *Harap Login Terlebih*\n║ *Dahulu Sebelum Memulai Bot* \n║ *JOJO Untuk Mendapatkan* \n║ *Limit Dan Balance!*\n║\n╚═⧎ Thanks For Using ${global.botName}\n❋─────────────────❋\n\n「 *${tgl}* 」\n「 *${jam}* 」`
-                var btn =  [
+                var menunya = `╔═⧎ *${global.botName}* ⧎═\n║\n╠═⧎ Hallo *${pushname}*\n║\n╠═⧎ Aku Adalah *${global.botName}* \n║ Silahkan Pilih List Menu\n║ Untuk Melihat Daftar Menu.\n║\n╠═⧎ *Harap Login Terlebih*\n║ *Dahulu Sebelum Memulai Bot* \n║ *JOJO Untuk Mendapatkan* \n║ *Limit Dan Balance!*\n║\n╚═⧎ Thanks For Using ${global.botName}\n❋─────────────────❋\n\n「 *${tgl}* 」\n「 *${jam}* 」`
+                var sections = [
                     {
-                     "name": "quick_reply",
-                     "buttonParamsJson": "{\"display_text\":\"Menampilkan List Menu\",\"id\":\"#allmenu\"}"
-                   }, 
-                    {
-                     "name": "quick_reply",
-                     "buttonParamsJson": "{\"display_text\":\"Login\",\"id\":\"#login\"}"
-                   }, 
-                   {
-                    "name": "cta_url",
-                    "buttonParamsJson": "{\"display_text\":\"Instagram Owner\",\"url\":\"https://instagram.com/arsrfii\"}"
-                  },
-                  {
-                    name: "single_select",
-                    buttonParamsJson: JSON.stringify({title:"Owner Bot Jojo",
-                      sections:[{"rows":[
-                        {title:"Owner Arasya ( OWNER SEWA )", description:"@arsrfii\nhttps://wa.me/6288214772441",id:"#owner1"},
-                        {title:"Owner Tria ( OWNER SUPPORT )",description:"@lestarii.tr\nhttps://wa.me/6281909494055",id:"#owner2"}
-                      ]}]
-                    })
-                  },
-          
+                    title: "Buka Menu",
+                    description: `Menampilkan List Menu`,
+                    id: `${prefix}allmenu`
+                },
+                {
+                    title: "Login",
+                    description: `Login User`,
+                    id: `${prefix}login`
+                }
                 ]
-                bob.sendButton(m.chat, menunya,'\n> Join Grup JOJO :\n\n_https://chat.whatsapp.com/IwuZiVC1zuCIuYsdLprOCP_', `> *_Haii ${pushname}_*\n` ,btn)
+                var ownermenu = [
+                {
+                    title: "Arasya Owner Sewa",
+                    description: `Owner Jojo Sewa`,
+                    id: `${prefix}owner1`
+                },
+                {
+                    title: "Tria Owner Support",
+                    description: `Owner Jojo Support`,
+                    id: `${prefix}owner2`
+                },
+                ]
+                var money = [
+                    {
+                        title: "Donate",
+                        description: `Donasi Jojo`,
+                        id: `${prefix}donasi`
+                    },
+                    {
+                        title: "Sewa",
+                        description: `Sewa Bot Jojo`,
+                        id: `${prefix}sewa`
+                    },
+                    {
+                        title: "Rules",
+                        description: `Peraturan Sebelum Menggunakan Jojo`,
+                        id: `${prefix}Rules`
+                    },
+                ]
+                const unduh = {
+                    title: "Click Here",
+                    sections: [
+                    {
+                    title: "New Jojo",
+                    highlight_label: `New Jo Reborn`,
+                    rows: sections,
+                    },
+                    {
+                    title: "Owner Bot",
+                    rows: ownermenu,
+                    },
+                    {
+                    title: "Buy",
+                    rows: money,
+                    },
+                    ]
+                }
+                    
+                bob.sendListButtonv2(m.chat, menunya, unduh, "> Join Grup Jojo\nhttps://chat.whatsapp.com/Famd1qzPzScBX4TSual41k", {quoted: fake})
             }
             break
             case 'allmenu': {
@@ -1208,6 +1244,77 @@ ${isi}
                     bob.sendMessage(m.chat, {image: img2_buf, caption: `Sukses!`}, {quoted: m})
                 }
                 break
+                case 'button':{
+                    var btn =  [
+                        {
+                            "name": "single_select",
+                            "buttonParamsJson": "{\"title\":\"title\",\"sections\":[{\"title\":\"title\",\"highlight_label\":\"label\",\"rows\":[{\"header\":\"header\",\"title\":\"title\",\"description\":\"description\",\"id\":\"id\"},{\"header\":\"header\",\"title\":\"title\",\"description\":\"description\",\"id\":\"id\"}]}]}"
+                          },
+                          {
+                            "name": "quick_reply",
+                            "buttonParamsJson": "{\"display_text\":\"quick_reply\",\"id\":\"message\"}"
+                          },
+                          {
+                             "name": "cta_url",
+                             "buttonParamsJson": "{\"display_text\":\"url\",\"url\":\"https://www.google.com\",\"merchant_url\":\"https://www.google.com\"}"
+                          },
+                          {
+                             "name": "cta_call",
+                             "buttonParamsJson": "{\"display_text\":\"call\",\"id\":\"message\"}"
+                          },
+                          {
+                             "name": "cta_copy",
+                             "buttonParamsJson": "{\"display_text\":\"copy\",\"id\":\"123456789\",\"copy_code\":\"message\"}"
+                          },
+                          {
+                             "name": "cta_reminder",
+                             "buttonParamsJson": "{\"display_text\":\"cta_reminder\",\"id\":\"message\"}"
+                          },
+                          {
+                             "name": "cta_cancel_reminder",
+                             "buttonParamsJson": "{\"display_text\":\"cta_cancel_reminder\",\"id\":\"message\"}"
+                          },
+                          {
+                             "name": "address_message",
+                             "buttonParamsJson": "{\"display_text\":\"address_message\",\"id\":\"message\"}"
+                          },
+                          {
+                             "name": "send_location",
+                             "buttonParamsJson": ""
+                          }
+            
+                    ]
+                    bob.sendButton(m.chat, `P`,'@arsrfii','> Quotes',btn)
+                }
+                break
+                /*
+                case 'btn':{
+                    var sections = [
+                        {
+                        title: "list",
+                        description: `Test`,
+                        id: `.menu`
+                    },
+                    {
+                        title: "list",
+                        description: `Test`,
+                        id: `.menu`
+                    },
+                    ]
+                    const unduh = {
+                        title: "Click Here",
+                        sections: [
+                        {
+                        title: "Semua Fiture",
+                        highlight_label: `Promo 2%`,
+                        rows: sections,
+                        },
+                        ]
+                    }
+                        
+                    bob.sendListButtonv2(m.chat, `testi`, unduh, "anu", {quoted: m})
+                }
+                break*/
                 case 'leaves':{
                 // if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
                 if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
@@ -1717,10 +1824,10 @@ ${CmD} Tangerang
                     bob.sendMessage(m.chat, {image: {url: randomppcp.cewe}, caption: `Cewe`})
                     }
                     break
-                    case 'addimg': {
-                        if (!isQuotedImage ) return reply('Reply Imagenya!')
-                        if (isQuotedImage || isImage ) {
-                            var mediaku = await downloadAndSaveMediaMessage("image", "tes.jpg")
+                    case 'addsticker': {
+                        if (!isQuotedSticker ) return reply('Reply Imagenya!')
+                        if (isQuotedSticker || isSticker ) {
+                            var mediaku = await downloadAndSaveMediaMessage("sticker", "media/menu.webp")
                             }
                     }
                     break
@@ -2305,6 +2412,7 @@ ${CmD} Tangerang
                     break
                     case 'chatai':{
                 // if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
+                if (!m.isGroup) {
                 if (q.toLowerCase() === "on") {
                           if (isChatBot) return reply(`ChatBot Telah aktif`)
                           chatbot.push(m.chat)
@@ -2319,15 +2427,45 @@ ${CmD} Tangerang
                         } else {
                           reply(`Pilih on atau off\nExample : ${CmD} on`)
                         }
+                    } else 
+                        if (!isGroupAdmins) return reply (mess.admin)
+                        if (m.isGroup){
+                            if (q.toLowerCase() === "on") {
+                                if (isChatBot) return reply(`ChatBot Telah aktif`)
+                                chatbot.push(m.chat)
+                                fs.writeFileSync('./assets/db/chatbot.json', JSON.stringify(chatbot, null, 2))
+                                reply(`Sukses mengaktifkan ChatBot di grup ini`)
+                              } else if (q.toLowerCase() === "off") {
+                                if (!isChatBot) return reply(`CHATBOT GPT telah nonaktif`)
+                                var posi = chatbot.indexOf(m.chat)
+                                chatbot.splice(posi, 1)
+                                fs.writeFileSync('./assets/db/chatbot.json', JSON.stringify(chatbot, null, 2))
+                                reply(`Sukses menonaktifkan GPT BOT di grup ini`)
+                              } else {
+                                reply(`Pilih on atau off\nExample : ${CmD} on`)
+                              }
+                        }
                     }
+                    
                     break
                     case 'chatbot':{
+                        if (!m.isGroup) {
                         var btn =  [{"name": "quick_reply",
                         "buttonParamsJson": "{\"display_text\":\"On\",\"id\":\"#chatai on\"}"
                         }, {"name": "quick_reply",
                         "buttonParamsJson": "{\"display_text\":\"Off\",\"id\":\"#chatai off\"}"
                         },]
                         bob.sendButton(m.chat, `Silahkan Pilih Opsi Berikut`,'', `> *_Haii ${pushname}_*\n` ,btn)
+                    } else 
+                    if (!isGroupAdmins) return reply (mess.admin)
+                    if (m.isGroup){
+                        var btn =  [{"name": "quick_reply",
+                        "buttonParamsJson": "{\"display_text\":\"On\",\"id\":\"#chatai on\"}"
+                        }, {"name": "quick_reply",
+                        "buttonParamsJson": "{\"display_text\":\"Off\",\"id\":\"#chatai off\"}"
+                        },]
+                        bob.sendButton(m.chat, `Silahkan Pilih Opsi Berikut`,'', `> *_Haii ${pushname}_*\n` ,btn)
+                    }
                     }
                     break
                     case 'antilink': {
@@ -2637,6 +2775,20 @@ Terima kasih telah menggunakan layanan Sewa Bot!`
 fakereply(sewa)
                     }
                     break
+                    case 'donasi': case 'donate':{
+var sewa = `*[ DONASI ]*
+Donasi
+1. Spay : 0882-1329-2687
+2. Gopay : 0882-1329-2687
+3. Dana : 0882-1329-2687
+
+Setelah melakukan donasi dari jojo, mohon konfirmasi melalui kontak di bawah ini:
+Email: arasyarafi02@gmail.com
+Whatsapp: 0882-1477-2441
+Link : https://wa.me/6288214772441`
+                        fakereply(sewa)
+                                            }
+                                            break
                     case 'rules':{
 var rules = `*[ PERATURAN BOT JOJO ]*
 
