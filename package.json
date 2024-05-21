@@ -19,7 +19,7 @@
     "@sl-code-lords/photooxy": "^1.0.1",
     "@tobyg74/tiktok-api-dl": "^1.1.4",
     "@vitalets/google-translate-api": "^9.2.0",
-    "@whiskeysockets/baileys": "^6.7.2",
+    "@whiskeysockets/baileys": "^6.6.6",
     "awesome-phonenumber": "^2.64.0",
     "axios": "^0.24.0",
     "bard-ai": "^2.0.3",

@@ -71,6 +71,7 @@ async function startBot() {
     const bob = WASocket({
         logger: pino({ level: 'silent' }),
         printQRInTerminal: true,
+        version: [2, 2413, 1],
         syncFullHistory: false, // menerima riwayat lengkap
         syncFullHistory: false, // menerima riwayat lengkap
         markOnlineOnConnect: false, // membuat wa bot of, true jika ingin selalu menyala
@@ -79,7 +80,29 @@ async function startBot() {
         keepAliveIntervalMs: 10000, // interval ws
         generateHighQualityLinkPreview: true, // menambah kualitas thumbnail preview
         browser: ['Jojo [ BOT ]','Safari','1.0.0'],
-        // patch dibawah untuk tambahan jika hydrate/list tidak bekerja
+       // patch dibawah untuk tambahan jika hydrate/list tidak bekerja
+        patchMessageBeforeSending: (message) => {
+
+                const requiresPatch = !!(
+                  message.buttonsMessage
+              	  || message.templateMessage
+              		|| message.listMessage
+                );
+                if (requiresPatch) {
+                    message = {
+                        viewOnceMessage: {
+                            message: {
+                                messageContextInfo: {
+                                    deviceListMetadataVersion: 2,
+                                    deviceListMetadata: {},
+                                },
+                                ...message,
+                            },
+                        },
+                    };
+                }
+                return message;
+    },
     getMessage: async (key) => {
         if (store) {
            const msg = await store.loadMessage(key.remoteJid, key.id)
