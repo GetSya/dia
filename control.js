@@ -2244,28 +2244,6 @@ ${CmD} Tangerang
                         return anon.leaveChat(bob, m, sender, reply)
                     }
 
-                    case 'testwelcome':{
-                        if (!m.isGroup) return reply(mess.OnlyGrup)
-                        if (!isGroupAdmins && !isCreator) return reply(mess.GrupAdmin)
-                        const target = (m.mentionedJid && m.mentionedJid[0]) || (args[0] ? args[0].replace(/[^0-9]/g, '') + '@s.whatsapp.net' : m.sender)
-                        const wlib = require('./lib/welcome')
-                        const gset = joDatabase.getGroup(m.chat)
-                        const targetName = (target === m.sender ? pushname : '')
-                        const r = await wlib.sendWelcomeGoodbye(bob, m.chat, 'add', [target], { force: true, pushname: targetName })
-                        reply(`Test welcome: terkirim=${r.sent} (flag welcome=${!!gset.welcome}). Cek grup.`)
-                    }
-                    break
-                    case 'testleft':{
-                        if (!m.isGroup) return reply(mess.OnlyGrup)
-                        if (!isGroupAdmins && !isCreator) return reply(mess.GrupAdmin)
-                        const target = (m.mentionedJid && m.mentionedJid[0]) || (args[0] ? args[0].replace(/[^0-9]/g, '') + '@s.whatsapp.net' : m.sender)
-                        const wlib = require('./lib/welcome')
-                        const gset = joDatabase.getGroup(m.chat)
-                        const targetName = (target === m.sender ? pushname : '')
-                        const r = await wlib.sendWelcomeGoodbye(bob, m.chat, 'remove', [target], { force: true, pushname: targetName })
-                        reply(`Test left: terkirim=${r.sent} (flag left=${!!gset.left}). Cek grup.`)
-                    }
-                    break
                     case 'ai':{
                         // if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
                         if (!q) return reply(`Apa Yang Mau Di Ulas?\nExample : ${CmD} Kamu bisa apa?`)
