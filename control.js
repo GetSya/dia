@@ -642,47 +642,29 @@ const streamPipeline = promisify(pipeline);
                           await streamPipeline(audioStream, writableStream);
                           bob.sendMessage(m.chat, {audio: {url: `${sampah}/${title}.mp3`}, fileName: title, mimetype: 'audio/mp4'}, {quoted: m})
 }
-let tt = `https://vt.tiktok${m.text.slice(17)}`
-
-if (m.text.includes(tt)) {
-                    if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return console.log(`Limit beliau sudah habis jir`)
-                    limitAdd(sender, limit)
-                var url = tt
-                try {
-                    tiktoku.Downloader(url, { version: "v2"}).then ( data => { 
-                        bob.sendMessage(sender, {video: {url: data.result.video}, caption: `Sukses Mendownload Video TikTok.`}, {quoted: m})
-                        })
-                } catch (e) {
-                console.log(`Eror kak, Coba pakai server 2 ketik ${prefix}tiktok2 ${q} `)
-                }
-}
-let tt2 = `https://www.tiktok.com/${m.text.slice(23)}`
-
-if (m.text.includes(tt2)) {
+// Auto-download TikTok via yt-dlp (youtube-dl-exec): user kirim link -> langsung diunduh & dikirim di chat yang sama
+const ttMatch = String(m.text || "").match(/https?:\/\/(www\.|vt\.|vm\.|m\.)?tiktok\.com\/\S+/i)
+if (ttMatch && !isCmd && !m.key.fromMe) {
     if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return console.log(`Limit beliau sudah habis jir`)
-                    limitAdd(sender, limit)
-var url = tt2
-try {
-    tiktoku.Downloader(url, { version: "v2"}).then ( data => { 
-        bob.sendMessage(sender, {video: {url: data.result.video}, caption: `Sukses Mendownload Video TikTok.`}, {quoted: m})
-        })
+    limitAdd(sender, limit)
+    const ttUrl = ttMatch[0].replace(/[),.!?]+$/, "")
+    let ttFile = null
+    try {
+        await bob.sendMessage(m.chat, { text: `⏳ _Mengunduh video TikTok..._` }, { quoted: m }).catch(() => {})
+        const ttInfo = await ytdlp.getInfo(ttUrl)
+        const ttDl = await ytdlp.downloadTikTok(ttUrl, ttInfo)
+        ttFile = ttDl.file
+        const ttCap = `🎬 *${ttInfo.title || "TikTok Video"}*\n👤 @${ttInfo.uploader || "-"}\n⏳ ${ytdlp.fmtDuration(ttInfo.duration)}`
+        await bob.sendMessage(m.chat, { video: fs.readFileSync(ttDl.file), mimetype: "video/mp4", caption: ttCap }, { quoted: m })
     } catch (e) {
-    console.log(`Eror kak, Coba pakai server 2 ketik ${prefix}tiktok2 ${q} `)
-    }
-}
-let tt3 = `https://vm.tiktok${m.text.slice(17)}`
-
-if (m.text.includes(tt3)) {
-    if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return console.log(`Limit beliau sudah habis jir`)
-                    limitAdd(sender, limit)
-var url = tt3
-try {
-    tiktoku.Downloader(url, { version: "v2"}).then ( data => { 
-        bob.sendMessage(sender, {video: {url: data.result.video}, caption: `Sukses Mendownload Video TikTok.`}, {quoted: m})
-        })
-    } catch (e) {
-    console.log(`Eror kak, Coba pakai server 2 ketik ${prefix}tiktok2 ${q} `)
-    }
+        console.log("[auto-tt]", e?.message || e)
+        try {
+            const data = await tiktoku.Downloader(ttUrl, { version: "v2" })
+            if (data && data.result && data.result.video) {
+                await bob.sendMessage(m.chat, { video: { url: data.result.video }, caption: `Sukses Mendownload Video TikTok.` }, { quoted: m })
+            } else throw e
+        } catch { reply(`Gagal mengunduh TikTok: ${e.message}`) }
+    } finally { ytdlp.cleanup(ttFile) }
 }
 let igdl = `https://www.instagram.com/${m.text.slice(26)}`
 
@@ -3199,31 +3181,65 @@ fakereply(rules)
                     // ========== PLAY (YT SEARCH + AUDIO) ==========
                     case 'play': {
                         if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply(`Poin habis, ketik ${prefix}poin`)
-                        if (!q) return reply(`Contoh: ${prefix}play kota ini tak sama tanpamu`)
+                        if (!q) return reply(`Contoh: ${prefix}play astaga bercanda thailand style\n\n*Flag (opsional, di akhir):*\n• *--vn* : kirim sebagai voice note\n• *--video* : kirim sebagai video\n• *--doc* : kirim sebagai dokumen`)
+                        // Flag output: --vn / --video / --doc (boleh digabung, mis. --video --doc)
+                        let mode = 'audio'
+                        if (/\s--(vn|voice|ptt)\b/i.test(' ' + q)) mode = 'vn'
+                        if (/\s--(video|vid|mp4)\b/i.test(' ' + q)) mode = 'video'
+                        if (/\s--(doc|document)\b/i.test(' ' + q)) mode = (mode === 'video' ? 'videodoc' : 'doc')
+                        let query = String(q).replace(/\s--(vn|voice|ptt|video|vid|mp4|doc|document)\b/gi, '').trim()
+                        if (!query) return reply(`Judul lagunya mana?\nContoh: ${prefix}play astaga bercanda --vn`)
                         limitAdd(sender, limit)
                         reply(global.mess.wait)
                         let dlFile = null
                         try {
-                            // Cari metadata via yt-search, unduh audio via yt-dlp (youtube-dl-exec)
-                            let s = await yts(q)
+                            // Cari metadata via yt-search, unduh via yt-dlp (youtube-dl-exec)
+                            let s = await yts(query)
                             let v = s.videos[0]
                             if (!v) throw new Error('Lagu tidak ditemukan')
                             let cap = `✨ *YT PLAY*\n🎵 ${v.title}\n👤 ${v.author.name}\n⏳ ${v.timestamp}\n🔗 ${v.url}`
                             if (v.thumbnail) await bob.sendMessage(m.chat, { image: { url: v.thumbnail }, caption: cap }, { quoted: m }).catch(() => reply(cap))
                             else reply(cap)
-                            let dl = await ytdlp.downloadAudio(v.url, { id: v.videoId, title: v.title, uploader: v.author.name, thumbnail: v.thumbnail, webpageUrl: v.url })
-                            dlFile = dl.file
-                            await bob.sendMessage(m.chat, { audio: fs.readFileSync(dl.file), mimetype: 'audio/mpeg', fileName: `${dl.title}.mp3` }, { quoted: m })
+                            if (mode === 'video' || mode === 'videodoc') {
+                                let dl = await ytdlp.downloadVideo(v.url, { id: v.videoId, title: v.title, uploader: v.author.name, thumbnail: v.thumbnail, webpageUrl: v.url })
+                                dlFile = dl.file
+                                let buf = fs.readFileSync(dl.file)
+                                if (mode === 'videodoc') {
+                                    await bob.sendMessage(m.chat, { document: buf, mimetype: 'video/mp4', fileName: `${dl.title}.mp4` }, { quoted: m })
+                                } else {
+                                    await bob.sendMessage(m.chat, { video: buf, mimetype: 'video/mp4', caption: `🎬 ${dl.title}` }, { quoted: m })
+                                }
+                            } else {
+                                let dl = await ytdlp.downloadAudio(v.url, { id: v.videoId, title: v.title, uploader: v.author.name, thumbnail: v.thumbnail, webpageUrl: v.url })
+                                dlFile = dl.file
+                                let buf = fs.readFileSync(dl.file)
+                                if (mode === 'vn') {
+                                    try {
+                                        const { toPTT } = require('./lib/converter')
+                                        let opus = await toPTT(buf, 'mp3')
+                                        await bob.sendMessage(m.chat, { audio: opus, mimetype: 'audio/ogg; codecs=opus', ptt: true }, { quoted: m })
+                                    } catch {
+                                        await bob.sendMessage(m.chat, { audio: buf, mimetype: 'audio/mpeg', ptt: true }, { quoted: m })
+                                    }
+                                } else if (mode === 'doc') {
+                                    await bob.sendMessage(m.chat, { document: buf, mimetype: 'audio/mpeg', fileName: `${dl.title}.mp3` }, { quoted: m })
+                                } else {
+                                    await bob.sendMessage(m.chat, { audio: buf, mimetype: 'audio/mpeg', fileName: `${dl.title}.mp3` }, { quoted: m })
+                                }
+                            }
                         } catch (e) {
                             console.log('[play]', e?.message || e)
-                            // Fallback: API eksternal
+                            // Fallback: API eksternal (hanya mode audio/vn/doc)
                             try {
-                                const api = `https://api-faa.my.id/faa/ytplay?query=${encodeURIComponent(q)}`
+                                if (mode === 'video' || mode === 'videodoc') throw e
+                                const api = `https://api-faa.my.id/faa/ytplay?query=${encodeURIComponent(query)}`
                                 let res = await axios.get(api, { timeout: 15000 }).catch(() => null)
                                 if (res && res.data && res.data.status && res.data.result && res.data.result.mp3) {
                                     let ab = await getBuffer(res.data.result.mp3)
                                     if (ab.length > 50 * 1024 * 1024) return reply(`File terlalu besar`)
-                                    await bob.sendMessage(m.chat, { audio: ab, mimetype: 'audio/mpeg' }, { quoted: m })
+                                    if (mode === 'vn') await bob.sendMessage(m.chat, { audio: ab, mimetype: 'audio/mpeg', ptt: true }, { quoted: m })
+                                    else if (mode === 'doc') await bob.sendMessage(m.chat, { document: ab, mimetype: 'audio/mpeg', fileName: `play.mp3` }, { quoted: m })
+                                    else await bob.sendMessage(m.chat, { audio: ab, mimetype: 'audio/mpeg' }, { quoted: m })
                                 } else throw e
                             } catch { reply(`Gagal play: ${e.message}`) }
                         } finally { ytdlp.cleanup(dlFile) }

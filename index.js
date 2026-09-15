@@ -251,6 +251,17 @@ async function startBot() {
             console.log(`[welcome] event action=${data?.action} id=${rawId} parts=${JSON.stringify(data?.participants).slice(0, 300)}`)
             console.log(`[welcome] flags welcome=${!!gset.welcome} left=${!!gset.left}`)
             await require('./lib/welcome').sendWelcomeGoodbye(bob, gid, data?.action, data?.participants)
+            // Sinkronkan snapshot roster agar polling roster-diff (di bawah)
+            // tidak menganggap join/leave yang sama sebagai kejadian baru -> cegah kirim 2x
+            try {
+                const joDB = require('./lib/database')
+                const md = await bob.groupMetadata(gid).catch(() => null)
+                if (md && md.participants) {
+                    const g = joDB.getGroup(gid)
+                    g.members = md.participants.map(p => String((p && p.id) || p)).filter(Boolean)
+                    joDB.saveDB()
+                }
+            } catch {}
         } catch (e) {
             console.log('[welcome] error:', e?.message || e)
         }
