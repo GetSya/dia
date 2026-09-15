@@ -43,6 +43,7 @@ const { TiktokDL } = require("./lib/scraper/newtt.js");
 const { addCommands, checkCommands, deleteCommands } = require("./lib/autoresp.js")
 const { addLogin, deleteLogin, checkLogin, addRegis, checkRegister } = require("./lib/login-reg.js")
 const { upload } = require("./lib/uploads.js")
+const ytdlp = require("./lib/ytdlp.js")
 const { jadianime } = require("./lib/scraper/jadianime.js")
 const { youtube, searchResult } = require("./lib/scraper/ytdl.js")
 const { TiktokDownloader } = require("./lib/scraper/tiktokdl.js")
@@ -399,6 +400,31 @@ module.exports = bob = async (bob, m, chatUpdate, store, welcome, mentioned) => 
                 var number = m.sender
       bob.groupParticipantsUpdate(m.chat, [number], "remove")
             }
+        }
+        // Anti media (gambar/audio/video/document/voice note/sticker)
+        // Hapus pesan media dari member biasa. Syarat: bot harus jadi admin.
+        if (m.isGroup && !m.key.fromMe && !itsMe && !isCreator && !isGroupAdmins && isBotGroupAdmins) {
+            try {
+                const am = (gset && gset.antimedia) ? gset.antimedia : {}
+                const isVN = isAudio && m.msg && (m.msg.ptt === true || m.msg.ptt === 'true')
+                let violated = null
+                if (isSticker && am.sticker) violated = 'sticker'
+                else if (isImage && am.gambar) violated = 'gambar'
+                else if (isVideo && am.video) violated = 'video'
+                else if (isDocument && am.document) violated = 'dokumen'
+                else if (isAudio && isVN && am.vn) violated = 'voice note'
+                else if (isAudio && !isVN && am.audio) violated = 'audio'
+                if (violated) {
+                    await bob.sendMessage(m.chat, {
+                        delete: { remoteJid: m.chat, fromMe: false, id: m.key.id, participant: m.key.participant || m.participant || m.sender }
+                    }).catch(() => {})
+                    await bob.sendMessage(m.chat, {
+                        text: `*「 ANTI MEDIA 」*\n\n@${sender.split('@')[0]}, media *${violated}* tidak diizinkan di grup ini dan telah dihapus.`,
+                        mentions: [sender]
+                    }, { quoted: m }).catch(() => {})
+                    return
+                }
+            } catch (e) { console.log('[antimedia]', e?.message || e) }
         }
         const reply = (teks) => {
 			bob.sendMessage(m.chat, { text: teks }, { quoted: m})
@@ -2396,6 +2422,107 @@ ${CmD} Tangerang
                 }
             }
                 break
+                    // ===== MENU:Group Menu =====
+                    case 'antimedia': {
+                        if (!m.isGroup) return reply(global.mess.group)
+                        if (!isGroupAdmins) return reply(global.mess.admin)
+                        if (!isBotGroupAdmins) return reply(global.mess.botAdmin)
+                        const AM_KEYS = ['gambar', 'audio', 'video', 'document', 'vn', 'sticker']
+                        const AM_LABEL = { gambar: 'Gambar 🖼️', audio: 'Audio 🎵', video: 'Video 🎥', document: 'Dokumen 📄', vn: 'Voice Note 🎙️', sticker: 'Sticker 🌟' }
+                        const normTipe = (s) => {
+                            s = String(s || '').toLowerCase()
+                            if (['gambar', 'image', 'foto', 'picture', 'gbr'].includes(s)) return 'gambar'
+                            if (['audio', 'musik', 'suara', 'mp3'].includes(s)) return 'audio'
+                            if (['video', 'vid', 'vidio', 'mp4'].includes(s)) return 'video'
+                            if (['document', 'dokumen', 'doc', 'dok', 'file', 'pdf'].includes(s)) return 'document'
+                            if (['vn', 'voicenote', 'voice', 'vnote', 'ptt', 'vnote', 'voice-note', 'voicenot'].includes(s)) return 'vn'
+                            if (['sticker', 'stiker', 'sticker', 'stik'].includes(s)) return 'sticker'
+                            return null
+                        }
+                        const normAct = (s) => {
+                            s = String(s || '').toLowerCase()
+                            if (['on', 'enable', 'aktif', 'aktifkan', '1'].includes(s)) return true
+                            if (['off', 'disable', 'mati', 'matikan', 'nonaktif', '0'].includes(s)) return false
+                            return null
+                        }
+                        const curAM = () => joDatabase.getGroup(m.chat).antimedia
+                        const statusText = () => {
+                            const a = curAM()
+                            const ico = (v) => v ? 'ON ✅' : 'OFF ❌'
+                            return `*「 ANTI MEDIA 」*\n\nMedia yang *dihapus otomatis* bila dikirim member biasa:\n• Gambar : *${ico(a.gambar)}*\n• Audio : *${ico(a.audio)}*\n• Video : *${ico(a.video)}*\n• Dokumen : *${ico(a.document)}*\n• Voice Note : *${ico(a.vn)}*\n• Sticker : *${ico(a.sticker)}*\n\n_Syarat: bot harus jadi admin agar bisa menghapus pesan._`
+                        }
+                        const setOne = (key, val) => {
+                            const a = curAM()
+                            a[key] = val
+                            joDatabase.setGroup(m.chat, { antimedia: a })
+                        }
+                        const setAll = (val) => {
+                            const a = {}
+                            for (const k of AM_KEYS) a[k] = val
+                            joDatabase.setGroup(m.chat, { antimedia: a })
+                        }
+                        const a0 = String(args[0] || '').toLowerCase()
+                        const a1 = String(args[1] || '').toLowerCase()
+                        // #antimedia on / off -> semua
+                        if (args.length === 1 && normAct(a0) !== null) {
+                            setAll(normAct(a0))
+                            return reply(`${statusText()}\n\n${normAct(a0) ? 'Semua filter anti-media *DIAKTIFKAN* ✅' : 'Semua filter anti-media *DIMATIKAN* ❌'}`)
+                        }
+                        // #antimedia <tipe> on/off
+                        if (args.length >= 2) {
+                            const key = normTipe(a0)
+                            const val = normAct(a1)
+                            if (!key) return reply(`Tipe tidak dikenal: *${args[0]}*\n\nPilih: gambar, audio, video, document, vn, sticker\nContoh: *${prefix}antimedia gambar on*`)
+                            if (val === null) return reply(`Pilih on atau off\nContoh: *${prefix}antimedia ${key} on*`)
+                            setOne(key, val)
+                            return reply(`${statusText()}\n\nFilter *${AM_LABEL[key]}* ${val ? '*DIAKTIFKAN* ✅' : '*DIMATIKAN* ❌'}`)
+                        }
+                        if (q && args.length > 0) return reply(`Format salah.\nContoh:\n• *${prefix}antimedia* (buka daftar pilihan)\n• *${prefix}antimedia gambar on*\n• *${prefix}antimedia on* (aktifkan semua)`)
+                        // Tanpa argumen -> kirim LIST MESSAGE pilihan
+                        const a = curAM()
+                        const toggleId = (key) => `${prefix}antimedia ${key} ${a[key] ? 'off' : 'on'}`
+                        const listText = `${statusText()}\n\nSilakan pilih media dari daftar di bawah. Media yang *ON* akan dihapus otomatis bila dikirim member.`
+                        const listData = {
+                            title: 'Pilih Media',
+                            sections: [{
+                                title: 'Anti Media',
+                                highlight_label: 'Anti Media',
+                                rows: [
+                                    { title: `${a.gambar ? '❌' : '✅'} Gambar`, description: `Saat ini ${a.gambar ? 'ON — klik untuk matikan' : 'OFF — klik untuk aktifkan'}`, id: toggleId('gambar') },
+                                    { title: `${a.audio ? '❌' : '✅'} Audio`, description: `Saat ini ${a.audio ? 'ON — klik untuk matikan' : 'OFF — klik untuk aktifkan'}`, id: toggleId('audio') },
+                                    { title: `${a.video ? '❌' : '✅'} Video`, description: `Saat ini ${a.video ? 'ON — klik untuk matikan' : 'OFF — klik untuk aktifkan'}`, id: toggleId('video') },
+                                    { title: `${a.document ? '❌' : '✅'} Dokumen`, description: `Saat ini ${a.document ? 'ON — klik untuk matikan' : 'OFF — klik untuk aktifkan'}`, id: toggleId('document') },
+                                    { title: `${a.vn ? '❌' : '✅'} Voice Note`, description: `Saat ini ${a.vn ? 'ON — klik untuk matikan' : 'OFF — klik untuk aktifkan'}`, id: toggleId('vn') },
+                                    { title: `${a.sticker ? '❌' : '✅'} Sticker`, description: `Saat ini ${a.sticker ? 'ON — klik untuk matikan' : 'OFF — klik untuk aktifkan'}`, id: toggleId('sticker') },
+                                    { title: '✅ Aktifkan Semua', description: 'Hapus semua jenis media di atas', id: `${prefix}antimedia on` },
+                                    { title: '❌ Matikan Semua', description: 'Izinkan semua jenis media', id: `${prefix}antimedia off` }
+                                ]
+                            }]
+                        }
+                        let sent = false
+                        try {
+                            if (bob.sendListButtonv2) {
+                                await bob.sendListButtonv2(m.chat, listText, listData, '> JojoBot', { quoted: m })
+                                sent = true
+                            }
+                        } catch (e) { console.log('[antimedia list]', e?.message || e) }
+                        if (!sent) {
+                            try {
+                                const btnAM = [
+                                    { name: 'quick_reply', buttonParamsJson: JSON.stringify({ display_text: 'Aktifkan Semua ✅', id: `${prefix}antimedia on` }) },
+                                    { name: 'quick_reply', buttonParamsJson: JSON.stringify({ display_text: 'Matikan Semua ❌', id: `${prefix}antimedia off` }) }
+                                ]
+                                if (bob.sendButton) {
+                                    await bob.sendButton(m.chat, listText, '> JojoBot', 'ANTI MEDIA', btnAM)
+                                    sent = true
+                                }
+                            } catch (e) {}
+                        }
+                        if (!sent) {
+                            reply(`${listText}\n\n• *${prefix}antimedia gambar on/off*\n• *${prefix}antimedia audio on/off*\n• *${prefix}antimedia video on/off*\n• *${prefix}antimedia document on/off*\n• *${prefix}antimedia vn on/off*\n• *${prefix}antimedia sticker on/off*\n• *${prefix}antimedia on* (semua) / *${prefix}antimedia off*`)
+                        }
+                    }
+                break
                 case 'qc': case 'chat': case 'fm': {
                 // if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
                 if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
@@ -2643,41 +2770,79 @@ ${CmD} Tangerang
                         if (!m.isGroup) return reply(global.mess.group)
                         if (!isBotGroupAdmins) return reply(global.mess.botAdmin)
                         if (!isGroupAdmins) return reply(global.mess.admin)
-                        let target = null
-                        if (!q && quoted) {
-                            target = quoted.sender
-                        } else if (q) {
-                            let num = q.replace(/[^0-9]/g, '')
-                            if (num.startsWith('08')) num = '62' + num.slice(1)
-                            if (!num.startsWith('62') && num.length > 5) num = '62' + num
-                            target = num + '@s.whatsapp.net'
-                        } else {
-                            return reply(`Format salah!\nContoh: ${prefix}add 628xxx atau reply pesan user yang ingin ditambahkan.`)
+                        // Kumpulkan target dari: tag/mention, reply pesan, atau nomor manual (boleh banyak, pisah spasi/koma)
+                        let targets = []
+                        try {
+                            const mentioned = []
+                            if (Array.isArray(mentionUser)) mentioned.push(...mentionUser)
+                            if (m.msg && m.msg.contextInfo && Array.isArray(m.msg.contextInfo.mentionedJid)) mentioned.push(...m.msg.contextInfo.mentionedJid)
+                            for (const j of mentioned) {
+                                const jid = String(j || '')
+                                if (jid.endsWith('@s.whatsapp.net') && !targets.includes(jid)) targets.push(jid)
+                            }
+                        } catch {}
+                        if (q) {
+                            for (const part of String(q).split(/[\s,;]+/)) {
+                                if (!part || /[a-zA-Z]/.test(part)) continue // lewati teks biasa / nama display hasil tag
+                                let num = part.replace(/[^0-9]/g, '')
+                                if (!num) continue
+                                if (num.startsWith('08')) num = '62' + num.slice(1)
+                                else if (!num.startsWith('62') && num.length > 5) num = '62' + num
+                                if (num.length < 9) continue
+                                const jid = num + '@s.whatsapp.net'
+                                if (!targets.includes(jid)) targets.push(jid)
+                            }
+                        } else if (m.quoted && m.quoted.sender) {
+                            // NOTE: pakai m.quoted (null bila tidak reply), bukan variabel `quoted`
+                            // yang fallback ke pesan sendiri sehingga add tanpa argumen malah menambah diri sendiri
+                            const jid = String(m.quoted.sender)
+                            if (!targets.includes(jid)) targets.push(jid)
+                        }
+                        if (!targets.length) {
+                            return reply(`Format salah!\nContoh: ${prefix}add 628xxx atau reply/tag pesan user yang ingin ditambahkan.`)
                         }
 
-                        try {
-                            const res = await bob.groupParticipantsUpdate(m.chat, [target], "add")
-                            const first = res && res[0]
-                            const st = first && (first.status || (first.content && first.content.attrs && first.content.attrs.error))
-                            if (st == 403 || st == '403') {
-                                try {
-                                    const code = await bob.groupInviteCode(m.chat)
-                                    const meta = await bob.groupMetadata(m.chat)
-                                    const link = `https://chat.whatsapp.com/${code}`
-                                    const msgInvite = `*UNDANGAN GRUP WHATSAPP*\n\nHalo! Kamu diundang oleh admin @${sender.split('@')[0]} untuk bergabung ke grup *${meta.subject}*:\n\n${link}\n\n_Silakan klik tautan di atas untuk bergabung._`
-                                    await bob.sendMessage(target, { text: msgInvite, mentions: [sender] })
-                                    reply(`⚠️ Nomor @${target.split('@')[0]} mengaktifkan privasi grup.\n✅ Tautan undangan berhasil otomatis dikirimkan ke chat pribadinya!`, [target])
-                                } catch (e2) {
-                                    reply(`Nomor @${target.split('@')[0]} mengaktifkan privasi grup. Gagal mengirim link ke PC: ${e2.message}`, [target])
+                        let meta0 = null
+                        try { meta0 = await bob.groupMetadata(m.chat) } catch {}
+                        const alreadyIn = new Set((meta0 && meta0.participants ? meta0.participants : []).map(p => p.id))
+                        const ok = [], failed = [], invited = [], skipped = []
+                        for (const target of targets) {
+                            if (alreadyIn.has(target)) { skipped.push(target); continue }
+                            try {
+                                const res = await bob.groupParticipantsUpdate(m.chat, [target], "add")
+                                const first = res && res[0]
+                                const st = first && (first.status ?? (first.content && first.content.attrs && first.content.attrs.error))
+                                if (String(st) === '200') {
+                                    ok.push(target)
+                                } else if (String(st) === '403' || String(st) === '401') {
+                                    // Privasi grup user: kirim link undangan ke PC-nya
+                                    try {
+                                        const code = await bob.groupInviteCode(m.chat)
+                                        const gname = (meta0 && meta0.subject) || groupName || 'grup'
+                                        const msgInvite = `*UNDANGAN GRUP WHATSAPP*\n\nHalo! Kamu diundang oleh admin @${sender.split('@')[0]} untuk bergabung ke grup *${gname}*:\n\nhttps://chat.whatsapp.com/${code}\n\n_Silakan klik tautan di atas untuk bergabung._`
+                                        await bob.sendMessage(target, { text: msgInvite, mentions: [sender] })
+                                        invited.push(target)
+                                    } catch (e2) {
+                                        failed.push(`@${target.split('@')[0]} (privasi grup, link gagal dikirim: ${e2.message})`)
+                                    }
+                                } else if (String(st) === '409') {
+                                    skipped.push(target)
+                                } else if (String(st) === '408') {
+                                    failed.push(`@${target.split('@')[0]} (baru keluar grup, tidak bisa langsung ditambahkan — kirim link manual)`)
+                                } else {
+                                    failed.push(`@${target.split('@')[0]} (status: ${st})`)
                                 }
-                            } else if (st == 409 || st == '409') {
-                                reply(`Nomor @${target.split('@')[0]} sudah berada di dalam grup ini.`, [target])
-                            } else {
-                                ngetag(`Menambahkan @${target.split('@')[0]} ke grup.`, [target], true)
+                            } catch (err) {
+                                failed.push(`@${target.split('@')[0]} (${err?.message || err})`)
                             }
-                        } catch (err) {
-                            reply(`Gagal menambahkan user: ${err?.message || err}`)
                         }
+                        const tagAll = [...ok, ...invited, ...skipped]
+                        let hasil = ''
+                        if (ok.length) hasil += `✅ Berhasil menambahkan: ${ok.map(t => '@' + t.split('@')[0]).join(', ')}\n`
+                        if (invited.length) hasil += `📩 Privasi grup aktif, link undangan dikirim ke PC: ${invited.map(t => '@' + t.split('@')[0]).join(', ')}\n`
+                        if (skipped.length) hasil += `ℹ️ Sudah di dalam grup: ${skipped.map(t => '@' + t.split('@')[0]).join(', ')}\n`
+                        if (failed.length) hasil += `❌ Gagal: ${failed.join(', ')}`
+                        ngetag(hasil.trim() || 'Tidak ada yang diproses.', tagAll, true)
                      }
                      break
                      case 'kick':{
@@ -3037,45 +3202,51 @@ fakereply(rules)
                         if (!q) return reply(`Contoh: ${prefix}play kota ini tak sama tanpamu`)
                         limitAdd(sender, limit)
                         reply(global.mess.wait)
+                        let dlFile = null
                         try {
-                            const api = `https://api-faa.my.id/faa/ytplay?query=${encodeURIComponent(q)}`
-                            let res = await axios.get(api, { timeout: 15000 }).catch(()=>null)
-                            let title, thumb, mp3url, author, duration, views
-                            if (res && res.data && res.data.status && res.data.result) {
-                                title = res.data.result.title; thumb = res.data.result.thumbnail
-                                mp3url = res.data.result.mp3; author = res.data.result.author
-                                duration = res.data.result.duration; views = res.data.result.views
-                                let cap = `✨ *YT PLAY*\n🎵 ${title}\n👤 ${author || '-'}\n⏳ ${duration || '-'} detik\n👁️ ${(views||0).toLocaleString()}`
-                                if (thumb) await bob.sendMessage(m.chat, { image: { url: thumb }, caption: cap }, { quoted: m })
-                                let ab = await getBuffer(mp3url)
-                                if (ab.length > 50*1024*1024) return reply(`File terlalu besar: ${mp3url}`)
-                                await bob.sendMessage(m.chat, { audio: ab, mimetype: 'audio/mpeg' }, { quoted: m })
-                            } else {
-                                let s = await yts(q); let v = s.videos[0]; if (!v) return reply('Lagu tidak ditemukan')
-                                await bob.sendMessage(m.chat, { image: { url: v.thumbnail }, caption: `🎵 *${v.title}*\n👤 ${v.author.name}\n⏳ ${v.timestamp}\n🔗 ${v.url}` }, { quoted: m })
-                                let info = await ytdl.getInfo(v.url)
-                                let fmt = ytdl.chooseFormat(info.formats, { quality: 'highestaudio' })
-                                let ab = await getBuffer(fmt.url)
-                                await bob.sendMessage(m.chat, { audio: ab, mimetype: 'audio/mpeg' }, { quoted: m })
-                            }
-                        } catch (e) { console.log(e); reply(`Gagal play: ${e.message}`) }
+                            // Cari metadata via yt-search, unduh audio via yt-dlp (youtube-dl-exec)
+                            let s = await yts(q)
+                            let v = s.videos[0]
+                            if (!v) throw new Error('Lagu tidak ditemukan')
+                            let cap = `✨ *YT PLAY*\n🎵 ${v.title}\n👤 ${v.author.name}\n⏳ ${v.timestamp}\n🔗 ${v.url}`
+                            if (v.thumbnail) await bob.sendMessage(m.chat, { image: { url: v.thumbnail }, caption: cap }, { quoted: m }).catch(() => reply(cap))
+                            else reply(cap)
+                            let dl = await ytdlp.downloadAudio(v.url, { id: v.videoId, title: v.title, uploader: v.author.name, thumbnail: v.thumbnail, webpageUrl: v.url })
+                            dlFile = dl.file
+                            await bob.sendMessage(m.chat, { audio: fs.readFileSync(dl.file), mimetype: 'audio/mpeg', fileName: `${dl.title}.mp3` }, { quoted: m })
+                        } catch (e) {
+                            console.log('[play]', e?.message || e)
+                            // Fallback: API eksternal
+                            try {
+                                const api = `https://api-faa.my.id/faa/ytplay?query=${encodeURIComponent(q)}`
+                                let res = await axios.get(api, { timeout: 15000 }).catch(() => null)
+                                if (res && res.data && res.data.status && res.data.result && res.data.result.mp3) {
+                                    let ab = await getBuffer(res.data.result.mp3)
+                                    if (ab.length > 50 * 1024 * 1024) return reply(`File terlalu besar`)
+                                    await bob.sendMessage(m.chat, { audio: ab, mimetype: 'audio/mpeg' }, { quoted: m })
+                                } else throw e
+                            } catch { reply(`Gagal play: ${e.message}`) }
+                        } finally { ytdlp.cleanup(dlFile) }
                     }
                     break
-                    // ========== YTMP3 ==========
+                    // ========== YTMP3 (youtube-dl-exec / yt-dlp) ==========
                     case 'ytmp3': case 'yta': {
                         if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply(`Poin habis`)
                         let url = q || (m.quoted && m.quoted.text) || ''
-                        if (!url || !/^https?:\/\/(www\.)?(youtube\.com|youtu\.be)\//.test(url)) return reply(`Kirim URL YouTube!\nContoh: ${prefix}ytmp3 https://youtu.be/xxxx`)
+                        let mUrl = String(url).match(/https?:\/\/(www\.|m\.|music\.)?(youtube\.com|youtu\.be)\/\S+/)
+                        if (!mUrl) return reply(`Kirim URL YouTube!\nContoh: ${prefix}ytmp3 https://youtu.be/xxxx`)
+                        url = mUrl[0]
                         limitAdd(sender, limit)
                         reply(global.mess.wait)
+                        let dlFile = null
                         try {
-                            let info = await ytdl.getInfo(url)
-                            let title = info.videoDetails.title || 'audio'
-                            let fmt = ytdl.chooseFormat(info.formats, { filter: 'audioonly', quality: 'highestaudio' })
-                            if (!fmt) throw new Error('Format audio tidak tersedia')
-                            let ab = await getBuffer(fmt.url)
-                            await bob.sendMessage(m.chat, { audio: ab, mimetype: 'audio/mpeg', fileName: `${title}.mp3` }, { quoted: m })
+                            let info = await ytdlp.getInfo(url)
+                            reply(`🎵 *${info.title}*\n👤 ${info.uploader || '-'}\n⏳ ${ytdlp.fmtDuration(info.duration)}\n\n_Mengunduh audio via yt-dlp..._`)
+                            let dl = await ytdlp.downloadAudio(url, info)
+                            dlFile = dl.file
+                            await bob.sendMessage(m.chat, { audio: fs.readFileSync(dl.file), mimetype: 'audio/mpeg', fileName: `${info.title}.mp3` }, { quoted: m })
                         } catch (e) {
+                            console.log('[ytmp3]', e?.message || e)
                             // fallback via api-faa
                             try {
                                 let api = `https://api-faa.my.id/faa/ytmp3?url=${encodeURIComponent(url)}`
@@ -3085,31 +3256,34 @@ fakereply(rules)
                                 let ab = await getBuffer(mp3)
                                 await bob.sendMessage(m.chat, { audio: ab, mimetype: 'audio/mpeg' }, { quoted: m })
                             } catch (e2) { reply(`Gagal ytmp3: ${e.message}`) }
-                        }
+                        } finally { ytdlp.cleanup(dlFile) }
                     }
                     break
-                    // ========== YTMP4 ==========
+                    // ========== YTMP4 (youtube-dl-exec / yt-dlp) ==========
                     case 'ytmp4': case 'ytv': {
                         if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply(`Poin habis`)
                         let url = q || ''
-                        let mUrl = url.match(/https?:\/\/(www\.)?(youtube\.com|youtu\.be)\/\S+/)
+                        let mUrl = String(url).match(/https?:\/\/(www\.|m\.|music\.)?(youtube\.com|youtu\.be)\/\S+/)
                         if (!mUrl) return reply(`Kirim URL YouTube!\nContoh: ${prefix}ytmp4 https://youtu.be/xxxx`)
                         url = mUrl[0]
                         limitAdd(sender, limit)
                         reply(global.mess.wait)
+                        let dlFile = null
                         try {
-                            let api = `https://api-faa.my.id/faa/ytmp4?url=${encodeURIComponent(url)}`
-                            let r = await axios.get(api, { timeout: 15000 })
-                            if (!r.data.status || !r.data.result?.download_url) throw new Error('API gagal')
-                            await bob.sendMessage(m.chat, { video: { url: r.data.result.download_url }, mimetype: 'video/mp4', caption: `🎬 ${r.data.result.title || ''}` }, { quoted: m })
+                            let info = await ytdlp.getInfo(url)
+                            reply(`🎬 *${info.title}*\n👤 ${info.uploader || '-'}\n⏳ ${ytdlp.fmtDuration(info.duration)}\n\n_Mengunduh video via yt-dlp..._`)
+                            let dl = await ytdlp.downloadVideo(url, info)
+                            dlFile = dl.file
+                            await bob.sendMessage(m.chat, { video: fs.readFileSync(dl.file), mimetype: 'video/mp4', caption: `🎬 ${info.title}` }, { quoted: m })
                         } catch (e) {
+                            console.log('[ytmp4]', e?.message || e)
                             try {
-                                let info = await ytdl.getInfo(url)
-                                let fmt = ytdl.chooseFormat(info.formats, { quality: 'highest', filter: f => f.container === 'mp4' && f.hasVideo })
-                                if (!fmt) throw e
-                                await bob.sendMessage(m.chat, { video: { url: fmt.url }, caption: info.videoDetails.title }, { quoted: m })
+                                let api = `https://api-faa.my.id/faa/ytmp4?url=${encodeURIComponent(url)}`
+                                let r = await axios.get(api, { timeout: 15000 })
+                                if (!r.data.status || !r.data.result?.download_url) throw new Error('API gagal')
+                                await bob.sendMessage(m.chat, { video: { url: r.data.result.download_url }, mimetype: 'video/mp4', caption: `🎬 ${r.data.result.title || ''}` }, { quoted: m })
                             } catch (e2) { reply(`Gagal ytmp4: ${e.message}`) }
-                        }
+                        } finally { ytdlp.cleanup(dlFile) }
                     }
                     break
                     // ========== TIKTOK MUSIC (api-faa) ==========
