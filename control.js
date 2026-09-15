@@ -200,10 +200,44 @@ module.exports = bob = async (bob, m, chatUpdate, store, welcome, mentioned) => 
         const groupMetadata = m.isGroup ? await bob.groupMetadata(m.chat).catch(e => {}) : ''
         const groupName = m.isGroup ? groupMetadata.subject : ''
         const participants = m.isGroup ? await groupMetadata.participants : ''
-        const groupAdmins = m.isGroup ? await getGroupAdmins(participants) : ''
-        const isBotAdmins = m.isGroup ? groupAdmins.includes(botNumber) : false
-        const isGroupAdmins = groupAdmins.includes(m.sender)
-        const isBotGroupAdmins = groupAdmins.includes(botNumber) || false
+        const groupAdmins = m.isGroup ? await getGroupAdmins(participants) : []
+
+        // Kumpulkan semua kemungkinan identitas bot (JID, LID, device JID, nomor telepon)
+        const botJid = (bob.user && bob.user.id) ? (await bob.decodeJid(bob.user.id) || bob.user.id) : botNumber
+        const botLid = (bob.user && bob.user.lid) ? (await bob.decodeJid(bob.user.lid) || bob.user.lid) : ''
+        const botNumClean = String(botJid || '').split('@')[0].split(':')[0].replace(/[^0-9]/g, '')
+        const botLidClean = String(botLid || '').split('@')[0].split(':')[0].replace(/[^0-9]/g, '')
+
+        const botIdList = [
+            botNumber,
+            botJid,
+            botLid,
+            botNumClean,
+            botLidClean,
+            bob.user && bob.user.id,
+            bob.user && bob.user.lid,
+            String(bob.user && bob.user.id || '').split(':')[0],
+            String(bob.user && bob.user.lid || '').split(':')[0],
+            `${botNumClean}@s.whatsapp.net`,
+            `${botLidClean}@lid`
+        ].filter(Boolean)
+
+        const isBotAdmins = m.isGroup ? botIdList.some(id => groupAdmins.includes(id)) : false
+        const isBotGroupAdmins = isBotAdmins
+
+        // Kumpulkan semua kemungkinan identitas pengirim (JID, LID, nomor telepon)
+        const userIdList = [
+            m.sender,
+            sender,
+            senderNum,
+            `${senderNum}@s.whatsapp.net`,
+            ...senderCandidates,
+            ...senderNums,
+            ...senderNums.map(n => `${n}@s.whatsapp.net`),
+            ...senderNums.map(n => `${n}@lid`)
+        ].filter(Boolean)
+
+        const isGroupAdmins = m.isGroup ? (isCreator || userIdList.some(id => groupAdmins.includes(id))) : false
         // Setting grup dibaca dari database.json (per chat)
         const gset = joDatabase.getGroup(m.chat)
         const isAntiLink = m.isGroup ? !!gset.antilink : false
