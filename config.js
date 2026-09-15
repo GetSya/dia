@@ -9,7 +9,12 @@ const fs = require('fs')
 
 
 // Other
-global.owner = ['6288214772441','6281909494055']
+// Pairing (ourin-baileys): nomor WA bot, digits saja pakai kode negara.
+// Bisa juga via env PAIRING_NUMBER / NOMOR_BOT, argumen --pairing-number=62812xxxx,
+// atau diketik interaktif saat bot dijalankan. Kode custom yang dipakai: "RSYA-RAFI".
+global.pairingNumber = process.env.PAIRING_NUMBER || '6288213292687'
+global.pairingCode = 'RSYA-RAFI'
+global.owner = ['6288214772441']
 global.botName = 'JOJO - BOT'
 global.ownerName = 'Arasya'
 global.packname = 'My Sticker'
@@ -18,6 +23,13 @@ global.limitCount = 25
 global.gamewaktu = 50
 global.prefa = ['#']
 global.apikey = `arasyaku`
+global.botWebsite = 'https://bot.acamedia.xyz'
+global.registWebsite = 'https://bot.acamedia.xyz'
+global.jvault = {
+    binId: '255feaaa-e64c-4b4e-b2de-5f2ec0ee54b3',
+    apiKey: 'jv_59c80af7ea55b398e7e4ebaeb14eb5d6dc88772dd7245a8cb432c1d7f16a',
+    url: 'https://jvault.aerialstudio.tech/api'
+}
 global.mess = {
     success: '✓ Success',
     admin: 'Fitur Khusus Admin Group!',

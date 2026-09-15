@@ -5,7 +5,8 @@
 */
 require('./config')
 require('module-alias/register')
-const { default: WASocket, useMultiFileAuthState, DisconnectReason, fetchLatestBaileysVersion, generateForwardMessageContent, prepareWAMessageMedia, generateWAMessageFromContent, generateMessageID, downloadContentFromMessage, makeInMemoryStore, getAggregateVotesInPollMessage, jidDecode, proto } = require("@whiskeysockets/baileys")
+const { loadBaileys, makeSimpleStore, CUSTOM_PAIRING_RAW, CUSTOM_PAIRING_DISPLAY, formatPairingCode } = require('./lib/ourin')
+const banner = require('./lib/banner')
 const pino = require('pino')
 const { Boom } = require('@hapi/boom')
 const fs = require('fs')
@@ -62,24 +63,48 @@ fs.watch(path.join(__dirname, 'command'), global.reload)
 
 /*global.api = (name, path = '/', query = {}, apikeyqueryname) => (name in global.APIs ? global.APIs[name] : name) + path + (query || apikeyqueryname ? '?' + new URLSearchParams(Object.entries({ ...query, ...(apikeyqueryname ? { [apikeyqueryname]: global.APIKeys[name in global.APIs ? global.APIs[name] : name] } : {}) })) : '')*/
 
-const store = makeInMemoryStore({ logger: pino().child({ level: 'silent', stream: 'store' }) })
-
-
 async function startBot() {
+    // Banner animasi JojoBot By Arasya — hanya sekali saat boot awal
+    if (!global.__jojoBannerShown) {
+        global.__jojoBannerShown = true
+        await banner.showBanner()
+    }
+    const spin = banner.createSpinner('Menyiapkan koneksi...')
+    spin.start()
+    const {
+        default: WASocket,
+        useMultiFileAuthState,
+        DisconnectReason,
+        fetchLatestBaileysVersion,
+        generateForwardMessageContent,
+        generateWAMessageFromContent,
+        downloadContentFromMessage,
+        jidDecode,
+        proto,
+        Browsers,
+    } = await loadBaileys()
+    spin.update('Membaca sesi tersimpan...')
     const { state, saveCreds } = await useMultiFileAuthState(`./session`)
+    const store = makeSimpleStore()
 
+    spin.update('Mengecek versi WhatsApp...')
+    let WA_VERSION = [2, 3000, 1043857760]
+    try {
+        const { version } = await fetchLatestBaileysVersion()
+        if (Array.isArray(version)) WA_VERSION = version
+    } catch { /* pakai fallback */ }
+
+    spin.update('Menghubungkan ke WhatsApp...')
     const bob = WASocket({
         logger: pino({ level: 'silent' }),
-        printQRInTerminal: true,
-        version: [2, 2413, 1],
-        syncFullHistory: false, // menerima riwayat lengkap
+        version: WA_VERSION,
         syncFullHistory: false, // menerima riwayat lengkap
         markOnlineOnConnect: false, // membuat wa bot of, true jika ingin selalu menyala
-        connectTimeoutMs: 60_00, // atur jangka waktu timeout
+        connectTimeoutMs: 60_000, // atur jangka waktu timeout
         defaultQueryTimeoutMs: 0, // atur jangka waktu query (0: tidak ada batas)
         keepAliveIntervalMs: 10000, // interval ws
         generateHighQualityLinkPreview: true, // menambah kualitas thumbnail preview
-        browser: ['Jojo [ BOT ]','Safari','1.0.0'],
+        browser: Browsers.macOS('Chrome'),
        // patch dibawah untuk tambahan jika hydrate/list tidak bekerja
         patchMessageBeforeSending: (message) => {
 
@@ -106,7 +131,7 @@ async function startBot() {
     getMessage: async (key) => {
         if (store) {
            const msg = await store.loadMessage(key.remoteJid, key.id)
-           return msg.message || undefined
+           return msg?.message || undefined
         }
         return {
            conversation: "hello, i'm Amirul Dev"
@@ -117,6 +142,64 @@ async function startBot() {
     })
 
     store.bind(bob.ev)
+
+    // ---- Pairing code custom "RSYA-RAFI" (ourin-baileys) ----
+    // ourin-baileys hanya menerima 8 karakter tanpa tanda hubung,
+    // jadi yang dikirim ke server: "RSYARAFI", tampil di terminal: "RSYA-RAFI".
+    // Nomor bot diambil dari config.js (global.pairingNumber).
+    let pairingRequested = false
+    let pairingTries = 0
+    const isRegistered = () => Boolean(
+        (bob.authState && bob.authState.creds && bob.authState.creds.registered) ||
+        (state.creds && state.creds.registered)
+    )
+    // Tunggu socket benar-benar terbuka sebelum request pairing code.
+    // requestPairingCode saat WS belum open -> "Connection Closed".
+    async function waitSocketOpen(timeoutMs = 25000) {
+        const start = Date.now()
+        while (Date.now() - start < timeoutMs) {
+            try { if (bob.ws && bob.ws.isOpen) return true } catch {}
+            await new Promise((r) => setTimeout(r, 500))
+        }
+        try { return !!(bob.ws && bob.ws.isOpen) } catch { return false }
+    }
+    async function maybeRequestPairingCode() {
+        if (pairingRequested || isRegistered()) return
+        pairingRequested = true
+        try {
+            const nomor = String(global.pairingNumber || '').replace(/\D/g, '')
+            if (!nomor) throw new Error('Nomor bot kosong. Isi global.pairingNumber di config.js')
+            const open = await waitSocketOpen(25000)
+            if (isRegistered()) return
+            if (!open) throw new Error('Socket belum terbuka (Connection Closed)')
+            spin.stop()
+            let code = null
+            try {
+                code = await bob.requestPairingCode(nomor, CUSTOM_PAIRING_RAW)
+            } catch (e) {
+                // 400/bad-request biasanya browser/non-kanonik atau kode dipakai; tampilkan jelas
+                throw new Error('requestPairingCode ditolak server: ' + (e?.message || e))
+            }
+            pairingTries = 0
+            banner.pairingBox(nomor, (code && formatPairingCode(code)) || CUSTOM_PAIRING_DISPLAY)
+            spin.start('Menunggu verifikasi pairing di HP...')
+        } catch (e) {
+            pairingRequested = false
+            pairingTries++
+            banner.err('Gagal meminta pairing code: ' + (e?.message || e))
+            if (pairingTries < 10 && !isRegistered()) {
+                banner.dim(`Mencoba lagi... (${pairingTries}/10)`)
+                spin.start('Menghubungkan ke WhatsApp...')
+                setTimeout(() => { maybeRequestPairingCode() }, 8000)
+            } else if (!isRegistered()) {
+                spin.fail('Gagal pairing berkali-kali — cek nomor & koneksi lalu restart')
+            }
+        }
+    }
+    if (!isRegistered()) {
+        // Dicoba saat socket mulai connecting; connection.update akan memicu lagi bila belum siap.
+        setTimeout(() => { maybeRequestPairingCode() }, 3000)
+    }
     
 
     bob.ev.on('messages.upsert', async chatUpdate => {
@@ -126,6 +209,31 @@ async function startBot() {
         if (!mek.message) return
         mek.message = (Object.keys(mek.message)[0] === 'ephemeralMessage') ? mek.message.ephemeralMessage.message : mek.message
         if (mek.key && mek.key.remoteJid === 'status@broadcast') return
+
+        // === FITUR ANTI-DELETE OTOMATIS ===
+        if (mek.message && mek.message.protocolMessage && (mek.message.protocolMessage.type === 0 || mek.message.protocolMessage.type === 14)) {
+            const protoKey = mek.message.protocolMessage.key
+            const remoteJid = protoKey?.remoteJid
+            if (remoteJid && remoteJid.endsWith('@g.us')) {
+                const gset = require('./lib/database').getGroup(remoteJid)
+                if (gset && gset.antidelete) {
+                    try {
+                        const deleted = await store.loadMessage(remoteJid, protoKey.id)
+                        if (deleted && deleted.message) {
+                            const senderJid = protoKey.participant || deleted.key?.participant || mek.key?.participant
+                            const senderNum = String(senderJid || '').split('@')[0].split(':')[0]
+                            const timeStr = new Date().toLocaleTimeString('id-ID', { timeZone: 'Asia/Jakarta' })
+                            const caption = `⚠️ *[ ANTI-DELETE ]*\n\n• Pengirim: @${senderNum}\n• Waktu: ${timeStr} WIB\n\n_Pesan yang dihapus:_`
+                            await bob.sendMessage(remoteJid, { text: caption, mentions: senderJid ? [senderJid] : [] })
+                            await bob.copyNForward(remoteJid, deleted, false)
+                        }
+                    } catch (e) {
+                        console.log('[antidelete] Gagal teruskan pesan terhapus:', e?.message || e)
+                    }
+                }
+            }
+            return
+        }
         if (!bob.public && !mek.key.fromMe && chatUpdate.type === 'notify') return
         if (mek.key.id.startsWith('BAE5') && mek.key.id.length === 16) return
         if (mek.key.id.startsWith('Sya')) return
@@ -136,28 +244,58 @@ async function startBot() {
         }
     })
     bob.ev.on('group-participants.update', async (data) => {
-        const isWelcome = welcome.includes(data.id) ? true : false
-        if (isWelcome) {
         try {
-        let metadata = await bob.groupMetadata(data.id)
-          for (let i of data.participants) {
-          try {
-            var pp_user = await bob.profilePictureUrl(i, 'image')
-          } catch {
-            var pp_user = `https://telegra.ph/file/6ea2e0f36eae5ea3a5465.jpg`
-          }
-          if (data.action == "add") {
-            bob.sendMessage(data.id, {text: `Hallo @${i.split("@")[0]}, Selamat Datang Di Grup ${metadata.subject}`, mentions: [i]})
-          } else if (data.action == "remove") {
-            bob.sendMessage(data.id, {text: `Selamat Tinggal @${i.split("@")[0]}`, mentions: [i]})
-          }
-          }
+            const rawId = String(data?.id || '')
+            const gid = rawId.endsWith('@g.us') ? rawId : (rawId ? rawId + '@g.us' : rawId)
+            const gset = require('./lib/database').getGroup(gid)
+            console.log(`[welcome] event action=${data?.action} id=${rawId} parts=${JSON.stringify(data?.participants).slice(0, 300)}`)
+            console.log(`[welcome] flags welcome=${!!gset.welcome} left=${!!gset.left}`)
+            await require('./lib/welcome').sendWelcomeGoodbye(bob, gid, data?.action, data?.participants)
         } catch (e) {
-          console.log(e)
+            console.log('[welcome] error:', e?.message || e)
         }
+    })
+
+    // Fallback roster-diff: bila event stub tidak datang, deteksi join/leave
+    // dengan membandingkan daftar member grup secara berkala.
+    global.__jojoBob = bob
+    if (!global.__welcomePoll) {
+        global.__welcomePoll = true
+        setInterval(async () => {
+            const curBob = global.__jojoBob
+            if (!curBob || global.__welcomePolling) return
+            global.__welcomePolling = true
+            try {
+                const joDB = require('./lib/database')
+                const wlib = require('./lib/welcome')
+                const groups = (joDB.loadDB().groups) || {}
+                for (const gid of Object.keys(groups)) {
+                    const g = groups[gid]
+                    if (!gid.endsWith('@g.us')) continue
+                    if (!g.welcome && !g.left) continue
+                    try {
+                        const md = await curBob.groupMetadata(gid)
+                        const cur = ((md && md.participants) || []).map(p => String((p && p.id) || p)).filter(Boolean)
+                        const prev = Array.isArray(g.members) ? g.members : null
+                        if (!prev) { g.members = cur; joDB.saveDB(); continue }
+                        const joined = cur.filter(id => !prev.includes(id))
+                        const leftMem = prev.filter(id => !cur.includes(id))
+                        if (joined.length || leftMem.length) { g.members = cur; joDB.saveDB() }
+                        if (joined.length && g.welcome) {
+                            console.log(`[welcome-poll] +${joined.length} di ${gid}`)
+                            await wlib.sendWelcomeGoodbye(curBob, gid, 'add', joined)
+                        }
+                        if (leftMem.length && g.left) {
+                            console.log(`[welcome-poll] -${leftMem.length} di ${gid}`)
+                            await wlib.sendWelcomeGoodbye(curBob, gid, 'remove', leftMem)
+                        }
+                    } catch (e) { /* grup diarsip/bot keluar: lewati */ }
+                    await new Promise(r => setTimeout(r, 2000))
+                }
+            } catch (e) { console.log('[welcome-poll] error:', e?.message || e) }
+            global.__welcomePolling = false
+        }, 90000)
     }
-    }
-      )
 
     // Setting
     bob.decodeJid = (jid) => {
@@ -208,21 +346,68 @@ async function startBot() {
 
     bob.serializeM = (m) => smsg(bob, m, store)
 
+    // Anti reconnect ganda: hanya satu restart tertunda dalam satu waktu
+    function scheduleReconnect(delayMs = 4000) {
+        if (global.__jojoRestarting) return
+        global.__jojoRestarting = true
+        setTimeout(() => { global.__jojoRestarting = false; startBot() }, delayMs)
+    }
+
     bob.ev.on('connection.update', async (update) => {
-        const { connection, lastDisconnect } = update	    
-        if (connection === 'close') {
-        let reason = new Boom(lastDisconnect?.error)?.output.statusCode
-            if (reason === DisconnectReason.badSession) { console.log(`Bad Session File, Please Delete Session and Scan Again`); bob.logout(); }
-            else if (reason === DisconnectReason.connectionClosed) { console.log("Connection closed, reconnecting...."); startBot(); }
-            else if (reason === DisconnectReason.connectionLost) { console.log("Connection Lost from Server, reconnecting..."); startBot(); }
-            else if (reason === DisconnectReason.connectionReplaced) { console.log("Connection Replaced, Another New Session Opened, Please Close Current Session First"); bob.logout(); }
-            else if (reason === DisconnectReason.loggedOut) { console.log(`Device Logged Out, Please Scan Again And Run.`); bob.logout(); }
-            else if (reason === DisconnectReason.restartRequired) { console.log("Restart Required, Restarting..."); startBot(); }
-            else if (reason === DisconnectReason.timedOut) { console.log("Connection TimedOut, Reconnecting..."); startBot(); }
-            else if (reason === DisconnectReason.Multidevicemismatch) { console.log("Multi device mismatch, please scan again"); bob.logout(); }
-            else bob.end(`Unknown DisconnectReason: ${reason}|${connection}`)
+        const { connection, lastDisconnect, qr, receivedPendingNotifications } = update
+        // ourin-baileys: event `qr` tetap dipancarkan dalam mode pairing code,
+        // jadi jadikan pemicu permintaan kode custom "RSYA-RAFI".
+        if ((qr || connection === 'connecting') && !isRegistered()) {
+            spin.update('Menghubungkan ke WhatsApp...')
+            await maybeRequestPairingCode()
         }
-        console.log('Connected...', update)
+        if (connection === 'connecting') {
+            spin.start('Menghubungkan ke WhatsApp...')
+        }
+        if (receivedPendingNotifications) {
+            banner.dim('Sinkronisasi riwayat selesai')
+        }
+        if (connection === 'open') {
+            const me = ((bob.user && bob.user.id) || '').split(':')[0].split('@')[0] || '-'
+            spin.succeed(`Terhubung sebagai ${me}`)
+            banner.statusBox('JOJOBOT ONLINE  •  By Arasya', [
+                ['Nomor Bot', me],
+                ['Waktu', banner.wib()],
+                ['Pairing', global.pairingCode || 'RSYA-RAFI'],
+            ], 'green')
+        }
+        if (connection === 'close') {
+        // Error polos (mis. "Connection Failure" dari WebSocket) TIDAK punya
+        // statusCode asli — jangan samakan dengan badSession (sama-sama 500).
+        // Hanya error Boom asli dari server yang boleh memicu logout.
+        const rawErr = lastDisconnect?.error
+        const reason = (rawErr && rawErr.isBoom && rawErr.output) ? rawErr.output.statusCode : undefined
+        const errMsg = (rawErr && (rawErr.message || rawErr.output?.payload?.message)) || 'unknown'
+            // Fatal: jangan reconnect, wajib pairing/scan ulang
+            if (reason === DisconnectReason.badSession) { spin.fail('Bad Session — hapus folder session & pairing ulang'); try { await bob.logout() } catch {} }
+            else if (reason === DisconnectReason.loggedOut) {
+                // Sesi mati/rusak: bersihkan folder session lalu mulai fresh
+                // (setara hapus session manual). Jangan bob.logout() buta.
+                spin.fail('Sesi ditolak server — membersihkan session & pairing ulang fresh...');
+                try { fs.rmSync('./session', { recursive: true, force: true }) } catch {}
+                try { fs.mkdirSync('./session', { recursive: true }) } catch {}
+                spin.start('Menghubungkan ulang fresh...')
+                scheduleReconnect(5000)
+            }
+        else if (reason === DisconnectReason.connectionReplaced) { spin.fail('Koneksi digantikan sesi lain — tutup sesi lain dulu'); try { await bob.logout() } catch {} }
+        else if (reason === DisconnectReason.Multidevicemismatch) { spin.fail('Multi-device mismatch — pairing ulang'); try { await bob.logout() } catch {} }
+        // Selain itu (termasuk error polos "Connection Failure"): reconnect dengan jeda
+        else {
+            const label = reason === DisconnectReason.connectionClosed ? 'Koneksi tertutup'
+                : reason === DisconnectReason.connectionLost ? 'Koneksi hilang dari server'
+                : reason === DisconnectReason.restartRequired ? 'Restart diminta server'
+                : reason === DisconnectReason.timedOut ? 'Koneksi timeout'
+                : `Koneksi putus (${errMsg})`
+            banner.warn(`${label}, menghubungkan ulang...`)
+            spin.start('Menghubungkan ulang...')
+            scheduleReconnect(4000)
+        }
+        }
     })
 
     bob.ev.on('creds.update', saveCreds)

@@ -1,0 +1,542 @@
+{
+  "users": {
+    "73728012644383@lid": {
+      "jid": "73728012644383@lid",
+      "number": "73728012644383",
+      "name": "Koko crunchh",
+      "firstSeen": "2026-09-13T12:28:10.737Z",
+      "lastSeen": "2026-09-13T12:28:10.737Z",
+      "hits": 1,
+      "chats": [
+        "120363427490157982@g.us"
+      ]
+    },
+    "103852745453569@lid": {
+      "jid": "103852745453569@lid",
+      "number": "103852745453569",
+      "name": "Syaaa",
+      "firstSeen": "2026-09-13T12:28:18.237Z",
+      "lastSeen": "2026-09-15T00:16:44.509Z",
+      "hits": 81,
+      "chats": [
+        "103852745453569@lid",
+        "120363043223925309@g.us"
+      ],
+      "editimgUsage": {
+        "count": 1,
+        "reset": 1789362146814
+      }
+    },
+    "6288213292687@s.whatsapp.net": {
+      "jid": "6288213292687@s.whatsapp.net",
+      "number": "6288213292687",
+      "name": "No Name",
+      "firstSeen": "2026-09-13T12:28:23.749Z",
+      "lastSeen": "2026-09-13T15:30:46.200Z",
+      "hits": 42,
+      "chats": [
+        "103852745453569@lid",
+        "6288213292687@s.whatsapp.net",
+        "120363427490157982@g.us"
+      ]
+    },
+    "120363400911374213@newsletter": {
+      "jid": "120363400911374213@newsletter",
+      "number": "120363400911374213",
+      "name": "No Name",
+      "firstSeen": "2026-09-13T12:36:02.286Z",
+      "lastSeen": "2026-09-13T16:04:24.983Z",
+      "hits": 4,
+      "chats": [
+        "120363400911374213@newsletter"
+      ]
+    },
+    "253592636289127@lid": {
+      "jid": "253592636289127@lid",
+      "number": "253592636289127",
+      "name": "stranger",
+      "firstSeen": "2026-09-13T15:20:32.280Z",
+      "lastSeen": "2026-09-13T15:20:32.280Z",
+      "hits": 1,
+      "chats": [
+        "120363360957857591@g.us"
+      ]
+    },
+    "165386943213618@lid": {
+      "jid": "165386943213618@lid",
+      "number": "165386943213618",
+      "name": "rik🌟",
+      "firstSeen": "2026-09-13T15:20:32.326Z",
+      "lastSeen": "2026-09-13T15:27:33.867Z",
+      "hits": 29,
+      "chats": [
+        "120363427490157982@g.us"
+      ]
+    },
+    "266687723090165@lid": {
+      "jid": "266687723090165@lid",
+      "number": "266687723090165",
+      "name": "C9,XTC,CSTS || MIRZZ",
+      "firstSeen": "2026-09-13T15:20:44.363Z",
+      "lastSeen": "2026-09-14T15:10:40.483Z",
+      "hits": 10,
+      "chats": [
+        "120363427490157982@g.us"
+      ]
+    },
+    "151518678352112@lid": {
+      "jid": "151518678352112@lid",
+      "number": "151518678352112",
+      "name": "Lezy sesudah after",
+      "firstSeen": "2026-09-13T15:21:27.241Z",
+      "lastSeen": "2026-09-13T15:31:15.284Z",
+      "hits": 20,
+      "chats": [
+        "120363427490157982@g.us"
+      ]
+    },
+    "132994417315959@lid": {
+      "jid": "132994417315959@lid",
+      "number": "132994417315959",
+      "name": "😄😄😄",
+      "firstSeen": "2026-09-13T15:23:48.126Z",
+      "lastSeen": "2026-09-13T15:33:47.017Z",
+      "hits": 12,
+      "chats": [
+        "120363427490157982@g.us"
+      ]
+    },
+    "157952220635338@lid": {
+      "jid": "157952220635338@lid",
+      "number": "157952220635338",
+      "name": "Sya",
+      "firstSeen": "2026-09-13T15:41:59.258Z",
+      "lastSeen": "2026-09-13T22:53:21.733Z",
+      "hits": 3,
+      "chats": [
+        "157952220635338@lid"
+      ],
+      "editimgUsage": {
+        "count": 1,
+        "reset": 1789361601739
+      }
+    },
+    "264737690546424@lid": {
+      "jid": "264737690546424@lid",
+      "number": "264737690546424",
+      "name": "#ItsLikeImNotEvenHere",
+      "firstSeen": "2026-09-13T22:32:05.986Z",
+      "lastSeen": "2026-09-13T22:32:05.986Z",
+      "hits": 1,
+      "chats": [
+        "264737690546424@lid"
+      ]
+    },
+    "56428001779814@lid": {
+      "jid": "56428001779814@lid",
+      "number": "56428001779814",
+      "name": "k1muraez",
+      "firstSeen": "2026-09-14T23:14:55.538Z",
+      "lastSeen": "2026-09-14T23:14:55.538Z",
+      "hits": 1,
+      "chats": [
+        "56428001779814@lid"
+      ]
+    }
+  },
+  "sticker": {},
+  "createdAt": "2026-09-13T00:00:00.000Z",
+  "groups": {
+    "120363148142763308@g.us": {
+      "welcome": true,
+      "left": true,
+      "antilink": false,
+      "mute": false,
+      "chatbot": false
+    },
+    "120363046361842255@g.us": {
+      "welcome": true,
+      "left": true,
+      "antilink": false,
+      "mute": false,
+      "chatbot": false
+    },
+    "41798898139-1429460331@g.us": {
+      "welcome": true,
+      "left": true,
+      "antilink": true,
+      "mute": false,
+      "chatbot": false,
+      "members": [
+        "139187642695727@lid",
+        "81879306887190@lid",
+        "245616311550038@lid",
+        "21844203667648@lid",
+        "24498996830211@lid",
+        "228153075183769@lid",
+        "123244237615141@lid",
+        "227388487143656@lid",
+        "13576559448255@lid",
+        "222187684368583@lid",
+        "98599564263645@lid",
+        "33797231878315@lid",
+        "103852745453569@lid",
+        "134467557535971@lid",
+        "145268947312753@lid",
+        "76660971954347@lid",
+        "90632433467492@lid",
+        "212905991622695@lid",
+        "66611201470537@lid",
+        "72271414710340@lid",
+        "5579212869649@lid",
+        "101237244567787@lid",
+        "3990645424333@lid",
+        "4862020473047@lid",
+        "223557476974804@lid",
+        "162045307658404@lid",
+        "86187276517378@lid",
+        "73689240449144@lid",
+        "114727317446899@lid",
+        "213692390109326@lid",
+        "273877817147516@lid",
+        "43607658606713@lid",
+        "185899388276840@lid",
+        "80861466751012@lid",
+        "133080132108514@lid",
+        "168036921303189@lid",
+        "212335297826998@lid",
+        "32964461207665@lid",
+        "253592636289127@lid",
+        "134351073366209@lid",
+        "267980189524104@lid",
+        "112025632030932@lid",
+        "242210486403229@lid",
+        "190194120708118@lid",
+        "110166699692267@lid",
+        "241343473410296@lid",
+        "247742353957022@lid",
+        "120881888145485@lid",
+        "228591530975342@lid",
+        "100579946840129@lid",
+        "157952220635338@lid",
+        "255456282992792@lid",
+        "88279227625681@lid",
+        "106884623270102@lid",
+        "173482436477163@lid",
+        "155018707603588@lid",
+        "216084351316077@lid",
+        "197671977541854@lid",
+        "16316815650991@lid",
+        "68023893381233@lid",
+        "254417152569543@lid",
+        "245019663450303@lid",
+        "186440839393311@lid",
+        "92556880773304@lid",
+        "99107041480886@lid",
+        "75458280480838@lid",
+        "27041533579304@lid",
+        "65352490864893@lid",
+        "14766164688991@lid",
+        "86951763943520@lid",
+        "271970230882533@lid",
+        "119782846279713@lid",
+        "144543265640468@lid",
+        "203470116257805@lid",
+        "134737838485599@lid",
+        "122578551181467@lid",
+        "244143288762412@lid",
+        "64296146976821@lid",
+        "64132804038725@lid",
+        "149388055851094@lid",
+        "71962277761254@lid",
+        "148374158315710@lid",
+        "270488517484689@lid",
+        "279014597992630@lid",
+        "257745316012272@lid",
+        "115990390124643@lid",
+        "128269315768337@lid",
+        "153751423856777@lid",
+        "271175829729479@lid",
+        "169707512569977@lid",
+        "256057427394562@lid",
+        "185869222838338@lid",
+        "242765141164188@lid",
+        "218111357755444@lid",
+        "242433791139844@lid",
+        "113194198687782@lid",
+        "59545846050986@lid",
+        "231804132946094@lid",
+        "102847303708915@lid",
+        "92127568605277@lid",
+        "163780424114328@lid",
+        "53489623396368@lid",
+        "1374892896442@lid",
+        "62234193617067@lid",
+        "278971480551462@lid",
+        "210032708853760@lid",
+        "116342443270265@lid",
+        "209470219153441@lid",
+        "213142114193513@lid",
+        "38255944847518@lid",
+        "90666893877502@lid",
+        "264665061953664@lid",
+        "2220900769943@lid",
+        "142967314616445@lid",
+        "15058709032986@lid",
+        "86574125584448@lid",
+        "219894440312971@lid",
+        "160924220555368@lid",
+        "76798327017629@lid",
+        "88493858533384@lid",
+        "230631153864814@lid",
+        "130627571568688@lid",
+        "126418570752161@lid",
+        "148107920703493@lid",
+        "105794087469273@lid",
+        "100914752933921@lid",
+        "190039518633987@lid",
+        "218687453802625@lid",
+        "82038438785270@lid",
+        "207644908384272@lid"
+      ]
+    },
+    "120363037831727950@g.us": {
+      "welcome": true,
+      "left": true,
+      "antilink": false,
+      "mute": false,
+      "chatbot": false
+    },
+    "6282334297175-1636107750@g.us": {
+      "welcome": true,
+      "left": true,
+      "antilink": false,
+      "mute": false,
+      "chatbot": false
+    },
+    "6283839317855-1604029267@g.us": {
+      "welcome": true,
+      "left": true,
+      "antilink": true,
+      "mute": false,
+      "chatbot": false
+    },
+    "120363153816204208@g.us": {
+      "welcome": true,
+      "left": true,
+      "antilink": false,
+      "mute": false,
+      "chatbot": false
+    },
+    "120363041015390729@g.us": {
+      "welcome": true,
+      "left": true,
+      "antilink": false,
+      "mute": false,
+      "chatbot": false
+    },
+    "120363029481517452@g.us": {
+      "welcome": true,
+      "left": true,
+      "antilink": false,
+      "mute": false,
+      "chatbot": false
+    },
+    "120363043223925309@g.us": {
+      "welcome": true,
+      "left": true,
+      "antilink": false,
+      "mute": true,
+      "chatbot": true,
+      "members": [
+        "219894440312971@lid",
+        "103852745453569@lid",
+        "228591530975342@lid",
+        "157952220635338@lid"
+      ]
+    },
+    "6281299123416-1585674175@g.us": {
+      "welcome": false,
+      "left": false,
+      "antilink": true,
+      "mute": false,
+      "chatbot": false
+    },
+    "120363162482604216@g.us": {
+      "welcome": false,
+      "left": false,
+      "antilink": true,
+      "mute": false,
+      "chatbot": false
+    },
+    "120363161224202481@g.us": {
+      "welcome": false,
+      "left": false,
+      "antilink": true,
+      "mute": false,
+      "chatbot": false
+    },
+    "120363162506107941@g.us": {
+      "welcome": false,
+      "left": false,
+      "antilink": true,
+      "mute": false,
+      "chatbot": false
+    },
+    "120363043043142450@g.us": {
+      "welcome": false,
+      "left": false,
+      "antilink": true,
+      "mute": false,
+      "chatbot": false
+    },
+    "120363162082384875@g.us": {
+      "welcome": false,
+      "left": false,
+      "antilink": true,
+      "mute": false,
+      "chatbot": false
+    },
+    "120363099890109026@g.us": {
+      "welcome": false,
+      "left": false,
+      "antilink": true,
+      "mute": false,
+      "chatbot": false
+    },
+    "120363087514141952@g.us": {
+      "welcome": false,
+      "left": false,
+      "antilink": true,
+      "mute": false,
+      "chatbot": false
+    },
+    "120363204335635076@g.us": {
+      "welcome": false,
+      "left": false,
+      "antilink": true,
+      "mute": true,
+      "chatbot": false
+    },
+    "120363040350299354@g.us": {
+      "welcome": false,
+      "left": false,
+      "antilink": true,
+      "mute": false,
+      "chatbot": false
+    },
+    "6281264830576-1630974515@g.us": {
+      "welcome": false,
+      "left": false,
+      "antilink": true,
+      "mute": false,
+      "chatbot": false
+    },
+    "120363196800059392@g.us": {
+      "welcome": false,
+      "left": false,
+      "antilink": true,
+      "mute": false,
+      "chatbot": false
+    },
+    "120363146929338780@g.us": {
+      "welcome": false,
+      "left": false,
+      "antilink": true,
+      "mute": false,
+      "chatbot": false
+    },
+    "120363169302767474@g.us": {
+      "welcome": false,
+      "left": false,
+      "antilink": true,
+      "mute": false,
+      "chatbot": false
+    },
+    "120363268728104497@g.us": {
+      "welcome": false,
+      "left": false,
+      "antilink": true,
+      "mute": false,
+      "chatbot": false
+    },
+    "120363277765581913@g.us": {
+      "welcome": false,
+      "left": false,
+      "antilink": true,
+      "mute": false,
+      "chatbot": false
+    },
+    "120363271858305415@g.us": {
+      "welcome": false,
+      "left": false,
+      "antilink": true,
+      "mute": false,
+      "chatbot": false
+    },
+    "120363205227928993@g.us": {
+      "welcome": false,
+      "left": false,
+      "antilink": false,
+      "mute": true,
+      "chatbot": false
+    },
+    "120363184624255651@g.us": {
+      "welcome": false,
+      "left": false,
+      "antilink": false,
+      "mute": true,
+      "chatbot": false
+    },
+    "120363046681383191@g.us": {
+      "welcome": false,
+      "left": false,
+      "antilink": false,
+      "mute": true,
+      "chatbot": false
+    },
+    "120363295740034853@g.us": {
+      "welcome": false,
+      "left": false,
+      "antilink": false,
+      "mute": true,
+      "chatbot": false
+    },
+    "120363142356415922@g.us": {
+      "welcome": false,
+      "left": false,
+      "antilink": false,
+      "mute": true,
+      "chatbot": false
+    },
+    "6288213292687@s.whatsapp.net": {
+      "welcome": false,
+      "left": false,
+      "antilink": false,
+      "mute": false,
+      "chatbot": false
+    },
+    "120363427490157982@g.us": {
+      "welcome": false,
+      "left": false,
+      "antilink": false,
+      "mute": false,
+      "chatbot": false
+    },
+    "103852745453569@lid": {
+      "welcome": false,
+      "left": false,
+      "antilink": false,
+      "mute": false,
+      "chatbot": false
+    },
+    "56428001779814@lid": {
+      "welcome": false,
+      "left": false,
+      "antilink": false,
+      "mute": false,
+      "chatbot": false
+    }
+  },
+  "_migratedGroups": true
+}
