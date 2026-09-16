@@ -72,6 +72,7 @@ const {
 const joDatabase = require('./lib/database')
 const anon = require('./lib/anonymous')
 const aiTagbot = require('./lib/ai-tagbot')
+const economy = require('./lib/economy')
   const replicate = new Replicate({
   auth: "r8_IrWhmFuiXDTW4y0ZVXvBB6ODmH56ifn1mTjWa", //Api Gueh
 });
@@ -509,7 +510,15 @@ const fake = {
 //test
     
 
-    // GAME 
+    // GAME - dengan reward ekonomi terpusat
+    const _ecoReward = (jid, gameKey) => {
+        economy.giveGameReward(jid, gameKey, { idempotency: makeid(8) }).then(r=>{
+            if(r && r.amount) bob.sendMessage(m.chat, {text: `💰 +Rp ${economy.formatMoney(r.amount)} Money telah ditambahkan ke wallet @${jid.split('@')[0]}!`, mentions:[jid]}, {quoted: m}).catch(()=>{})
+        }).catch(e=>{
+            if(e.code==='COOLDOWN') { /* diam */ }
+            else if(e.code==='DAILY_LIMIT') { bob.sendMessage(m.chat, {text: `⚠️ Daily limit tercapai untuk game ini.`}, {quoted: m}).catch(()=>{}) }
+        })
+    }
     cekWaktuGame(bob, tebakgambar)
     if (isPlayGame(m.chat, tebakgambar) ) {
     if (m.text.toLowerCase() == getJawabanGame(m.chat, tebakgambar)) {
@@ -517,6 +526,7 @@ const fake = {
     bob.sendMessage(m.chat, {text: texttg, mentions: [m.sender]}, {quoted: m}) 
     tebakgambar.splice(getGamePosi(m.chat, tebakgambar), 1)
     giveLimit(sender, parseInt(`2`), limit)
+    _ecoReward(sender, 'tebakgambar')
 }
 }
 cekWaktuGame(bob, tebakkata)
@@ -526,6 +536,7 @@ if (isPlayGame(m.chat, tebakkata) ) {
         bob.sendMessage(m.chat, {text: texttg, mentions: [m.sender]}, {quoted: m}) 
         tebakkata.splice(getGamePosi(m.chat, tebakkata), 1)
         giveLimit(sender, parseInt(`2`), limit)
+        _ecoReward(sender, 'tebakkata')
     }
 }
 cekWaktuGame(bob, siapakahaku)
@@ -535,6 +546,7 @@ if (isPlayGame(m.chat, siapakahaku) ) {
         bob.sendMessage(m.chat, {text: texttg, mentions: [m.sender]}, {quoted: m}) 
         siapakahaku.splice(getGamePosi(m.chat, siapakahaku), 1)
         giveLimit(sender, parseInt(`2`), limit)
+        _ecoReward(sender, 'siapakahaku')
     }
 }
 cekWaktuGame(bob, caklontong)
@@ -544,6 +556,7 @@ if (isPlayGame(m.chat, caklontong) ) {
         bob.sendMessage(m.chat, {text: texttg, mentions: [m.sender]}, {quoted: m}) 
     caklontong.splice(getGamePosi(m.chat, caklontong), 1)
     giveLimit(sender, parseInt(`2`), limit)
+    _ecoReward(sender, 'caklontong')
 }
 }
 cekWaktuGame(bob, soal)
@@ -553,6 +566,7 @@ if (isPlayGame(m.chat, soal) ) {
         bob.sendMessage(m.chat, {text: texttg, mentions: [m.sender]}, {quoted: m}) 
     soal.splice(getGamePosi(m.chat, soal), 1)
     giveLimit(sender, parseInt(`2`), limit)
+    _ecoReward(sender, 'soal')
 }
 }
 cekWaktuGame(bob, tebaklagu)
@@ -562,6 +576,7 @@ if (isPlayGame(m.chat, tebaklagu) ) {
         bob.sendMessage(m.chat, {text: texttg, mentions: [m.sender]}, {quoted: m}) 
         tebaklagu.splice(getGamePosi(m.chat, tebaklagu), 1)
         giveLimit(sender, parseInt(`2`), limit)
+        _ecoReward(sender, 'tebaklagu')
         }
     }
 cekWaktuGame(bob, teki)
@@ -571,6 +586,7 @@ if (isPlayGame(m.chat, teki) ) {
         bob.sendMessage(m.chat, {text: texttg, mentions: [m.sender]}, {quoted: m}) 
         teki.splice(getGamePosi(m.chat, teki), 1)
         giveLimit(sender, parseInt(`2`), limit)
+        _ecoReward(sender, 'teki')
         }
     }
     //Akhir
@@ -741,7 +757,18 @@ if (!isCmd && !m.key.fromMe && typeof body === 'string' && body.trim()) {
         const consumed = await tttLib.handleText(bob, m, {
             body, sender, num: senderNum, pushname,
             reply: async (t) => reply(t),
-            onWin: (jid) => { try { giveLimit(jid, 2, limit) } catch {} }
+            onWin: (jid) => {
+                try { giveLimit(jid, 2, limit) } catch {}
+                try {
+                    let wid = String(jid||'')
+                    if (!wid.includes('@')) {
+                        // jid from ttt is digits, convert to jid
+                        const ttt = require('./lib/ttt')
+                        wid = ttt.jidOf(wid)
+                    }
+                    economy.giveGameReward(wid, 'ttt_win').catch(()=>{})
+                } catch {}
+            }
         })
         if (consumed) return
     } catch (e) { console.log('[ttt]', e?.message || e) }
@@ -1031,6 +1058,8 @@ ${isi}
                     case 'dadu': case 'dice': {
                         if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
                         limitAdd(sender, limit)
+                        // eco reward dadu
+                        economy.giveGameReward(sender, 'dadu', { idempotency: makeid(6) }).then(r=>{ if(r&&r.amount) bob.sendMessage(m.chat, {text: `💰 +Rp ${economy.formatMoney(r.amount)} Money`}, {quoted: m}).catch(()=>{}) }).catch(()=>{})
                         reply(mess.wait)
                         try {
                             const angka = Math.floor(Math.random() * 6) + 1
@@ -2030,6 +2059,254 @@ ${CmD} Tangerang
                         arrTop.push(limit[i].id)
                         }
                         ngetag(top, arrTop, true)
+                    }
+                    break
+                    // ===== MENU:Economy Menu =====
+                    case 'balance': case 'wallet': case 'dompet': case 'saldo': {
+                        try {
+                            const w = economy.getWallet(sender)
+                            const today = economy.getTodayEarnings(sender)
+                            const cday = economy.canClaimDaily(sender)
+                            const text = `👛 *WALLET — ${pushname}*\n` +
+                                `━━━━━━━━━━━━━━━━━━━━\n` +
+                                `💰 Money: *Rp ${economy.formatMoney(w.money)}*\n` +
+                                `⭐ Point: *${economy.formatPoint(w.point)}*\n\n` +
+                                `📈 Total Earned: Rp ${economy.formatMoney(w.total_earned || 0)}\n` +
+                                `📉 Total Spent: Rp ${economy.formatMoney(w.total_spent || 0)}\n` +
+                                `📤 Total Transferred: Rp ${economy.formatMoney(w.total_transferred || 0)}\n\n` +
+                                `📅 Hari ini: +Rp ${economy.formatMoney(today.earned)}\n` +
+                                `🔥 Daily Streak: ${cday.streak || 0} | ${cday.can ? `Bisa claim *${prefix}daily* (+Rp ${economy.formatMoney(cday.amount)})` : `Sudah claim hari ini`}\n\n` +
+                                `💱 Kurs: 100 Money = 1 Point | 1 Point = 75 Money\n` +
+                                `Ketik *${prefix}transactions* untuk riwayat`
+                            const btn = [
+                                { name: "quick_reply", buttonParamsJson: JSON.stringify({ display_text: "📜 Riwayat", id: `${prefix}transactions` }) },
+                                { name: "quick_reply", buttonParamsJson: JSON.stringify({ display_text: "🏆 Leaderboard", id: `${prefix}leaderboard money` }) },
+                                { name: "quick_reply", buttonParamsJson: JSON.stringify({ display_text: "🎁 Daily", id: `${prefix}daily` }) }
+                            ]
+                            try { await bob.sendButton(m.chat, text, `> Jojo Economy`, 'WALLET', btn) } catch { reply(text) }
+                        } catch(e){ reply(`❌ Gagal: ${e.message}`)}
+                    }
+                    break
+                    case 'transfer': case 'tf': case 'kirim': {
+                        try {
+                            let targetJid = null
+                            if (mentionUser && mentionUser.length) targetJid = mentionUser[0]
+                            else if (m.quoted && m.quoted.sender) targetJid = m.quoted.sender
+                            else {
+                                const num = String(args.join(' ')).replace(/[^0-9]/g, '')
+                                // parse last token as amount, so extract amount separately
+                            }
+                            // parse amount: last numeric token
+                            let amountStr = args[args.length - 1]
+                            let amount = parseInt(String(amountStr).replace(/[^0-9]/g,''),10)
+                            if (!amountStr || isNaN(amount) || amount <= 0) return reply(`Format: *${prefix}transfer @user <jumlah>*\nContoh: *${prefix}transfer @Arasya 5000*\nFee: 2% (min Rp 10)`)
+                            // resolve target if not via mention/quoted: first arg is user
+                            if (!targetJid) {
+                                // try first arg as number
+                                const rawTarget = String(args[0] || '').replace(/[^0-9]/g,'')
+                                if (rawTarget.length >= 9) {
+                                    let n = rawTarget
+                                    if (n.startsWith('08')) n = '62' + n.slice(1)
+                                    else if (!n.startsWith('62')) n = '62' + n
+                                    targetJid = n + '@s.whatsapp.net'
+                                    // if 2 args, amount is second
+                                    if (args.length >= 2) amount = parseInt(String(args[1]).replace(/[^0-9]/g,''),10)
+                                    if (isNaN(amount) || amount <=0) return reply(`Jumlah tidak valid. Contoh: *${prefix}transfer @62812xxxx 5000*`)
+                                } else {
+                                    return reply(`Tag user yang akan ditransfer!\nContoh: *${prefix}transfer @user 5000*`)
+                                }
+                            }
+                            // ensure target exists via resolve
+                            if (targetJid && targetJid.includes('@lid')) {
+                                try {
+                                    let pn = await resolveSenderPN(targetJid)
+                                    if (pn) targetJid = pn + '@s.whatsapp.net'
+                                } catch {}
+                            }
+                            if (!targetJid) return reply(`Target tidak valid`)
+                            const res = await economy.transferMoney(sender, targetJid, amount)
+                            reply(`✅ *Transfer Berhasil!*\n━━━━━━━━━━━━\n💸 *-${economy.formatMoney(res.totalDeduct)} Money* (termasuk fee Rp ${economy.formatMoney(res.fee)})\nPenerima: @${targetJid.split('@')[0]} *+${economy.formatMoney(amount)}*\n\nSaldo kamu: *Rp ${economy.formatMoney(res.sender.money)}*`)
+                            try { await bob.sendMessage(targetJid, { text: `💰 Kamu menerima *Rp ${economy.formatMoney(amount)} Money* dari @${sender.split('@')[0]}!\nSaldo kini: Rp ${economy.formatMoney(res.receiver.money)}`, mentions: [sender] }) } catch {}
+                        } catch(e){
+                            if (e.code === 'INSUFFICIENT') return reply(`❌ Saldo tidak cukup.\nDibutuhkan: Rp ${economy.formatMoney(e.need)} (termasuk fee)\nSaldo Anda: Rp ${economy.formatMoney(e.have)}\nKekurangan: Rp ${economy.formatMoney(e.need - e.have)}`)
+                            if (e.message.includes('diri sendiri')) return reply(`❌ Tidak bisa transfer ke diri sendiri!`)
+                            if (e.message.includes('tidak ditemukan')) return reply(`❌ Penerima belum terdaftar. Penerima harus pernah memakai bot minimal 1 kali.`)
+                            reply(`❌ Transfer gagal: ${e.message}`)
+                        }
+                    }
+                    break
+                    case 'buypoint': case 'buy_point': case 'belipoint': {
+                        try {
+                            const qty = parseInt(String(q || args[0] || '').replace(/[^0-9]/g,''),10)
+                            if (!qty || qty <=0) {
+                                const w = economy.getWallet(sender)
+                                return reply(`💱 *BUY POINT*\n━━━━━━━━━━━━\nKurs: *100 Money = 1 Point*\nSaldo Money: Rp ${economy.formatMoney(w.money)}\nSaldo Point: ${economy.formatPoint(w.point)}\n\nContoh: *${prefix}buypoint 100* (= Rp ${economy.formatMoney(100*economy.CONFIG.BUY_RATE)})\n\nGunakan: *${prefix}buypoint <jumlah Point>*`)
+                            }
+                            const res = await economy.buyPoint(sender, qty)
+                            reply(`✅ *Berhasil Beli Point!*\n━━━━━━━━━━━━\n💰 -${economy.formatMoney(res.cost)} Money\n⭐ +${economy.formatPoint(qty)} Point\n\nSaldo Money: Rp ${economy.formatMoney(res.wallet.money)}\nSaldo Point: ${economy.formatPoint(res.wallet.point)}`)
+                        } catch(e){
+                            if (e.code === 'INSUFFICIENT') return reply(`❌ Saldo Money tidak cukup.\nDibutuhkan: Rp ${economy.formatMoney(e.need)}\nSaldo Anda: Rp ${economy.formatMoney(e.have)}\nKekurangan: Rp ${economy.formatMoney(e.need - e.have)}`)
+                            reply(`❌ Gagal: ${e.message}`)
+                        }
+                    }
+                    break
+                    case 'sellpoint': case 'pointmoney': case 'jualpoint': {
+                        try {
+                            const qty = parseInt(String(q || args[0] || '').replace(/[^0-9]/g,''),10)
+                            if (!qty || qty <=0) {
+                                const w = economy.getWallet(sender)
+                                return reply(`💱 *SELL POINT*\n━━━━━━━━━━━━\nKurs jual: *1 Point = 75 Money* (spread 25%)\nSaldo Point: ${economy.formatPoint(w.point)}\nSaldo Money: Rp ${economy.formatMoney(w.money)}\n\nContoh: *${prefix}sellpoint 100* (= Rp ${economy.formatMoney(100*economy.CONFIG.SELL_RATE)})\n\nGunakan: *${prefix}sellpoint <jumlah Point>*`)
+                            }
+                            const res = await economy.sellPoint(sender, qty)
+                            reply(`✅ *Berhasil Jual Point!*\n━━━━━━━━━━━━\n⭐ -${economy.formatPoint(qty)} Point\n💰 +${economy.formatMoney(res.gain)} Money\n\nSaldo Money: Rp ${economy.formatMoney(res.wallet.money)}\nSaldo Point: ${economy.formatPoint(res.wallet.point)}`)
+                        } catch(e){
+                            if (e.code === 'INSUFFICIENT_POINT') return reply(`❌ Point tidak cukup.\nDibutuhkan: ${economy.formatPoint(e.need)} Point\nSaldo Anda: ${economy.formatPoint(e.have)} Point`)
+                            reply(`❌ Gagal: ${e.message}`)
+                        }
+                    }
+                    break
+                    case 'transactions': case 'riwayat': case 'history': case 'tx': {
+                        try {
+                            const page = parseInt(String(args[0]||'1').replace(/[^0-9]/g,''),10) || 1
+                            const limitTx = 5
+                            const offset = (page-1)*limitTx
+                            const data = economy.getTransactions(sender, limitTx, offset)
+                            if (!data.total) return reply(`📜 Belum ada transaksi.`)
+                            let text = `📜 *TRANSACTION HISTORY* (Hal ${page})\n━━━━━━━━━━━━\n`
+                            for (const tx of data.transactions) {
+                                const sign = tx.amount > 0 ? '+' : ''
+                                const cur = tx.currency === 'money' ? 'Money' : 'Point'
+                                const amt = tx.currency === 'money' ? economy.formatMoney(tx.amount) : economy.formatPoint(tx.amount)
+                                const d = new Date(tx.created_at)
+                                const t = d.toLocaleString('id-ID', { timeZone: 'Asia/Jakarta', day:'2-digit', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit'})
+                                text += `${sign}${amt} ${cur}\n${tx.type} — ${tx.description}\n${t}\n\n`
+                            }
+                            text += `Total: ${data.total} transaksi\nKetik *${prefix}transactions ${page+1}* untuk halaman berikutnya`
+                            reply(text)
+                        } catch(e){ reply(`❌ Gagal: ${e.message}`)}
+                    }
+                    break
+                    case 'leaderboard': case 'lb': case 'rich': case 'topmoney': {
+                        try {
+                            const cur = String(args[0]||'money').toLowerCase()
+                            const currency = cur === 'point' ? 'point' : 'money'
+                            const page = parseInt(String(args[1]||'1').replace(/[^0-9]/g,''),10) || 1
+                            const perPage = 10
+                            const offset = (page-1)*perPage
+                            const data = economy.getLeaderboard(currency, perPage, offset)
+                            if (!data.leaderboard.length) return reply(`🏆 Belum ada data leaderboard.`)
+                            let text = `🏆 *LEADERBOARD ${currency.toUpperCase()}* — Hal ${page}\n━━━━━━━━━━━━\n`
+                            const medals = ['🥇','🥈','🥉']
+                            for (const e of data.leaderboard) {
+                                const med = medals[e.rank-1] || `${e.rank}.`
+                                const val = currency === 'money' ? `Rp ${economy.formatMoney(e.value)}` : `${economy.formatPoint(e.value)} Point`
+                                text += `${med} @${e.user_id.split('@')[0]} — ${val}\n`
+                            }
+                            text += `━━━━━━━━━━━━\nTotal user: ${data.total}\nKetik *${prefix}leaderboard ${currency} ${page+1}* untuk lanjut`
+                            const mentions = data.leaderboard.map(e=>e.user_id).filter(j=>j.includes('@'))
+                            await bob.sendMessage(m.chat, { text, mentions }, { quoted: m })
+                        } catch(e){ reply(`❌ Gagal: ${e.message}`)}
+                    }
+                    break
+                    case 'daily': case 'claim': case 'harian': {
+                        try {
+                            const res = await economy.claimDaily(sender)
+                            reply(`✅ *Daily Reward Claimed!*\n━━━━━━━━━━━━\nHari ke-${res.streak}: *+Rp ${economy.formatMoney(res.amount)} Money*\nStreak: ${res.streak}/7\nSaldo Money: Rp ${economy.formatMoney(res.wallet.money)}\n\nDatang lagi besok untuk streak berikutnya!`)
+                        } catch(e){
+                            if (e.code === 'ALREADY_CLAIMED') return reply(`⏳ Kamu sudah claim hari ini!\nDatang lagi besok ya.`)
+                            reply(`❌ Gagal: ${e.message}`)
+                        }
+                    }
+                    break
+                    case 'shop': case 'toko': case 'store': {
+                        try {
+                            const sub = String(args[0]||'').toLowerCase()
+                            if (!sub) {
+                                const items = economy.getShopItems()
+                                let text = `🛒 *JOJO SHOP*\n━━━━━━━━━━━━\n`
+                                let lastCat = ''
+                                for (const it of items) {
+                                    if (it.category !== lastCat) { text += `\n*${it.category}*\n`; lastCat = it.category }
+                                    const priceStr = it.currency === 'money' ? `Rp ${economy.formatMoney(it.price)}` : `${economy.formatPoint(it.price)} Point`
+                                    const stockStr = it.stock === -1 ? '' : ` | Stok: ${it.remaining}/${it.stock}`
+                                    text += `• *${it.id}* — ${it.name}\n  ${priceStr}${stockStr}\n  _${it.desc}_\n`
+                                }
+                                text += `\n━━━━━━━━━━━━\nCara beli: *${prefix}shop buy <id> [qty]*\nContoh: *${prefix}shop buy lucky_ticket 1*`
+                                return reply(text)
+                            }
+                            if (sub === 'buy' || sub === 'beli') {
+                                const itemId = String(args[1]||'').toLowerCase()
+                                const qty = parseInt(String(args[2]||'1').replace(/[^0-9]/g,''),10) || 1
+                                if (!itemId) return reply(`Gunakan: *${prefix}shop buy <id> [qty]*\nLihat daftar: *${prefix}shop*`)
+                                const res = await economy.purchaseShop(sender, itemId, qty)
+                                const curStr = res.item.currency === 'money' ? `Rp ${economy.formatMoney(res.total)}` : `${economy.formatPoint(res.total)} Point`
+                                return reply(`✅ *Pembelian Berhasil!*\n━━━━━━━━━━━━\n🛒 ${res.item.name} x${qty}\n💳 Bayar: ${curStr}\n\nSisa Money: Rp ${economy.formatMoney(res.wallet.money)}\nSisa Point: ${economy.formatPoint(res.wallet.point)}\nInventory ${res.item.id}: ${res.wallet.inventory[res.item.id] || 0}`)
+                            }
+                            // direct buy: /shop itemId
+                            const itemId2 = sub
+                            const qty2 = parseInt(String(args[1]||'1').replace(/[^0-9]/g,''),10) || 1
+                            const res2 = await economy.purchaseShop(sender, itemId2, qty2)
+                            const curStr2 = res2.item.currency === 'money' ? `Rp ${economy.formatMoney(res2.total)}` : `${economy.formatPoint(res2.total)} Point`
+                            return reply(`✅ *Pembelian Berhasil!*\n━━━━━━━━━━━━\n🛒 ${res2.item.name} x${qty2}\n💳 Bayar: ${curStr2}\n\nSisa Money: Rp ${economy.formatMoney(res2.wallet.money)}`)
+                        } catch(e){
+                            if (e.code === 'INSUFFICIENT') return reply(`❌ Money tidak cukup.\nDibutuhkan: Rp ${economy.formatMoney(e.need)}\nSaldo: Rp ${economy.formatMoney(e.have)}`)
+                            if (e.code === 'INSUFFICIENT_POINT') return reply(`❌ Point tidak cukup.\nDibutuhkan: ${economy.formatPoint(e.need)} Point\nSaldo: ${economy.formatPoint(e.have)} Point`)
+                            reply(`❌ Gagal: ${e.message}`)
+                        }
+                    }
+                    break
+                    case 'economy': case 'eco': {
+                        if (!isCreator) return reply(mess.owner)
+                        const sub = String(args[0]||'').toLowerCase()
+                        try {
+                            if (sub === 'give') {
+                                const raw = String(args[1]||'')
+                                let target = null
+                                if (mentionUser && mentionUser.length) target = mentionUser[0]
+                                else if (m.quoted && m.quoted.sender) target = m.quoted.sender
+                                else if (raw) {
+                                    const n = raw.replace(/[^0-9]/g,'')
+                                    if (n.length>=9) target = (n.startsWith('62')?n:'62'+n.replace(/^0/,''))+'@s.whatsapp.net'
+                                }
+                                const amount = parseInt(String(args[2]||'').replace(/[^0-9]/g,''),10)
+                                if (!target || !amount) return reply(`Gunakan: *${prefix}economy give @user <jumlah>*\nContoh: *${prefix}economy give @Arasya 10000*`)
+                                const w = await economy.adminGive(target, amount, 0, `admin give by ${sender}`)
+                                await bob.sendMessage(m.chat, { text: `✅ Admin give Rp ${economy.formatMoney(amount)} ke @${target.split('@')[0]}\nSaldo baru: Rp ${economy.formatMoney(w.money)}`, mentions: [target] }, { quoted: m })
+                                try { await bob.sendMessage(target, { text: `🎁 Admin memberi kamu *Rp ${economy.formatMoney(amount)} Money*` }) } catch {}
+                            } else if (sub === 'remove') {
+                                let target = null
+                                if (mentionUser && mentionUser.length) target = mentionUser[0]
+                                else if (m.quoted && m.quoted.sender) target = m.quoted.sender
+                                const amount = parseInt(String(args[2]||'').replace(/[^0-9]/g,''),10)
+                                if (!target || !amount) return reply(`Gunakan: *${prefix}economy remove @user <jumlah>*`)
+                                const w = await economy.adminRemove(target, amount, 0, `admin remove by ${sender}`)
+                                reply(`✅ Admin remove Rp ${economy.formatMoney(amount)} dari @${target.split('@')[0]}\nSaldo baru: Rp ${economy.formatMoney(w.money)}`)
+                            } else if (sub === 'set') {
+                                let target = null
+                                if (mentionUser && mentionUser.length) target = mentionUser[0]
+                                else if (m.quoted && m.quoted.sender) target = m.quoted.sender
+                                const amount = parseInt(String(args[2]||'').replace(/[^0-9]/g,''),10)
+                                if (!target || isNaN(amount)) return reply(`Gunakan: *${prefix}economy set @user <jumlah Money>*`)
+                                const w = await economy.adminSet(target, amount, undefined)
+                                reply(`✅ Set Money @${target.split('@')[0]} = Rp ${economy.formatMoney(w.money)}`)
+                            } else if (sub === 'setpoint') {
+                                let target = null
+                                if (mentionUser && mentionUser.length) target = mentionUser[0]
+                                else if (m.quoted && m.quoted.sender) target = m.quoted.sender
+                                const amount = parseInt(String(args[2]||'').replace(/[^0-9]/g,''),10)
+                                if (!target || isNaN(amount)) return reply(`Gunakan: *${prefix}economy setpoint @user <jumlah Point>*`)
+                                const w = await economy.adminSet(target, undefined, amount)
+                                reply(`✅ Set Point @${target.split('@')[0]} = ${economy.formatPoint(w.point)} Point`)
+                            } else if (sub === 'transaction' || sub === 'tx') {
+                                const txid = String(args[1]||'').trim()
+                                if (!txid) return reply(`Gunakan: *${prefix}economy transaction <id>*`)
+                                const tx = economy.getTransactionById(txid)
+                                if (!tx) return reply(`❌ Transaksi tidak ditemukan`)
+                                reply(`📜 *Detail Transaksi*\nID: ${tx.transaction_id}\nUser: @${tx.user_id.split('@')[0]}\nType: ${tx.type}\nAmount: ${tx.amount} ${tx.currency}\nDesc: ${tx.description}\nWaktu: ${tx.created_at}\nFee: ${tx.fee}`)
+                            } else {
+                                reply(`*Admin Economy*\n━━━━━━━━━━━━\n*${prefix}economy give @user <jumlah>* — beri Money\n*${prefix}economy remove @user <jumlah>* — ambil Money\n*${prefix}economy set @user <jumlah>* — set Money\n*${prefix}economy setpoint @user <jumlah>* — set Point\n*${prefix}economy transaction <id>* — detail tx`)
+                            }
+                        } catch(e){ reply(`❌ Gagal: ${e.message}`)}
                     }
                     break
                     case 'resetpoin': {
@@ -3578,7 +3855,8 @@ fakereply(rules)
                     reply(link.success)
                 }
             }*/
-            if (budy.startsWith('Jojo')) {
+            // trigger Jojo hanya untuk command eksplisit, bukan prefix sembarang (fix bug "JojoH L" ke-trigger)
+            if (budy.toLowerCase().startsWith('jojo ') || budy.toLowerCase() === 'jojo') {
             try {
                     translate.translate(pushname, {to: `ja`}).then ( data => {
                         vitsUmamusumeVoiceSynthesizer(`どうした ${data.text}`, `草上飞 Grass Wonder (Umamusume Pretty Derby)`).then ( data2 => {
