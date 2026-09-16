@@ -16,11 +16,13 @@
       "number": "103852745453569",
       "name": "Syaaa",
       "firstSeen": "2026-09-13T12:28:18.237Z",
-      "lastSeen": "2026-09-15T00:16:44.509Z",
-      "hits": 81,
+      "lastSeen": "2026-09-16T04:38:08.365Z",
+      "hits": 125,
       "chats": [
         "103852745453569@lid",
-        "120363043223925309@g.us"
+        "120363043223925309@g.us",
+        "41798898139-1429460331@g.us",
+        "120363346345553362@g.us"
       ],
       "editimgUsage": {
         "count": 1,
@@ -141,6 +143,39 @@
       "hits": 1,
       "chats": [
         "56428001779814@lid"
+      ]
+    },
+    "160924220555368@lid": {
+      "jid": "160924220555368@lid",
+      "number": "160924220555368",
+      "name": ".",
+      "firstSeen": "2026-09-15T04:01:56.689Z",
+      "lastSeen": "2026-09-15T04:02:11.164Z",
+      "hits": 2,
+      "chats": [
+        "41798898139-1429460331@g.us"
+      ]
+    },
+    "169707512569977@lid": {
+      "jid": "169707512569977@lid",
+      "number": "169707512569977",
+      "name": "andidzzaki",
+      "firstSeen": "2026-09-15T04:03:54.627Z",
+      "lastSeen": "2026-09-15T04:03:54.627Z",
+      "hits": 1,
+      "chats": [
+        "169707512569977@lid"
+      ]
+    },
+    "129527808307430@lid": {
+      "jid": "129527808307430@lid",
+      "number": "129527808307430",
+      "name": "Dhieraaa",
+      "firstSeen": "2026-09-16T02:42:15.651Z",
+      "lastSeen": "2026-09-16T02:43:28.689Z",
+      "hits": 2,
+      "chats": [
+        "120363346345553362@g.us"
       ]
     }
   },
@@ -298,7 +333,18 @@
         "218687453802625@lid",
         "82038438785270@lid",
         "207644908384272@lid"
-      ]
+      ],
+      "antidelete": false,
+      "welcomeText": "",
+      "leftText": "",
+      "antimedia": {
+        "gambar": false,
+        "audio": false,
+        "video": false,
+        "document": false,
+        "vn": false,
+        "sticker": false
+      }
     },
     "120363037831727950@g.us": {
       "welcome": true,
@@ -353,7 +399,18 @@
         "103852745453569@lid",
         "228591530975342@lid",
         "157952220635338@lid"
-      ]
+      ],
+      "antidelete": false,
+      "welcomeText": "",
+      "leftText": "",
+      "antimedia": {
+        "gambar": false,
+        "audio": false,
+        "video": false,
+        "document": false,
+        "vn": false,
+        "sticker": false
+      }
     },
     "6281299123416-1585674175@g.us": {
       "welcome": false,
@@ -514,7 +571,18 @@
       "left": false,
       "antilink": false,
       "mute": false,
-      "chatbot": false
+      "chatbot": false,
+      "antidelete": false,
+      "welcomeText": "",
+      "leftText": "",
+      "antimedia": {
+        "gambar": false,
+        "audio": false,
+        "video": false,
+        "document": false,
+        "vn": false,
+        "sticker": false
+      }
     },
     "120363427490157982@g.us": {
       "welcome": false,
@@ -528,7 +596,18 @@
       "left": false,
       "antilink": false,
       "mute": false,
-      "chatbot": false
+      "chatbot": false,
+      "antidelete": false,
+      "welcomeText": "",
+      "leftText": "",
+      "antimedia": {
+        "gambar": false,
+        "audio": false,
+        "video": false,
+        "document": false,
+        "vn": false,
+        "sticker": false
+      }
     },
     "56428001779814@lid": {
       "welcome": false,
@@ -536,7 +615,601 @@
       "antilink": false,
       "mute": false,
       "chatbot": false
+    },
+    "120363395114168746@newsletter": {
+      "welcome": false,
+      "left": false,
+      "antilink": false,
+      "mute": false,
+      "chatbot": false,
+      "antidelete": false,
+      "welcomeText": "",
+      "leftText": "",
+      "antimedia": {
+        "gambar": false,
+        "audio": false,
+        "video": false,
+        "document": false,
+        "vn": false,
+        "sticker": false
+      }
+    },
+    "6285183221210@s.whatsapp.net": {
+      "welcome": false,
+      "left": false,
+      "antilink": false,
+      "mute": false,
+      "chatbot": false,
+      "antidelete": false,
+      "welcomeText": "",
+      "leftText": "",
+      "antimedia": {
+        "gambar": false,
+        "audio": false,
+        "video": false,
+        "document": false,
+        "vn": false,
+        "sticker": false
+      }
+    },
+    "157952220635338@lid": {
+      "welcome": false,
+      "left": false,
+      "antilink": false,
+      "mute": false,
+      "chatbot": false,
+      "antidelete": false,
+      "welcomeText": "",
+      "leftText": "",
+      "antimedia": {
+        "gambar": false,
+        "audio": false,
+        "video": false,
+        "document": false,
+        "vn": false,
+        "sticker": false
+      }
+    },
+    "120363346345553362@g.us": {
+      "welcome": true,
+      "left": true,
+      "antilink": false,
+      "mute": false,
+      "chatbot": true,
+      "antidelete": false,
+      "welcomeText": "",
+      "leftText": "",
+      "antimedia": {
+        "gambar": false,
+        "audio": false,
+        "video": false,
+        "document": false,
+        "vn": false,
+        "sticker": false
+      },
+      "members": [
+        "219894440312971@lid",
+        "129527808307430@lid",
+        "103852745453569@lid",
+        "228591530975342@lid",
+        "157952220635338@lid"
+      ]
+    },
+    "205721266331667@lid": {
+      "welcome": false,
+      "left": false,
+      "antilink": false,
+      "mute": false,
+      "chatbot": false,
+      "antidelete": false,
+      "welcomeText": "",
+      "leftText": "",
+      "antimedia": {
+        "gambar": false,
+        "audio": false,
+        "video": false,
+        "document": false,
+        "vn": false,
+        "sticker": false
+      }
+    },
+    "120363186130999681@newsletter": {
+      "welcome": false,
+      "left": false,
+      "antilink": false,
+      "mute": false,
+      "chatbot": false,
+      "antidelete": false,
+      "welcomeText": "",
+      "leftText": "",
+      "antimedia": {
+        "gambar": false,
+        "audio": false,
+        "video": false,
+        "document": false,
+        "vn": false,
+        "sticker": false
+      }
+    },
+    "120363400911374213@newsletter": {
+      "welcome": false,
+      "left": false,
+      "antilink": false,
+      "mute": false,
+      "chatbot": false,
+      "antidelete": false,
+      "welcomeText": "",
+      "leftText": "",
+      "antimedia": {
+        "gambar": false,
+        "audio": false,
+        "video": false,
+        "document": false,
+        "vn": false,
+        "sticker": false
+      }
     }
   },
-  "_migratedGroups": true
+  "_migratedGroups": true,
+  "ttt": {
+    "rooms": {
+      "2UXS": {
+        "code": "2UXS",
+        "chat": "120363043223925309@g.us",
+        "chatB": null,
+        "mode": "bot",
+        "status": "done",
+        "x": "103852745453569@lid",
+        "o": "BOT",
+        "turn": "X",
+        "board": [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        "names": {
+          "103852745453569@lid": "Syaaa"
+        },
+        "createdAt": 1789528064540,
+        "botThinking": 0,
+        "updatedAt": 1789528276204
+      },
+      "54QF": {
+        "code": "54QF",
+        "chat": "120363043223925309@g.us",
+        "chatB": null,
+        "mode": "bot",
+        "status": "done",
+        "x": "103852745453569@lid",
+        "o": "BOT",
+        "turn": "X",
+        "board": [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        "names": {
+          "103852745453569@lid": "Syaaa"
+        },
+        "createdAt": 1789528283883,
+        "botThinking": 0,
+        "updatedAt": 1789528548663
+      },
+      "8V66": {
+        "code": "8V66",
+        "chat": "grup1@g.us",
+        "chatB": null,
+        "mode": "bot",
+        "status": "done",
+        "x": "6281111111111",
+        "o": "BOT",
+        "turn": "O",
+        "board": [
+          "X",
+          "X",
+          "O",
+          "X",
+          "O",
+          null,
+          "O",
+          null,
+          null
+        ],
+        "names": {
+          "6281111111111": "Andi"
+        },
+        "createdAt": 1789528548664,
+        "botThinking": 1789528551497,
+        "updatedAt": 1789528552410
+      },
+      "26D6": {
+        "code": "26D6",
+        "chat": "grup1@g.us",
+        "chatB": null,
+        "mode": "pvp",
+        "status": "done",
+        "x": "6281111111111",
+        "o": "6282222222222",
+        "turn": "X",
+        "board": [
+          "X",
+          "X",
+          "X",
+          null,
+          "O",
+          "O",
+          null,
+          null,
+          null
+        ],
+        "names": {
+          "6281111111111": "Andi",
+          "6282222222222": "Budi"
+        },
+        "createdAt": 1789528552905,
+        "botThinking": 0,
+        "updatedAt": 1789528553755
+      },
+      "JGMJ": {
+        "code": "JGMJ",
+        "chat": "grup1@g.us",
+        "chatB": null,
+        "mode": "pvp",
+        "status": "done",
+        "x": "6281111111111",
+        "o": "6282222222222",
+        "turn": "X",
+        "board": [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        "names": {},
+        "createdAt": 1789528553972,
+        "botThinking": 0,
+        "updatedAt": 1789528553973
+      },
+      "R8DK": {
+        "code": "R8DK",
+        "chat": "grup1@g.us",
+        "chatB": null,
+        "mode": "pvp",
+        "status": "done",
+        "x": "6281111111111",
+        "o": "6282222222222",
+        "turn": "O",
+        "board": [
+          "X",
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        "names": {
+          "6281111111111": "Andi",
+          "6282222222222": "Budi"
+        },
+        "createdAt": 1789528553974,
+        "botThinking": 0,
+        "updatedAt": 1789528554189
+      },
+      "FVEM": {
+        "code": "FVEM",
+        "chat": "6281111111111@s.whatsapp.net",
+        "chatB": "6282222222222@s.whatsapp.net",
+        "mode": "room",
+        "status": "done",
+        "x": "6281111111111",
+        "o": "6282222222222",
+        "turn": "X",
+        "board": [
+          "O",
+          null,
+          null,
+          null,
+          "X",
+          null,
+          null,
+          null,
+          null
+        ],
+        "names": {
+          "6281111111111": "Andi",
+          "6282222222222": "Budi"
+        },
+        "createdAt": 1789528554191,
+        "botThinking": 0,
+        "updatedAt": 1789528554618
+      },
+      "WHHD": {
+        "code": "WHHD",
+        "chat": "grup1@g.us",
+        "chatB": null,
+        "mode": "pvp",
+        "status": "done",
+        "x": "6281111111111",
+        "o": "6282222222222",
+        "turn": "X",
+        "board": [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        "names": {},
+        "createdAt": 1789528354619,
+        "botThinking": 0,
+        "updatedAt": 1789528554620
+      },
+      "CM8T": {
+        "code": "CM8T",
+        "chat": "120363043223925309@g.us",
+        "chatB": null,
+        "mode": "bot",
+        "status": "done",
+        "x": "6288214772441",
+        "o": "BOT",
+        "turn": "X",
+        "board": [
+          "O",
+          "X",
+          "O",
+          "X",
+          "X",
+          "O",
+          "X",
+          "O",
+          "X"
+        ],
+        "names": {
+          "6288214772441": "Syaaa"
+        },
+        "createdAt": 1789528711691,
+        "botThinking": 0,
+        "updatedAt": 1789528743562
+      },
+      "ZQE4": {
+        "code": "ZQE4",
+        "chat": "g@g.us",
+        "chatB": null,
+        "mode": "bot",
+        "status": "done",
+        "x": "6281",
+        "o": "BOT",
+        "turn": "O",
+        "board": [
+          "O",
+          "X",
+          "O",
+          null,
+          "X",
+          null,
+          "X",
+          "O",
+          "X"
+        ],
+        "names": {
+          "6281": "Syaaa"
+        },
+        "createdAt": 1789528960889,
+        "botThinking": 0,
+        "updatedAt": 1789528960892
+      },
+      "XYZA": {
+        "code": "XYZA",
+        "chat": "grup1@g.us",
+        "chatB": null,
+        "mode": "bot",
+        "status": "done",
+        "x": "6281111111111",
+        "o": "BOT",
+        "turn": "O",
+        "board": [
+          "X",
+          "X",
+          "O",
+          "X",
+          "O",
+          null,
+          "O",
+          null,
+          null
+        ],
+        "names": {
+          "6281111111111": "Andi"
+        },
+        "createdAt": 1789528968831,
+        "botThinking": 1789528972036,
+        "updatedAt": 1789528972952
+      },
+      "3TRG": {
+        "code": "3TRG",
+        "chat": "grup1@g.us",
+        "chatB": null,
+        "mode": "pvp",
+        "status": "done",
+        "x": "6281111111111",
+        "o": "6282222222222",
+        "turn": "X",
+        "board": [
+          "X",
+          "X",
+          "X",
+          null,
+          "O",
+          "O",
+          null,
+          null,
+          null
+        ],
+        "names": {
+          "6281111111111": "Andi",
+          "6282222222222": "Budi"
+        },
+        "createdAt": 1789528973447,
+        "botThinking": 0,
+        "updatedAt": 1789528974283
+      },
+      "56G3": {
+        "code": "56G3",
+        "chat": "grup1@g.us",
+        "chatB": null,
+        "mode": "pvp",
+        "status": "done",
+        "x": "6281111111111",
+        "o": "6282222222222",
+        "turn": "X",
+        "board": [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        "names": {},
+        "createdAt": 1789528974498,
+        "botThinking": 0,
+        "updatedAt": 1789528974500
+      },
+      "6VUZ": {
+        "code": "6VUZ",
+        "chat": "grup1@g.us",
+        "chatB": null,
+        "mode": "pvp",
+        "status": "done",
+        "x": "6281111111111",
+        "o": "6282222222222",
+        "turn": "O",
+        "board": [
+          "X",
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        "names": {
+          "6281111111111": "Andi",
+          "6282222222222": "Budi"
+        },
+        "createdAt": 1789528974504,
+        "botThinking": 0,
+        "updatedAt": 1789528974713
+      },
+      "UJ89": {
+        "code": "UJ89",
+        "chat": "6281111111111@s.whatsapp.net",
+        "chatB": "6282222222222@s.whatsapp.net",
+        "mode": "room",
+        "status": "done",
+        "x": "6281111111111",
+        "o": "6282222222222",
+        "turn": "X",
+        "board": [
+          "O",
+          null,
+          null,
+          null,
+          "X",
+          null,
+          null,
+          null,
+          null
+        ],
+        "names": {
+          "6281111111111": "Andi",
+          "6282222222222": "Budi"
+        },
+        "createdAt": 1789528974715,
+        "botThinking": 0,
+        "updatedAt": 1789528975145
+      },
+      "SUUX": {
+        "code": "SUUX",
+        "chat": "grup1@g.us",
+        "chatB": null,
+        "mode": "pvp",
+        "status": "done",
+        "x": "6281111111111",
+        "o": "6282222222222",
+        "turn": "X",
+        "board": [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        "names": {},
+        "createdAt": 1789528775146,
+        "botThinking": 0,
+        "updatedAt": 1789528975148
+      }
+    },
+    "stats": {
+      "6281": {
+        "win": 0,
+        "lose": 0,
+        "draw": 1
+      },
+      "103852745453569@lid": {
+        "win": 0,
+        "lose": 1,
+        "draw": 0
+      },
+      "6281111111111": {
+        "win": 2,
+        "lose": 2,
+        "draw": 0
+      },
+      "6282222222222": {
+        "win": 0,
+        "lose": 2,
+        "draw": 0
+      },
+      "6288214772441": {
+        "win": 0,
+        "lose": 0,
+        "draw": 1
+      }
+    }
+  }
 }

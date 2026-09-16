@@ -3,6 +3,7 @@
    * Contact Me on wa.me/6288292024190
    * Follow https://github.com/DikaArdnt
 */
+require('dotenv').config()
 require('./config')
 require('module-alias/register')
 const { loadBaileys, makeSimpleStore, CUSTOM_PAIRING_RAW, CUSTOM_PAIRING_DISPLAY, formatPairingCode } = require('./lib/ourin')

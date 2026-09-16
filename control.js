@@ -342,49 +342,7 @@ module.exports = bob = async (bob, m, chatUpdate, store, welcome, mentioned) => 
             mime = rese.headers['content-type']
             return { name ,size ,date ,mime ,link };
             }
-        // function
-        async function instagram(url) {
-            let res = await axios("https://indown.io/");
-            let _$ = cheerio.load(res.data);
-            let referer = _$("input[name=referer]").val();
-            let locale = _$("input[name=locale]").val();
-            let _token = _$("input[name=_token]").val();
-            let { data } = await axios.post(
-              "https://indown.io/download",
-              new URLSearchParams({
-                link: url,
-                referer,
-                locale,
-                _token,
-              }),
-              {
-                headers: {
-                  cookie: res.headers["set-cookie"].join("; "),
-                },
-              }
-            );
-            let $ = cheerio.load(data);
-            let result = [];
-            let __$ = cheerio.load($("#result").html());
-            __$("video").each(function () {
-              let $$ = $(this);
-              result.push({
-                type: "video",
-                thumbnail: $$.attr("poster"),
-                url: $$.find("source").attr("src"),
-              });
-            });
-            __$("img").each(function () {
-              let $$ = $(this);
-              result.push({
-                type: "image",
-                url: $$.attr("src"),
-              });
-            });
-          
-            return result;
-          }
-
+        // (helper indown.io dihapus: domain diblokir 403 — igdl kini via API siputzx/ummy)
          
           if (isMuted){
             if (!isGroupAdmins && !isCreator) return
@@ -625,76 +583,7 @@ if (isPlayGame(m.chat, teki) ) {
 
     // Premium
     _prem.expiredCheck(bob, premium)
-    let yutu = `https://youtu${m.text.slice(13)}`
 
-if (m.text.includes(yutu)) {
-    if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return console.log(`Limit beliau sudah habis jir`)
-                    limitAdd(sender, limit)
-var url = yutu
-const streamPipeline = promisify(pipeline);
-                        const audioStream = ytdl(yutu, {
-                            filter: 'audioonly',
-                            quality: 'highestaudio',
-                          });
-                          const sampah = os.tmpdir();
-                          const writableStream = fs.createWriteStream(`${sampah}/${title}.mp3`);
-                        
-                          await streamPipeline(audioStream, writableStream);
-                          bob.sendMessage(m.chat, {audio: {url: `${sampah}/${title}.mp3`}, fileName: title, mimetype: 'audio/mp4'}, {quoted: m})
-}
-// Auto-download TikTok via yt-dlp (youtube-dl-exec): user kirim link -> langsung diunduh & dikirim di chat yang sama
-const ttMatch = String(m.text || "").match(/https?:\/\/(www\.|vt\.|vm\.|m\.)?tiktok\.com\/\S+/i)
-if (ttMatch && !isCmd && !m.key.fromMe) {
-    if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return console.log(`Limit beliau sudah habis jir`)
-    limitAdd(sender, limit)
-    const ttUrl = ttMatch[0].replace(/[),.!?]+$/, "")
-    let ttFile = null
-    try {
-        await bob.sendMessage(m.chat, { text: `⏳ _Mengunduh video TikTok..._` }, { quoted: m }).catch(() => {})
-        const ttInfo = await ytdlp.getInfo(ttUrl)
-        const ttDl = await ytdlp.downloadTikTok(ttUrl, ttInfo)
-        ttFile = ttDl.file
-        const ttCap = `🎬 *${ttInfo.title || "TikTok Video"}*\n👤 @${ttInfo.uploader || "-"}\n⏳ ${ytdlp.fmtDuration(ttInfo.duration)}`
-        await bob.sendMessage(m.chat, { video: fs.readFileSync(ttDl.file), mimetype: "video/mp4", caption: ttCap }, { quoted: m })
-    } catch (e) {
-        console.log("[auto-tt]", e?.message || e)
-        try {
-            const data = await tiktoku.Downloader(ttUrl, { version: "v2" })
-            if (data && data.result && data.result.video) {
-                await bob.sendMessage(m.chat, { video: { url: data.result.video }, caption: `Sukses Mendownload Video TikTok.` }, { quoted: m })
-            } else throw e
-        } catch { reply(`Gagal mengunduh TikTok: ${e.message}`) }
-    } finally { ytdlp.cleanup(ttFile) }
-}
-let igdl = `https://www.instagram.com/${m.text.slice(26)}`
-
-if (m.text.includes(igdl)) {
-    if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return console.log(`Limit beliau sudah habis jir`)
-                    limitAdd(sender, limit)
-var url = igdl
-instagram(url).then( data => {
-for ( let i of data ) {
-if (i.type === "video") {
-bob.sendMessage(m.chat, {video: {url: i.url}}, {quoted: m})
-} else if (i.type === "image") {
-bob.sendMessage(m.chat, {image: { url: i.url }})
-}
-}
-}).catch(() => reply(`Eror mas. P in owner coba`))
-}
-
-
-let cp = `https://www.capcut.com/${m.text.slice(23)}`
-
-if (m.text.includes(cp)) {
-    if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return console.log(`Limit beliau sudah habis jir`)
-                    limitAdd(sender, limit)
-var url = cp
-capcut(url).then ( data => {
-reply(`*[ CAPCUT ]*\n\nUsername : ${data.nama}\nUsed : ${data.used} Pemakai\n\n_Wait A Minute._`)
-bob.sendMessage(m.chat, {video: {url: data.video}, caption: `${data.used} Telah Di Pakai`})
-} )
-}
 
     
 var premi = 'User'
@@ -843,6 +732,19 @@ if (!isCmd && typeof body === 'string' && body.trim()) {
         const mancingLib = require('./lib/mancing')
         if (await mancingLib.handleSellResponse(bob, m, body)) return
     } catch {}
+}
+
+// ========== TIC-TAC-TOE: langkah angka & jawab tantangan (y/n) ==========
+if (!isCmd && !m.key.fromMe && typeof body === 'string' && body.trim()) {
+    try {
+        const tttLib = require('./lib/ttt')
+        const consumed = await tttLib.handleText(bob, m, {
+            body, sender, num: senderNum, pushname,
+            reply: async (t) => reply(t),
+            onWin: (jid) => { try { giveLimit(jid, 2, limit) } catch {} }
+        })
+        if (consumed) return
+    } catch (e) { console.log('[ttt]', e?.message || e) }
 }
 
         switch (command) {
@@ -994,17 +896,24 @@ ${isi}
             }
             break
             case 'allmenu': {
-               /* bob.sendMessage(m.chat, {text: menuku, mentions: [sender], contextInfo: {
-                    externalAdReply: {
-                        title: `Hello ${pushname}`,
-                        body: `-`,
-                        sourceUrl: "https://chat.whatsapp.com/Famd1qzPzScBX4TSual41k",
-                        showAdAttribution: true,
-                        mediaType: 1
-                    }
-                }}, {quoted: m})*/
-                var link = fs.readFileSync(`./media/new-jobot.png`)
-                bob.sendMessage(m.chat, {image: link, caption: menuku, mentions: [sender]}, {quoted: m})
+                // Menu dikirim sebagai teks + link preview palsu (tanpa gambar),
+                // thumbnail dari catbox, judul/teks disesuaikan ke Jojo Bot.
+                // NOTE: URL wajib ada di awal teks, kalau tidak kartu preview tidak dirender WA.
+                try {
+                    const { sendFakeLink } = require('./lib/fakelink')
+                    await sendFakeLink(bob, m.chat, {
+                        url: global.botWebsite || 'https://bot.acamedia.xyz',
+                        title: `🤖 ${global.botName} • All Menu`,
+                        description: `Daftar lengkap fitur ${global.botName} — ketik perintahnya untuk memakai!`,
+                        thumbUrl: 'https://files.catbox.moe/0rhzw7.png',
+                        body: menuku,
+                        mentions: [sender],
+                        quoted: m
+                    })
+                } catch (e) {
+                    console.log('[allmenu]', e?.message || e)
+                    bob.sendMessage(m.chat, { text: menuku, mentions: [sender] }, { quoted: m })
+                }
                 }
                 break
             case 'public': {
@@ -1098,6 +1007,22 @@ ${isi}
                     bob.sendMessage(m.chat, {caption: q, image: {url: `https://api.qrserver.com/v1/create-qr-code/?size=790x790&data=${q}`}}, {quoted: m})
                     }
                     break
+                    // Testing kirim pesan biasa dengan link preview palsu (custom judul/deskripsi/thumbnail)
+                    case 'testlink': {
+                        if (!isCreator) return reply(mess.owner)
+                        try {
+                            const { sendFakeLink } = require('./lib/fakelink')
+                            await sendFakeLink(bob, m.chat, {
+                                url: 'https://termai.cc',
+                                title: '🎮 Termai Minigames • 500+ Games Arcade & Retro',
+                                description: 'Mainkan 500+ game seru langsung di WhatsApp atau Web Player',
+                                thumbUrl: 'https://c.termai.cc/i131/QRq.png',
+                                body: `Halo ${pushname}! Ini contoh pesan link preview palsu.`,
+                                quoted: m
+                            })
+                        } catch (e) { reply(`Gagal testlink: ${e.message}`) }
+                    }
+                    break
                     
 
                     break
@@ -1116,6 +1041,107 @@ ${isi}
                             console.log(e)
                             reply('Gagal mengocok dadu, coba lagi nanti.')
                         }
+                    }
+                    break
+                    // ===== TIC-TAC-TOE (database.json) =====
+                    case 'tictactoe': case 'ttt': {
+                        const ttt = require('./lib/ttt')
+                        const sub = String(args[0] || '').toLowerCase()
+                        // PENTING: pakai nomor stabil (senderNum, hasil resolve LID->PN),
+                        // bukan JID mentah — format JID bisa beda antar pesan.
+                        const me = senderNum || ttt.digitsOf(sender)
+                        const help = `*${ttt.X} TIC-TAC-TOE ${ttt.O}*\n\n• *${prefix}ttt bot* — main lawan bot\n• *${prefix}ttt @tag* / reply *${prefix}ttt* — tantang member (grup)\n• *${prefix}ttt create* — buat room + kode\n• *${prefix}ttt join KODE* — gabung room (bisa beda chat!)\n• *${prefix}ttt papan* — lihat papan\n• *${prefix}ttt stop* — menyerah/berhenti\n\nLangkah: kirim angka *1-9*. Tantangan dijawab *y* / *n*.\nSeri otomatis bila papan terkunci 🔒.`
+                        const busy = ttt.roomOf(me) || ttt.waitingFor(me)
+                        const needPoin = () => {
+                            if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) {
+                                reply(`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
+                                return true
+                            }
+                            return false
+                        }
+                        if (!sub) return reply(help)
+                        // --- lawan bot ---
+                        if (sub === 'bot') {
+                            if (busy) return reply(`Kamu masih punya game aktif! Selesaikan dulu atau *${prefix}ttt stop*.`)
+                            if (needPoin()) return
+                            limitAdd(sender, limit)
+                            const room = ttt.baseRoom(m.chat, me, ttt.BOT, 'bot')
+                            room.status = 'playing'
+                            room.names[me] = pushname
+                            ttt.putRoom(room)
+                            return ttt.broadcast(bob, room, `*Game baru dimulai!* Kamu ${ttt.X} jalan duluan.\n\n` + ttt.boardText(room), ttt.mentionList(room))
+                        }
+                        // --- buat room ---
+                        if (sub === 'create' || sub === 'buat' || sub === 'room') {
+                            if (busy) return reply(`Kamu masih punya game aktif! Selesaikan dulu atau *${prefix}ttt stop*.`)
+                            if (needPoin()) return
+                            limitAdd(sender, limit)
+                            const room = ttt.baseRoom(m.chat, me, null, 'room')
+                            room.o = null
+                            room.names[me] = pushname
+                            ttt.putRoom(room)
+                            return ttt.broadcast(bob, room, `🏠 Room *${room.code}* dibuat oleh @${me}!\n\nSiapapun gabung dengan:\n*${prefix}ttt join ${room.code}*\n\n_(bisa dari chat lain — sesi lintas chat)_`, ttt.mentionList(room))
+                        }
+                        // --- gabung room ---
+                        if (sub === 'join' || sub === 'gabung') {
+                            const code = String(args[1] || '').toUpperCase().trim()
+                            if (!code) return reply(`Contoh: *${prefix}ttt join ABCD*`)
+                            if (busy) return reply(`Kamu masih punya game aktif! Selesaikan dulu atau *${prefix}ttt stop*.`)
+                            const room = ttt.getRoom(code)
+                            if (!room || room.status !== 'waiting' || room.o) return reply(`Room *${code}* tidak ada / sudah mulai.`)
+                            if (room.x === me) return reply(`Itu room buatanmu sendiri — tunggu lawan gabung.`)
+                            room.o = me
+                            room.names[me] = pushname
+                            if (m.chat !== room.chat) room.chatB = m.chat
+                            room.status = 'playing'
+                            ttt.putRoom(room)
+                            return ttt.broadcast(bob, room, `✅ @${me} gabung room *${room.code}*! @${room.x} ${ttt.X} jalan duluan.\n\n` + ttt.boardText(room), ttt.mentionList(room))
+                        }
+                        // --- berhenti/menyerah ---
+                        if (['stop', 'nyerah', 'surrender', 'berhenti', 'batal', 'cancel'].includes(sub)) {
+                            const room = ttt.roomOf(me) || ttt.waitingFor(me)
+                            if (!room) return reply(`Kamu tidak sedang bermain.`)
+                            if (room.status === 'waiting') {
+                                ttt.endRoom(room.code)
+                                return ttt.broadcast(bob, room, `🚫 Room *${room.code}* dibatalkan oleh @${me}.`, [ttt.jidOf(me)])
+                            }
+                            const oppKey = room.x === me ? room.o : room.x
+                            ttt.recordResult(oppKey, me, false)
+                            ttt.endRoom(room.code)
+                            const st = ttt.statsOf(oppKey === ttt.BOT ? me : oppKey)
+                            return ttt.broadcast(bob, room, `🏳️ @${me} *menyerah!*\n🏆 *${ttt.nameOf(room, oppKey)}* menang!` + (oppKey === ttt.BOT ? ' 🤖' : `\n📊 Menang: ${st.win} • Kalah: ${st.lose} • Seri: ${st.draw}`), ttt.mentionList(room).concat([ttt.jidOf(me)]))
+                        }
+                        // --- lihat papan ---
+                        if (['papan', 'board'].includes(sub)) {
+                            const room = ttt.roomOf(me) || ttt.waitingFor(me)
+                            if (!room) return reply(`Kamu tidak sedang bermain.\n\n` + help)
+                            return bob.sendMessage(m.chat, { text: ttt.boardText(room), mentions: ttt.mentionList(room) }, { quoted: m })
+                        }
+                        // --- tantang member (grup): mention / reply / nomor -> normalisasi ke digit ---
+                        let target = null
+                        if (mentionUser && mentionUser.length) target = await resolveSenderPN(mentionUser[0])
+                        else if (m.quoted && m.quoted.sender) target = await resolveSenderPN(m.quoted.sender)
+                        else {
+                            const num = String(args.join(' ')).replace(/[^0-9]/g, '')
+                            if (num.length >= 9) {
+                                let n = num
+                                if (n.startsWith('08')) n = '62' + n.slice(1)
+                                else if (!n.startsWith('62')) n = '62' + n
+                                target = n
+                            }
+                        }
+                        if (!target) return reply(help)
+                        if (!m.isGroup) return reply(`Tantang member hanya di grup!\nBuat room saja:\n*${prefix}ttt create* lalu suruh dia *${prefix}ttt join KODE*`)
+                        if (target === me) return reply(`Tidak bisa menantang diri sendiri!`)
+                        if (busy) return reply(`Kamu masih punya game aktif! Selesaikan dulu atau *${prefix}ttt stop*.`)
+                        if (ttt.roomOf(target) || ttt.waitingFor(target)) return reply(`Dia sedang bermain. Tunggu selesai dulu!`)
+                        if (needPoin()) return
+                        limitAdd(sender, limit)
+                        const room = ttt.baseRoom(m.chat, me, target, 'pvp')
+                        room.status = 'waiting'
+                        room.names[me] = pushname
+                        ttt.putRoom(room)
+                        return ttt.broadcast(bob, room, `⚔️ @${me} menantang @${target} main *TIC-TAC-TOE!*\n\n@${target}, balas *y* untuk terima / *n* untuk tolak.\n_(2 menit)_`, ttt.mentionList(room))
                     }
                     break
                     // ===== FISHING GAME (database.json) =====
@@ -1597,13 +1623,6 @@ ${CmD} Tangerang
                           }
                         })
                         
-                    }
-                    break
-                    case 'waifu':{
-                // if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
-                var linkjs = await fetchJson(`https://api.waifu.pics/sfw/waifu`)
-                    reply(`Mencari Waifu Kamu... 🔍`)
-                    bob.sendMessage(m.chat, {image: {url: linkjs.url}}, {quoted: m})
                     }
                     break
                     /*
@@ -2133,7 +2152,7 @@ ${CmD} Tangerang
                             joDatabase.setGroup(m.chat, { welcome: false, left: false })
                             reply(`Sukses menonaktifkan fitur Welcome & Left di grup ini ❌`)
                         } else {
-                            const statusText = `*PENGATURAN WELCOME & LEFT*\n\nStatus saat ini:\n• Welcome Card : *${currentWelcome ? 'ON ✅' : 'OFF ❌'}*\n• Left/Goodbye : *${currentLeft ? 'ON ✅' : 'OFF ❌'}*\n\nSilakan pilih opsi tombol di bawah untuk mengaktifkan atau menonaktifkan fitur ini:`
+                            const statusText = `Status saat ini:\n• Welcome Card : *${currentWelcome ? 'ON ✅' : 'OFF ❌'}*\n• Left/Goodbye : *${currentLeft ? 'ON ✅' : 'OFF ❌'}*\n\nSilakan pilih opsi tombol di bawah untuk mengaktifkan atau menonaktifkan fitur ini:`
                             const btnWelcome = [
                                 { name: "quick_reply", buttonParamsJson: JSON.stringify({ display_text: "ON ✅", id: `${prefix}welcome on` }) },
                                 { name: "quick_reply", buttonParamsJson: JSON.stringify({ display_text: "OFF ❌", id: `${prefix}welcome off` }) }
@@ -2204,7 +2223,7 @@ ${CmD} Tangerang
                             joDatabase.setGroup(m.chat, { antidelete: false })
                             reply(`Sukses menonaktifkan fitur Anti-Delete di grup ini ❌`)
                         } else {
-                            const statusText = `*FITUR ANTI-DELETE*\n\nStatus saat ini: *${isAntiDelete ? 'ON ✅' : 'OFF ❌'}*\n\nKetika aktif, pesan yang dihapus oleh member akan otomatis dikirimkan kembali ke grup oleh bot.\n\nSilakan pilih tombol di bawah:`
+                            const statusText = `Status saat ini: *${isAntiDelete ? 'ON ✅' : 'OFF ❌'}*\n\nKetika aktif, pesan yang dihapus oleh member akan otomatis dikirimkan kembali ke grup oleh bot.\n\nSilakan pilih tombol di bawah:`
                             const btnAD = [
                                 { name: "quick_reply", buttonParamsJson: JSON.stringify({ display_text: "ON ✅", id: `${prefix}antidelete on` }) },
                                 { name: "quick_reply", buttonParamsJson: JSON.stringify({ display_text: "OFF ❌", id: `${prefix}antidelete off` }) }
@@ -2252,20 +2271,40 @@ ${CmD} Tangerang
                         return anon.leaveChat(bob, m, sender, reply)
                     }
 
-                    case 'ai':{
-                        // if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
-                        if (!q) return reply(`Apa Yang Mau Di Ulas?\nExample : ${CmD} Kamu bisa apa?`)
+                    // ========== AI via Puter.js (sesi per nomor utk private, per grup utk grup) ==========
+                    case 'ai': {
+                        if (!q) return reply(`Apa yang mau ditanyakan?\nContoh: ${prefix}ai Siapa presiden pertama Indonesia?`)
                         if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
                         limitAdd(sender, limit)
+                        try { bob.sendPresenceUpdate("composing", m.chat) } catch {}
                         try {
-                        const service = new CompletionService({gemini: [`AIzaSyD9aD12un3L9CVK49fhC4JkkrlNGZgQ6vQ`] })
-                        const [response] = await service.requestCompletion(
-                            'gemini-1.0-pro', '', q
-                        )
-                        reply(response.text)
-                        } catch(e) {
-                        reply(`Layanan AI sedang gangguan, coba lagi nanti.`)
+                            const puterai = require('./lib/puterai')
+                            // Private: 1 sesi per nomor HP. Grup: 1 sesi per grup (AI ingat obrolan grup).
+                            const skey = m.isGroup ? m.chat : senderNum
+                            const ans = await puterai.chat(skey, q, m.isGroup ? { who: pushname } : {})
+                            reply(ans)
+                        } catch (e) {
+                            console.log('[ai-puter]', e?.message || e)
+                            reply(`Gagal AI: ${e.message || e}`)
                         }
+                    }
+                    break
+                    case 'aireset': case 'forget': {
+                        try {
+                            const puterai = require('./lib/puterai')
+                            const skey = m.isGroup ? m.chat : senderNum
+                            puterai.resetSession(skey)
+                            reply(`🧠 Memori AI untuk ${m.isGroup ? 'grup ini' : 'nomormu'} sudah dihapus. Mulai obrolan baru!`)
+                        } catch (e) { reply(`Gagal reset: ${e.message || e}`) }
+                    }
+                    break
+                    case 'aiusage': {
+                        if (!isCreator) return reply(mess.owner)
+                        try {
+                            const puterai = require('./lib/puterai')
+                            const u = await puterai.getUsage()
+                            reply(`📊 *PEMAKAIAN AI PUTER (bulan ini)*\n\nTerpakai: *${u.allowanceUsed}*\nTotal: *${u.total}*\n\n_Nilai dalam satuan billing Puter. Kuota gratis reset tiap bulan._`)
+                        } catch (e) { reply(`Gagal cek usage: ${e.message || e}`) }
                     }
                     break
                     case 'editimg': {
@@ -2369,23 +2408,24 @@ ${CmD} Tangerang
                     
                     break
                     case 'chatbot':{
-                        if (!m.isGroup) {
+                        if (!m.isGroup) return reply(global.mess.group)
+                        if (!isGroupAdmins) return reply(global.mess.admin)
+                        if (q.toLowerCase() === "on") {
+                            if (isChatBot) return reply(`ChatBot sudah aktif di grup ini ✅\nReply pesan bot untuk mengobrol — AI ingat obrolan grup.`)
+                            joDatabase.setGroup(m.chat, { chatbot: true })
+                            reply(`✅ ChatBot *AKTIF* di grup ini.\nCara pakai: *reply pesan bot* lalu tulis pertanyaanmu (tanpa command).\nMatikan: *${prefix}chatbot off*`)
+                        } else if (q.toLowerCase() === "off") {
+                            if (!isChatBot) return reply(`ChatBot sudah nonaktif.`)
+                            joDatabase.setGroup(m.chat, { chatbot: false })
+                            reply(`ChatBot *NONAKTIF* di grup ini ❌`)
+                        } else {
                         var btn =  [{"name": "quick_reply",
                         "buttonParamsJson": "{\"display_text\":\"On\",\"id\":\"#chatai on\"}"
                         }, {"name": "quick_reply",
                         "buttonParamsJson": "{\"display_text\":\"Off\",\"id\":\"#chatai off\"}"
                         },]
                         bob.sendButton(m.chat, `Silahkan Pilih Opsi Berikut`,'', `> *_Haii ${pushname}_*\n` ,btn)
-                    } else 
-                    if (!isGroupAdmins) return reply (mess.admin)
-                    if (m.isGroup){
-                        var btn =  [{"name": "quick_reply",
-                        "buttonParamsJson": "{\"display_text\":\"On\",\"id\":\"#chatai on\"}"
-                        }, {"name": "quick_reply",
-                        "buttonParamsJson": "{\"display_text\":\"Off\",\"id\":\"#chatai off\"}"
-                        },]
-                        bob.sendButton(m.chat, `Silahkan Pilih Opsi Berikut`,'', `> *_Haii ${pushname}_*\n` ,btn)
-                    }
+                        }
                     }
                     break
                     case 'antilink': {
@@ -2512,42 +2552,19 @@ ${CmD} Tangerang
                     try{
                         if (!q) return m.reply('Missing parameter text')
                         const name = pushname
-                        let q1 = m.quoted ? m.quoted : m
-                        let teks = q 
-                        const avatar = await bob.profilePictureUrl(quoted.sender, "image").catch(_ => "https://telegra.ph/file/89c1638d9620584e6e140.png")
-                        let mime = (q1.m || q1).mimetype || '' 
-                        
-                        if (/image\/(jpe?g|png)/.test(mime)) { 
-                        let media = await bob.downloadAndSaveMediaMessage(quoted,getRandom())
-                        let anu = await upload(media)
-                        const json = { type: "quote", format: "png", backgroundColor: "#4e4e4e", width: 512, height: 768,  scale: 3, messages: [{ entities: [], media: { url: anu.url }, avatar: true, from: { id: 1, name, photo: { url: avatar }}, text: teks, replyMessage: {} }]}
-                         const { data } = await axios.post("https://bot.lyo.su/quote/generate", json, {
-                            headers: {
-                              "Content-Type": "application/json"
-                            }
-                          }).catch(e => e.response || {})
-                          if(!data.ok) throw data
-                        const buffer = Buffer.from(data.result.image, "base64")
-                        
-                        let encmedia2 = await bob.sendImageAsSticker(m.chat, buffer, m, { packname: global.packname, author: global.author })
-
-                        sleep(1000)
-                        fs.unlinkSync(media)
-                        
-                        } else {
-                        const json = { type: "quote", format: "png", backgroundColor: "#FFFFFF", width: 512, height: 768,  scale: 2, messages: [{ entities: [], avatar: true, from: { id: 1, name, photo: { url: avatar }}, text: teks, replyMessage: {} }]}
-                        const { data } = await axios.post("https://bot.lyo.su/quote/generate", json, {
-                            headers: {
-                              "Content-Type": "application/json"
-                            }
-                          }).catch(e => e.response || {})
-                          if(!data.ok) m.reply( data)
-                        const buffer = Buffer.from(data.result.image, "base64")
-                        let encmedia3 = await bob.sendImageAsSticker(m.chat, buffer, m, { packname: global.packname, author: global.author })
-                        }
+                        const avatar = await bob.profilePictureUrl(quoted.sender, "image").catch(_ => "https://files.catbox.moe/0rhzw7.png")
+                        const r = await axios.get('https://api-faa.my.id/faa/qc-black', {
+                            params: { q, username: name, avatar },
+                            timeout: 30000,
+                            validateStatus: () => true
+                        })
+                        const img = r.data && r.data.result && r.data.result.qc_image
+                        if (!r.data || r.data.status !== true || !img) throw new Error('API qc tidak mengembalikan gambar')
+                        const buffer = await getBuffer(img)
+                        await bob.sendImageAsSticker(m.chat, buffer, m, { packname: global.packname, author: global.author })
                         } catch (e){
-                            m.reply (`${e}`)
-                            console.log(e)
+                            m.reply (`Gagal qc: ${e.message || e}`)
+                            console.log('[qc]', e?.message || e)
                             return
                             }
                 }
@@ -2569,19 +2586,8 @@ ${CmD} Tangerang
                     if (!isUrl(q)) return reply(`Link Ga Sesuai`)
                     if (!q.includes('instagram.com')) return reply(`Link Ga Sesuai`)
                     reply(global.mess.wait)
-                    instagram(q).then(data => {
-                        if (!data || !data.length) throw new Error('empty')
-                        for (let i of data) {
-                            if (i.type === "video") {
-                                bob.sendMessage(m.chat, { video: { url: i.url } }, { quoted: m })
-                            } else if (i.type === "image") {
-                                bob.sendMessage(m.chat, { caption: `Sukses, Follow Instagram : @arsrfii`, image: { url: i.url } }, { quoted: m })
-                            }
-                        }
-                    }).catch((ePrimary) => {
-                        console.error('IGDL-INDOWN gagal, coba fallback ummy:', ePrimary && ePrimary.message)
-                        // fallback langsung: API siputzx/ummy (tanpa lewat lib)
-                        ;(async () => {
+                    // Unduh via API siputzx/ummy (jalur indown.io dihapus: 403 diblokir)
+                    ;(async () => {
                             try {
                                 const linkMatch = (q || '').match(/https?:\/\/[^\s]+/i)
                                 if (!linkMatch) return reply(`ERORR. Postingan tidak Tersedia (link tidak terbaca)`)
@@ -2647,7 +2653,6 @@ ${CmD} Tangerang
                                 reply(`ERORR. Postingan tidak Tersedia`)
                             }
                         })()
-                    })
                 }
                 break
                     case 'hidetag': {
@@ -2787,42 +2792,85 @@ ${CmD} Tangerang
                         let meta0 = null
                         try { meta0 = await bob.groupMetadata(m.chat) } catch {}
                         const alreadyIn = new Set((meta0 && meta0.participants ? meta0.participants : []).map(p => p.id))
+                        const digitsOf = (j) => String(j || '').split('@')[0].split(':')[0].replace(/[^0-9]/g, '')
+                        // Resolve JID target ke nomor HP (@s.whatsapp.net).
+                        // Add via JID @lid mentah ditolak server (bad-request),
+                        // jadi petakan dulu lewat lidMapping seperti resolveSenderPN di atas.
+                        async function resolveAddTarget(jid) {
+                            try {
+                                let d = String(jid || '')
+                                try { const dec = bob.decodeJid(d); if (dec) d = dec } catch {}
+                                if (d.endsWith('@lid') && bob.signalRepository && bob.signalRepository.lidMapping && bob.signalRepository.lidMapping.getPNForLID) {
+                                    const pn = await bob.signalRepository.lidMapping.getPNForLID(d).catch(() => null)
+                                    if (pn) {
+                                        try { const dec2 = bob.decodeJid(pn); if (dec2) return dec2 } catch {}
+                                        return String(pn)
+                                    }
+                                }
+                                return d
+                            } catch { return String(jid || '') }
+                        }
+                        // Kirim undangan NATIVE (GroupInviteMessage/V4) ke PC target:
+                        // tampil sebagai kartu undangan + tombol Gabung, bukan link mentah.
+                        // NOTE: jangan pakai groupRevokeInvite per undangan (itu me-reset link grup!),
+                        // dan groupAcceptInvite itu untuk BOT join grup, bukan untuk mengundang orang.
+                        async function sendInviteV4(target, why) {
+                            const code = await bob.groupInviteCode(m.chat)
+                            if (!code) throw new Error('gagal mengambil kode undangan grup')
+                            const gname = (meta0 && meta0.subject) || groupName || 'grup'
+                            let thumb = null
+                            try {
+                                const ppUrl = await bob.profilePictureUrl(m.chat, 'image').catch(() => null)
+                                if (ppUrl) thumb = await getBuffer(ppUrl)
+                            } catch {}
+                            const { generateWAMessageFromContent } = getBaileys()
+                            const inviteExpiration = Math.floor(Date.now() / 1000) + 3 * 24 * 3600 // 3 hari
+                            const waMsg = generateWAMessageFromContent(target, {
+                                groupInviteMessage: {
+                                    groupJid: m.chat,
+                                    inviteCode: code,
+                                    inviteExpiration,
+                                    groupName: gname,
+                                    caption: `Undangan untuk bergabung ke grup *${gname}* dari admin @${sender.split('@')[0]}`,
+                                    ...(thumb ? { jpegThumbnail: thumb } : {})
+                                }
+                            }, { userJid: target })
+                            await bob.relayMessage(target, waMsg.message, { messageId: waMsg.key.id })
+                            invited.push({ jid: target, why })
+                        }
                         const ok = [], failed = [], invited = [], skipped = []
-                        for (const target of targets) {
-                            if (alreadyIn.has(target)) { skipped.push(target); continue }
+                        for (let target of targets) {
+                            target = await resolveAddTarget(target)
+                            if (!target || !target.includes('@')) { failed.push(`(target tidak valid)`); continue }
+                            const tNum = digitsOf(target)
+                            if ([...alreadyIn].some(id => digitsOf(id) === tNum && tNum)) { skipped.push(target); continue }
+                            // 1. Coba add langsung
+                            let addStatus = null, addErr = null
                             try {
                                 const res = await bob.groupParticipantsUpdate(m.chat, [target], "add")
                                 const first = res && res[0]
-                                const st = first && (first.status ?? (first.content && first.content.attrs && first.content.attrs.error))
-                                if (String(st) === '200') {
-                                    ok.push(target)
-                                } else if (String(st) === '403' || String(st) === '401') {
-                                    // Privasi grup user: kirim link undangan ke PC-nya
-                                    try {
-                                        const code = await bob.groupInviteCode(m.chat)
-                                        const gname = (meta0 && meta0.subject) || groupName || 'grup'
-                                        const msgInvite = `*UNDANGAN GRUP WHATSAPP*\n\nHalo! Kamu diundang oleh admin @${sender.split('@')[0]} untuk bergabung ke grup *${gname}*:\n\nhttps://chat.whatsapp.com/${code}\n\n_Silakan klik tautan di atas untuk bergabung._`
-                                        await bob.sendMessage(target, { text: msgInvite, mentions: [sender] })
-                                        invited.push(target)
-                                    } catch (e2) {
-                                        failed.push(`@${target.split('@')[0]} (privasi grup, link gagal dikirim: ${e2.message})`)
-                                    }
-                                } else if (String(st) === '409') {
-                                    skipped.push(target)
-                                } else if (String(st) === '408') {
-                                    failed.push(`@${target.split('@')[0]} (baru keluar grup, tidak bisa langsung ditambahkan — kirim link manual)`)
-                                } else {
-                                    failed.push(`@${target.split('@')[0]} (status: ${st})`)
-                                }
-                            } catch (err) {
-                                failed.push(`@${target.split('@')[0]} (${err?.message || err})`)
+                                addStatus = first && (first.status ?? (first.content && first.content.attrs && first.content.attrs.error))
+                                if (String(addStatus) === '200') { ok.push(target); continue }
+                                if (String(addStatus) === '409') { skipped.push(target); continue }
+                            } catch (err) { addErr = err }
+                            // 2. Add langsung gagal (403 privasi / 408 / bad-request / dll):
+                            //    kirim kartu undangan native (V4) ke PC target
+                            const why = addErr
+                                ? `add langsung gagal (${addErr?.message || addErr})`
+                                : (String(addStatus) === '403' || String(addStatus) === '401')
+                                    ? 'privasi grup aktif'
+                                    : `add langsung gagal (status: ${addStatus})`
+                            try {
+                                await sendInviteV4(target, why)
+                            } catch (e2) {
+                                failed.push(`@${tNum} (${why}; undangan gagal dikirim: ${e2.message})`)
                             }
                         }
-                        const tagAll = [...ok, ...invited, ...skipped]
+                        const tagAll = [...ok, ...invited.map(x => x.jid), ...skipped]
                         let hasil = ''
-                        if (ok.length) hasil += `✅ Berhasil menambahkan: ${ok.map(t => '@' + t.split('@')[0]).join(', ')}\n`
-                        if (invited.length) hasil += `📩 Privasi grup aktif, link undangan dikirim ke PC: ${invited.map(t => '@' + t.split('@')[0]).join(', ')}\n`
-                        if (skipped.length) hasil += `ℹ️ Sudah di dalam grup: ${skipped.map(t => '@' + t.split('@')[0]).join(', ')}\n`
+                        if (ok.length) hasil += `✅ Berhasil menambahkan: ${ok.map(t => '@' + digitsOf(t)).join(', ')}\n`
+                        if (invited.length) hasil += `✅ Undangan berhasil dikirim ke: ${invited.map(x => '@' + digitsOf(x.jid)).join(', ')}\n${invited.map(x => `• @${digitsOf(x.jid)}: ${x.why}`).join('\n')}\n`
+                        if (skipped.length) hasil += `ℹ️ Sudah di dalam grup: ${skipped.map(t => '@' + digitsOf(t)).join(', ')}\n`
                         if (failed.length) hasil += `❌ Gagal: ${failed.join(', ')}`
                         ngetag(hasil.trim() || 'Tidak ada yang diproses.', tagAll, true)
                      }
@@ -3241,7 +3289,7 @@ fakereply(rules)
                                     else if (mode === 'doc') await bob.sendMessage(m.chat, { document: ab, mimetype: 'audio/mpeg', fileName: `play.mp3` }, { quoted: m })
                                     else await bob.sendMessage(m.chat, { audio: ab, mimetype: 'audio/mpeg' }, { quoted: m })
                                 } else throw e
-                            } catch { reply(`Gagal play: ${e.message}`) }
+                            } catch { reply(`Gagal play: ${ytdlp.cleanError(e)}`) }
                         } finally { ytdlp.cleanup(dlFile) }
                     }
                     break
@@ -3271,7 +3319,7 @@ fakereply(rules)
                                 if (!mp3) throw new Error('API gagal')
                                 let ab = await getBuffer(mp3)
                                 await bob.sendMessage(m.chat, { audio: ab, mimetype: 'audio/mpeg' }, { quoted: m })
-                            } catch (e2) { reply(`Gagal ytmp3: ${e.message}`) }
+                            } catch (e2) { reply(`Gagal ytmp3: ${ytdlp.cleanError(e)}`) }
                         } finally { ytdlp.cleanup(dlFile) }
                     }
                     break
@@ -3298,8 +3346,43 @@ fakereply(rules)
                                 let r = await axios.get(api, { timeout: 15000 })
                                 if (!r.data.status || !r.data.result?.download_url) throw new Error('API gagal')
                                 await bob.sendMessage(m.chat, { video: { url: r.data.result.download_url }, mimetype: 'video/mp4', caption: `🎬 ${r.data.result.title || ''}` }, { quoted: m })
-                            } catch (e2) { reply(`Gagal ytmp4: ${e.message}`) }
+                            } catch (e2) { reply(`Gagal ytmp4: ${ytdlp.cleanError(e)}`) }
                         } finally { ytdlp.cleanup(dlFile) }
+                    }
+                    break
+                    // ========== TIKTOK VIDEO (api siputzx) ==========
+                    case 'tiktok': case 'tt': {
+                        if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply(`Poin habis`)
+                        let url = (q || '').trim().split(/\s+/)[0] || ''
+                        if (!url) return reply(`Kirim link TikTok!\nContoh: ${prefix}tiktok https://vt.tiktok.com/xxxx`)
+                        if (!/^https?:\/\/(www\.|vt\.|vm\.|m\.)?tiktok\.com\//i.test(url)) return reply(`Link TikTok tidak valid!\nContoh: ${prefix}tiktok https://vt.tiktok.com/xxxx`)
+                        limitAdd(sender, limit)
+                        reply(global.mess.wait)
+                        try {
+                            const api = `https://api.siputzx.my.id/api/d/tiktok/v2?url=${encodeURIComponent(url)}`
+                            const r = await axios.get(api, { timeout: 30000, validateStatus: () => true })
+                            const d = r.data && r.data.data
+                            if (!r.data || r.data.status !== true || !d) throw new Error('API tidak mengembalikan data')
+                            const stats = `👤 ${d.author_nickname || '-'}\n❤️ ${d.like_count || '-'} | ▶️ ${d.play_count || '-'} | 💬 ${d.comment_count || '-'}`
+                            // Slideshow foto: API bisa kirim array ATAU objek bernomor {"0":{url},...,"maxwidth":..}
+                            let slideItems = []
+                            if (Array.isArray(d.slides)) slideItems = d.slides
+                            else if (d.slides && typeof d.slides === 'object') {
+                                slideItems = Object.keys(d.slides).filter(k => /^\d+$/.test(k)).sort((a, b) => a - b).map(k => d.slides[k])
+                            }
+                            const slides = slideItems.map(s => (typeof s === 'string' ? s : (s && (s.url || s.image)) || '')).filter(Boolean)
+                            if (slides.length) {
+                                const cap = `📸 *TikTok Slideshow*\n${d.text ? d.text + '\n' : ''}${stats}`
+                                for (let i = 0; i < Math.min(slides.length, 10); i++) {
+                                    await bob.sendMessage(m.chat, { image: { url: slides[i] }, caption: i === 0 ? cap : '' }, { quoted: m })
+                                }
+                            } else {
+                                const vid = d.no_watermark_link_hd || d.no_watermark_link || d.watermark_link
+                                if (!vid) throw new Error('Link video tidak ditemukan')
+                                const cap = `🎬 *${d.text || 'TikTok Video'}*\n${stats}`
+                                await bob.sendMessage(m.chat, { video: { url: vid }, mimetype: 'video/mp4', caption: cap }, { quoted: m })
+                            }
+                        } catch (e) { reply(`Gagal tiktok: ${e.message}`) }
                     }
                     break
                     // ========== TIKTOK MUSIC (api-faa) ==========
@@ -3471,21 +3554,23 @@ fakereply(rules)
                     break
                     //Akhir owner menu
                     default:
-                    if ( isChatBot ) {
-                        if (m.text) {
+                    // ChatBot grup (sesi Puter): aktif via /chatbot on, balas HANYA bila
+                    // user me-reply pesan bot — tanpa perlu command. Sesi = per grup.
+                    if (isChatBot && m.isGroup && !isCmd && !m.key.fromMe) {
+                        const qr = m.quoted
+                        const toBot = qr && (qr.fromMe || (qr.sender && botIdList.includes(qr.sender)))
+                        if (toBot && m.text) {
                             console.log("->[\x1b[1;32mNew\x1b[1;37m]", color('Question From', 'yellow'), color(pushname, 'lightblue'), `: "${m.text}"`)
                             bob.sendPresenceUpdate("composing", m.chat);
                             try {
-                                const service = new CompletionService({gemini: [`AIzaSyD9aD12un3L9CVK49fhC4JkkrlNGZgQ6vQ`] })
-                        const [response] = await service.requestCompletion(
-                            'gemini-1.0-pro', '', m.text
-                        )
-                        reply(response.text)
-                    } catch (e) {
-                        console.log()
-                    } 
-                }  
-            }
+                                const puterai = require('./lib/puterai')
+                                const ans = await puterai.chat(m.chat, m.text, { who: pushname })
+                                reply(ans)
+                            } catch (e) {
+                                console.log('[chatbot-puter]', e?.message || e)
+                            }
+                        }
+                    }
             /*if (!m.isGroup) {
                 if (m.text) {
                     bob.sendPresenceUpdate("composing", m.chat);

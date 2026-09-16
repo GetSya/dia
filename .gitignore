@@ -1,1 +1,8 @@
 node_modules/
+# Kredensial & data runtime — jangan di-commit
+.env
+session/
+*puter-token*
+assets/db/puterai.json
+database.json
+assets/db/
