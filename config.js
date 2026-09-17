@@ -12,7 +12,7 @@ const fs = require('fs')
 // Pairing (ourin-baileys): nomor WA bot, digits saja pakai kode negara.
 // Bisa juga via env PAIRING_NUMBER / NOMOR_BOT, argumen --pairing-number=62812xxxx,
 // atau diketik interaktif saat bot dijalankan. Kode custom yang dipakai: "RSYA-RAFI".
-global.pairingNumber = process.env.PAIRING_NUMBER || '6285183221210'
+global.pairingNumber = process.env.PAIRING_NUMBER || '6288213292687'
 global.pairingCode = 'RSYA-RAFI'
 global.owner = ['6288214772441']
 global.botName = 'JOJO - BOT'

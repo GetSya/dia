@@ -41,7 +41,7 @@ const { aiovideodl } = require("./lib/scraper/downloader")
 const { isTicTacToe, getPosTic } = require("./lib/tictactoe.js");
 const { TiktokDL } = require("./lib/scraper/newtt.js");
 const { addCommands, checkCommands, deleteCommands } = require("./lib/autoresp.js")
-const { addLogin, deleteLogin, checkLogin, addRegis, checkRegister } = require("./lib/login-reg.js")
+const auth = require("./lib/auth.js")
 const { upload } = require("./lib/uploads.js")
 const ytdlp = require("./lib/ytdlp.js")
 const { jadianime } = require("./lib/scraper/jadianime.js")
@@ -73,6 +73,7 @@ const joDatabase = require('./lib/database')
 const anon = require('./lib/anonymous')
 const aiTagbot = require('./lib/ai-tagbot')
 const economy = require('./lib/economy')
+const banLib = require('./lib/ban')
   const replicate = new Replicate({
   auth: "r8_IrWhmFuiXDTW4y0ZVXvBB6ODmH56ifn1mTjWa", //Api Gueh
 });
@@ -92,7 +93,7 @@ let tebaklagu = []
 let gcku  = `6281319944917-1610752237@g.us`
 
 //ssession tt
-const tiktokresi = "2a78c6d3b550e355dc01cb366b146ab4" //Api Punya Gua anjing
+const tiktokresi = "090e661b1c1fe39deee032f958e1bc71" //Api Punya Gua anjing
 
 
 const { OpenAI } = require("openai");
@@ -115,8 +116,6 @@ let truth = JSON.parse(fs.readFileSync('./assets/db/truth.json'));
 let dare = JSON.parse(fs.readFileSync('./assets/db/dare.json'));
 let premium = JSON.parse(fs.readFileSync('./assets/db/premium.json'));
 let commandsDB = JSON.parse(fs.readFileSync('./assets/db/commands.json'));
-let loginulti = JSON.parse(fs.readFileSync('./assets/db/login.json'));
-let regulti = JSON.parse(fs.readFileSync('./assets/db/register.json'));
 let prem2 = JSON.parse(fs.readFileSync('./assets/db/prem2.json'));
 let token = JSON.parse(fs.readFileSync('./assets/db/token.json'));
 let limit = JSON.parse(fs.readFileSync('./assets/db/limit.json'));
@@ -249,6 +248,21 @@ module.exports = bob = async (bob, m, chatUpdate, store, welcome, mentioned) => 
         const isLeft = m.isGroup ? !!gset.left : false
         const isChatBot = !!gset.chatbot
 
+        // ===== BAN enforcement (soft-ban database) =====
+        // Owner selalu lolos. User banned / grup banned -> bot diam total.
+        if (!isCreator && !m.key.fromMe) {
+            try {
+                if (banLib.isUserBanned(m.sender, senderNums)) {
+                    if (isCmd) await reply('⛔ Kamu di-ban dari bot. Hubungi owner.')
+                    return
+                }
+                if (m.isGroup && banLib.isGroupBanned(m.chat)) {
+                    const cmd = String(command || '').toLowerCase()
+                    // izinkan owner membuka ban dari dalam grup banned (di-handle di case, tapi cegah bocor di sini)
+                    if (!(isCmd && (cmd === 'unbangroup' || cmd === 'unbangc' || cmd === 'banlist'))) return
+                }
+            } catch {}
+        }
 
 
 
@@ -1517,11 +1531,21 @@ ${CmD} Tangerang
                 // if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
                 if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
                     limitAdd(sender, limit)
-                        if (!args.length === "12") return reply(`Text Terlalu Panjang`)
-                        config(tiktokresi);
-                        createAudioFromText(q, 'media/myAudio', 'id_001')
-                        await sleep(3000)
-                        bob.sendMessage(m.chat, {audio: fs.readFileSync(`media/myAudio.mp3`), mimetype: 'audio/mp4', ptt: true}, {quoted: m})
+                        if (!q) return reply(`Masukan Text!\nExample : ${prefix}tts Halo, saya Jojo`)
+                        if (q.length > 300) return reply(`Text Terlalu Panjang (max 300 karakter)`)
+                        try {
+                            config(tiktokresi);
+                            const tmpBase = `media/tts_${Date.now()}_${m.sender.split('@')[0].replace(/[^0-9]/g,'')}`
+                            await createAudioFromText(q, tmpBase, 'id_001')
+                            const mp3Buf = fs.readFileSync(tmpBase + '.mp3')
+                            // MP3 mentah tidak stabil sebagai VN di WA -> convert ke opus
+                            const opus = await toPTT(mp3Buf, 'mp3')
+                            await bob.sendMessage(m.chat, {audio: opus, mimetype: 'audio/ogg; codecs=opus', ptt: true}, {quoted: m})
+                            try { fs.unlinkSync(tmpBase + '.mp3') } catch {}
+                        } catch(e) {
+                            console.log('[tts] error:', e?.message || e)
+                            reply(`❌ TTS gagal: ${e?.message || e}\nKemungkinan session TikTok expired / teks terlalu panjang.`)
+                        }
                     }
                     break
                     case 'on':{
@@ -1552,11 +1576,20 @@ ${CmD} Tangerang
                 // if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
                 if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
                     limitAdd(sender, limit)
-                        if (!args.length === "12") return reply(`Text Terlalu Panjang`)
-                        config(tiktokresi);
-                        createAudioFromText(q, 'myAudio', 'jp_001')
-                        await sleep(3000)
-                        bob.sendMessage(m.chat, {audio: fs.readFileSync(`myAudio.mp3`), mimetype: 'audio/mp4', ptt: true}, {quoted: m})
+                        if (!q) return reply(`Masukan Text!\nExample : ${prefix}ttsjp Konnichiwa`)
+                        if (q.length > 300) return reply(`Text Terlalu Panjang (max 300 karakter)`)
+                        try {
+                            config(tiktokresi);
+                            const tmpBase = `media/ttsjp_${Date.now()}_${m.sender.split('@')[0].replace(/[^0-9]/g,'')}`
+                            await createAudioFromText(q, tmpBase, 'jp_001')
+                            const mp3Buf = fs.readFileSync(tmpBase + '.mp3')
+                            const opus = await toPTT(mp3Buf, 'mp3')
+                            await bob.sendMessage(m.chat, {audio: opus, mimetype: 'audio/ogg; codecs=opus', ptt: true}, {quoted: m})
+                            try { fs.unlinkSync(tmpBase + '.mp3') } catch {}
+                        } catch(e) {
+                            console.log('[ttsjp] error:', e?.message || e)
+                            reply(`❌ TTS JP gagal: ${e?.message || e}`)
+                        }
                     }
                     break
                     case 'decode':{
@@ -1584,16 +1617,6 @@ ${CmD} Tangerang
                     }).join(" ")
                     }
                     reply(encodeBinary(q))
-                    }
-                    break
-                    case 'songb': {
-                // if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
-                if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
-                    limitAdd(sender, limit)
-                        config(tiktokresi);
-                        createAudioFromText(q, 'songb', 'id_001')
-                        await sleep(3000)
-                        bob.sendMessage(m.chat, {audio: fs.readFileSync(`songb.mp3`), mimetype: 'audio/mp4'}, {quoted: m})
                     }
                     break
                     case 'menfess': {
@@ -1848,94 +1871,66 @@ ${CmD} Tangerang
                             }, 5000) // 1000 = 1s,
                     } 
                     break
-                    case 'register': {
-                        // New system: daftar via website https://bot.acamedia.xyz
-                        if (checkLogin(sender, loginulti)) return reply(`✅ Kamu sudah login, tidak perlu register lagi.`)
-                        const phone = sender.split('@')[0]
-                        const webUrl = `${global.registWebsite || global.botWebsite}?phone=${phone}&name=${encodeURIComponent(pushname)}&ref=jojo`
+                    case 'register': case 'daftar': {
+                        // Sistem baru: daftar via link, nomor otomatis disesuaikan dengan user
+                        const phone = auth.norm(senderNum || sender)
+                        const webUrl = auth.registerUrl(phone)
                         const btn = [
                             { name: "cta_url", buttonParamsJson: JSON.stringify({ display_text: "🌐 Daftar di Website", url: webUrl, merchant_url: global.botWebsite }) },
                             { name: "quick_reply", buttonParamsJson: JSON.stringify({ display_text: "✅ Sudah Daftar", id: `${prefix}login` }) },
                             { name: "quick_reply", buttonParamsJson: JSON.stringify({ display_text: "ℹ️ Cara Daftar", id: `${prefix}rules` }) }
                         ]
-                        // fallback manual tetap didukung: #register username|password
-                        if (q && q.includes('|')) {
-                            var username = q.split('|')[0].trim()
-                            var password = q.split('|')[1].trim()
-                            if (username && password) {
-                                if (checkRegister(username, regulti)) return reply(`❌ Username *${username}* sudah ada, coba username lain.`)
-                                var kodeunik = `LGN${otpkode(6)}JO`
-                                addRegis(username, password, sender, kodeunik, regulti)
-                                try { joDatabase.addUser(sender, pushname, m.chat) } catch {}
-                                return bob.sendButton(m.chat, `*[ DAFTAR MANUAL BERHASIL ]*\n\nUsername: ${username}\nPassword: ${password}\nNomor: ${phone}\nKode: ${kodeunik}\n\nAtau kamu juga bisa daftar via website agar terverifikasi:`, '> JojoBot', 'REGISTER MANUAL', [
-                                    { name: "cta_url", buttonParamsJson: JSON.stringify({ display_text: "🌐 Buka Website", url: webUrl }) },
-                                    { name: "quick_reply", buttonParamsJson: JSON.stringify({ display_text: "🔐 Login", id: `${prefix}login` }) }
-                                ])
-                            }
-                        }
                         await bob.sendButton(m.chat,
-                            `*📌 REGISTER JOJO BOT*\n\nHalo *${pushname}* 👋\nNomor: wa.me/${phone}\n\nCara daftar:\n1. Klik tombol *Daftar di Website* di bawah\n2. Isi data di *${global.botWebsite}*\n3. Kembali ke sini & klik *Sudah Daftar* atau ketik *${prefix}login*\n\n_Tips: Kamu otomatis tercatat di database.json, tapi verifikasi via website akan mengaktifkan fitur premium._`,
+                            `*📌 REGISTER JOJO BOT*\n\nHalo *${pushname}* 👋\nNomor kamu: *${phone}*\n\nCara daftar:\n1. Klik tombol *Daftar di Website* di bawah\n2. Link sudah berisi nomormu otomatis:\n${webUrl}\n3. Isi data sampai selesai\n4. Kembali ke sini & ketik *${prefix}login*\n\n_Belum muncul di verifikasi? Tunggu sebentar lalu coba ${prefix}login ulang._`,
                             `> JojoBot • ${global.botWebsite}`,
                             'DAFTAR SEKARANG', btn)
                     }
                     break
-                    case 'reg-on': {
-                        // Auto register -> arahkan ke website (tetap buat akun lokal untuk kompatibilitas)
-                        if (checkLogin(sender, loginulti)) return reply(`✅ Kamu sudah login.`)
-                        var username = (q.split('|')[0] || pushname).trim()
-                        var password = (q.split('|')[1] || `REG${otpkode(6)}JO`).trim()
-                        var kodeunik = `LGN${otpkode(6)}JO`
-                        if (checkRegister(username, regulti)) username = pushname + otpkode(3)
-                        addRegis(username, password, sender, kodeunik, regulti)
-                        try { joDatabase.addUser(sender, pushname, m.chat) } catch {}
-                        const phone2 = sender.split('@')[0]
-                        const webUrl2 = `${global.botWebsite}?phone=${phone2}&name=${encodeURIComponent(pushname)}&auto=1`
-                        var btn2 = [
-                            { name: "cta_url", buttonParamsJson: JSON.stringify({ display_text: "🌐 Verifikasi di Website", url: webUrl2 }) },
-                            { name: "quick_reply", buttonParamsJson: JSON.stringify({ display_text: "🔐 Login", id: `${prefix}login` }) }
-                        ]
-                        await bob.sendButton(m.chat, `*[ AUTO REGISTER BERHASIL ]*\n\nUsername: ${username}\nPassword: ${password}\nNomor: ${phone2}\nKode: ${kodeunik}\n\nAkun lokal dibuat. Untuk aktivasi penuh, verifikasi di website juga ya!`, '> JojoBot', `Hai ${pushname}`, btn2)
-                    }
-                    break
                     case 'login': {
-                        const phoneL = sender.split('@')[0]
-                        const webUrlL = `${global.botWebsite}?phone=${phoneL}&name=${encodeURIComponent(pushname)}`
-                        // cek sudah login
-                        if (checkLogin(sender, loginulti)) {
+                        // Sistem baru: verifikasi nomor di JVault bin 1971982d-eb61-456b-bd54-92ad885fa550
+                        const phoneL = auth.norm(senderNum || sender)
+                        const webUrlL = auth.registerUrl(phoneL)
+                        if (auth.isVerified(phoneL)) {
                             var btnL1 = [
                                 { name: "cta_url", buttonParamsJson: JSON.stringify({ display_text: "🌐 Buka Dashboard", url: global.botWebsite }) },
                                 { name: "quick_reply", buttonParamsJson: JSON.stringify({ display_text: "📋 Menu", id: `${prefix}menu` }) }
                             ]
                             return bob.sendButton(m.chat, `✅ *Kamu sudah login!*\nNomor: ${phoneL}\nSelamat datang kembali *${pushname}* 🎉`, '> JojoBot', 'LOGIN AKTIF', btnL1)
                         }
-                        // cek apakah pernah chat / terdaftar di database.json atau register.json atau JVault
-                        const dbLocal = joDatabase.loadDB()
-                        const isInLocal = !!dbLocal.users[sender]
-                        const isInReg = checkLogin(sender, regulti) || checkRegister(pushname, regulti) || isInLocal
-                        let isInVault = false
+                        const { key } = await bob.sendMessage(m.chat, { text: '🔍 Mengecek data pendaftaran...' }, { quoted: m }).catch(() => ({}))
+                        let ok = false
                         try {
-                            const remote = await require('./lib/jvault').fetchBin().catch(()=>null)
-                            if (remote && remote.users && remote.users[sender]) isInVault = true
-                        } catch {}
-                        if (!isInReg && !isInVault) {
+                            ok = await auth.isRegistered(phoneL)
+                        } catch (e) {
+                            console.log('[login] verifikasi gagal:', e?.message || e)
+                            if (key) await bob.sendMessage(m.chat, { text: `❌ *[ LOGIN GAGAL ]*\nVerifikasi ke database gagal (${e?.message || e}). Coba lagi sebentar ya.`, edit: key }).catch(() => reply(`❌ Verifikasi gagal, coba *${prefix}login* lagi.`))
+                            else reply(`❌ Verifikasi gagal, coba *${prefix}login* lagi.`)
+                            return
+                        }
+                        if (!ok) {
+                            if (key) await bob.sendMessage(m.chat, { text: `❌ *[ BELUM TERDAFTAR ]*\nNomor *${phoneL}* tidak ditemukan di database.\n\nSilakan daftar ulang via link di bawah, lalu ketik *${prefix}login* lagi.`, edit: key }).catch(() => {})
                             var btnNeedReg = [
-                                { name: "cta_url", buttonParamsJson: JSON.stringify({ display_text: "📝 Daftar di Website", url: webUrlL }) },
+                                { name: "cta_url", buttonParamsJson: JSON.stringify({ display_text: "📝 Daftar Ulang di Website", url: webUrlL, merchant_url: global.botWebsite }) },
                                 { name: "quick_reply", buttonParamsJson: JSON.stringify({ display_text: "🔄 Coba Lagi", id: `${prefix}login` }) }
                             ]
-                            return bob.sendButton(m.chat, `*❌ BELUM TERDAFTAR*\n\nHalo *${pushname}*, nomor *${phoneL}* belum terdaftar.\n\nSilakan daftar dulu via website resmi agar data kamu masuk ke database pusat.`, '> JojoBot', 'REGISTER DULU', btnNeedReg)
+                            return bob.sendButton(m.chat, `*❌ BELUM TERDAFTAR*\n\nHalo *${pushname}*, nomor *${phoneL}* belum ada di database verifikasi.\n\nDaftar dulu di:\n${webUrlL}\n\nLalu ketik *${prefix}login* lagi.`, '> JojoBot', 'REGISTER DULU', btnNeedReg)
                         }
-                        // proses login
-                        addLogin(`true`, `true`, sender, `true`, loginulti)
+                        auth.markVerified(phoneL, pushname)
                         try { joDatabase.addUser(sender, pushname, m.chat) } catch {}
-                        const { key } = await bob.sendMessage(m.chat, {text: '🔍 Memverifikasi data...'}, { quoted: m });
-                        await delay(1200);
-                        await bob.sendMessage(m.chat, { text: `✅ *[ LOGIN BERHASIL ]*\nSelamat datang *${pushname}*!\nNomor: ${phoneL}\nKamu sekarang bisa pakai semua fitur JojoBot.`, edit: key })
+                        if (key) await bob.sendMessage(m.chat, { text: `✅ *[ LOGIN BERHASIL ]*\nSelamat datang *${pushname}*!\nNomor: ${phoneL} terverifikasi di database.`, edit: key }).catch(() => reply(`✅ *[ LOGIN BERHASIL ]*\nSelamat datang *${pushname}*!`))
+                        else reply(`✅ *[ LOGIN BERHASIL ]*\nSelamat datang *${pushname}*!\nNomor: ${phoneL} terverifikasi di database.`)
                         await sleep(600)
                         var btnDone = [
                             { name: "quick_reply", buttonParamsJson: JSON.stringify({ display_text: "📋 Menu", id: `${prefix}menu` }) },
                             { name: "cta_url", buttonParamsJson: JSON.stringify({ display_text: "🌐 Dashboard", url: global.botWebsite }) }
                         ]
                         await bob.sendButton(m.chat, `Mau kemana selanjutnya, *${pushname}*?`, '> JojoBot', 'LOGIN SUKSES', btnDone)
+                    }
+                    break
+                    case 'logout': {
+                        const phoneO = auth.norm(senderNum || sender)
+                        const ok = auth.unmarkVerified(phoneO)
+                        reply(ok ? `✅ Logout berhasil. Ketik *${prefix}login* untuk masuk lagi.` : `Kamu belum login.`)
                     }
                     break
                     case 'stcmeme2': case 'smeme2': {
@@ -2324,7 +2319,6 @@ ${CmD} Tangerang
                     bob.sendMessage(gcku, {text: top, mentions: arrTop})
                     await sleep(5000)
                     fs.writeFileSync('./assets/db/limit.json', JSON.stringify(limitkosong))
-                    fs.writeFileSync('./assets/db/login.json', JSON.stringify(limitkosong))
                     reply(`Poin Berhasil Di Reset.\nMereset Bot.`)
                     await sleep(2000)
                     exec(`pm2 restart index.js`, (err, stdout) => {
@@ -2687,21 +2681,31 @@ ${CmD} Tangerang
                     case 'chatbot':{
                         if (!m.isGroup) return reply(global.mess.group)
                         if (!isGroupAdmins) return reply(global.mess.admin)
-                        if (q.toLowerCase() === "on") {
-                            if (isChatBot) return reply(`ChatBot sudah aktif di grup ini ✅\nReply pesan bot untuk mengobrol — AI ingat obrolan grup.`)
-                            joDatabase.setGroup(m.chat, { chatbot: true })
-                            reply(`✅ ChatBot *AKTIF* di grup ini.\nCara pakai: *reply pesan bot* lalu tulis pertanyaanmu (tanpa command).\nMatikan: *${prefix}chatbot off*`)
-                        } else if (q.toLowerCase() === "off") {
+                        const qlow = String(q || '').toLowerCase()
+                        const wantVN = /\s--(vn|voice|ptt)\b/.test(' ' + qlow) || /\bvn\b/.test(qlow)
+                        const wantText = /\s--(text|chat)\b/.test(' ' + qlow)
+                        if (qlow === "on" || qlow.startsWith("on ") || qlow === "on --vn" || wantVN && qlow.includes('on')) {
+                            const mode = wantVN ? 'vn' : 'text'
+                            if (isChatBot && (gset.chatbotMode || 'text') === mode) return reply(`ChatBot sudah aktif di grup ini ✅ [mode: ${mode}]\nReply pesan bot untuk mengobrol — AI ingat obrolan grup.`)
+                            joDatabase.setGroup(m.chat, { chatbot: true, chatbotMode: mode })
+                            reply(`✅ ChatBot *AKTIF* di grup ini [mode: *${mode}*].\nCara pakai: *reply pesan bot* lalu tulis pertanyaanmu (tanpa command).\n${mode === 'vn' ? 'Jawaban dikirim sebagai *VN (TTS)*, gagal VN -> otomatis fallback ke teks.\n' : ''}Ganti mode: *${prefix}chatbot on --vn* / *${prefix}chatbot on --text*\nMatikan: *${prefix}chatbot off*`)
+                        } else if (qlow === "off") {
                             if (!isChatBot) return reply(`ChatBot sudah nonaktif.`)
                             joDatabase.setGroup(m.chat, { chatbot: false })
                             reply(`ChatBot *NONAKTIF* di grup ini ❌`)
+                        } else if (wantText && qlow.includes('on')) {
+                            joDatabase.setGroup(m.chat, { chatbot: true, chatbotMode: 'text' })
+                            reply(`✅ ChatBot *AKTIF* [mode: *text*].`)
                         } else {
                         var btn =  [{"name": "quick_reply",
-                        "buttonParamsJson": "{\"display_text\":\"On\",\"id\":\"#chatai on\"}"
+                        "buttonParamsJson": "{\"display_text\":\"On (Teks)\",\"id\":\"#chatbot on --text\"}"
                         }, {"name": "quick_reply",
-                        "buttonParamsJson": "{\"display_text\":\"Off\",\"id\":\"#chatai off\"}"
+                        "buttonParamsJson": "{\"display_text\":\"On (VN)\",\"id\":\"#chatbot on --vn\"}"
+                        }, {"name": "quick_reply",
+                        "buttonParamsJson": "{\"display_text\":\"Off\",\"id\":\"#chatbot off\"}"
                         },]
-                        bob.sendButton(m.chat, `Silahkan Pilih Opsi Berikut`,'', `> *_Haii ${pushname}_*\n` ,btn)
+                        const curMode = gset.chatbotMode || 'text'
+                        bob.sendButton(m.chat, `ChatBot saat ini: ${isChatBot ? `ON [${curMode}]` : 'OFF'}\nSilahkan Pilih Opsi Berikut`,'', `> *_Haii ${pushname}_*\n` ,btn)
                         }
                     }
                     break
@@ -3423,28 +3427,103 @@ fakereply(rules)
                     break
                     case 'block': {
                         if (!isCreator) return reply(mess.owner)
-                        if (!q && !isQuotedMsg) return reply(`Reply Atau Masukan Nomor Yang Mau Di Block`)
-                        if (q) {
-                            bob.updateBlockStatus(q + "@s.whatsapp.net", "block")
-                            reply(`Sukses Block Beliau`)
-                            } else if (isQuotedMsg) {
-                                if (quoted.sender === global.owner + "@s.whatsapp.net") return reply(`Tidak bisa block Owner`)
-                                bob.updateBlockStatus(quoted.sender, "block")
-                                reply(`Sukses Block Beliau`)
-                            }
+                        try {
+                            let target = null
+                            if (mentionUser && mentionUser.length) target = mentionUser[0]
+                            else if (isQuotedMsg && quoted && quoted.sender) target = quoted.sender
+                            else if (q) {
+                                const n = banLib.normNum(q)
+                                if (n.length < 9) return reply(`Nomor tidak valid.\nContoh: *${prefix}block 62812xxxx* / tag / reply`)
+                                target = n + '@s.whatsapp.net'
+                            } else return reply(`Reply/tag/nomor yang mau di-block.\nContoh: *${prefix}block 62812xxxx*`)
+                            if (ownerNums.includes(banLib.normNum(target))) return reply(`Tidak bisa block Owner`)
+                            await bob.updateBlockStatus(target, "block")
+                            reply(`✅ Block WA berhasil: @${banLib.normNum(target)}\n(Lepas via *${prefix}unblock*)`)
+                        } catch(e) { reply(`❌ Block gagal: ${e?.message || e}`) }
                     }
                     break
-                    
                     case 'unblock': {
                         if (!isCreator) return reply(global.mess.owner)
-                        if (q) {
-                            bob.updateBlockStatus(q + "@s.whatsapp.net", "unblock")
-                            reply(`Sukses Buka Block Beliau`)
-                        } else if (isQuotedMsg) {
-                        if (quoted.sender === global.owner + "@s.whatsapp.net") return reply(`Tidak bisa block Owner`)
-                        bob.updateBlockStatus(quoted.sender, "unblock")
-                        reply(`Sukses Buka Block Beliau`)
+                        try {
+                            let target = null
+                            if (mentionUser && mentionUser.length) target = mentionUser[0]
+                            else if (isQuotedMsg && quoted && quoted.sender) target = quoted.sender
+                            else if (q) {
+                                const n = banLib.normNum(q)
+                                if (n.length < 9) return reply(`Nomor tidak valid.`)
+                                target = n + '@s.whatsapp.net'
+                            } else return reply(`Reply/tag/nomor yang mau di-unblock.`)
+                            await bob.updateBlockStatus(target, "unblock")
+                            reply(`✅ Unblock WA berhasil: @${banLib.normNum(target)}`)
+                        } catch(e) { reply(`❌ Unblock gagal: ${e?.message || e}`) }
                     }
+                    break
+                    case 'blocklist': case 'listblock': {
+                        if (!isCreator) return reply(mess.owner)
+                        try {
+                            const list = await bob.fetchBlocklist().catch(() => null)
+                            if (!list || !list.length) return reply(`Blocklist WA kosong.`)
+                            reply(`🚫 *BLOCKLIST WA (${list.length})*\n\n` + list.map((j,i) => `${i+1}. @${String(j).split('@')[0]}`).join('\n'))
+                        } catch(e) { reply(`❌ Gagal ambil blocklist: ${e?.message || e}`) }
+                    }
+                    break
+                    // ===== BAN USER (soft-ban bot, bukan block WA) =====
+                    case 'ban': case 'banuser': {
+                        if (!isCreator) return reply(mess.owner)
+                        try {
+                            const target = banLib.resolveTarget({ mentionUser, quoted: (isQuotedMsg ? quoted : null), args })
+                            if (!target) return reply(`Target siapa?\nContoh:\n*${prefix}ban @user [alasan]*\n*${prefix}ban 62812xxxx [alasan]*\natau reply pesan pelanggar`)
+                            if (ownerNums.includes(banLib.normNum(target))) return reply(`Tidak bisa ban Owner`)
+                            const reason = String(q).replace(/@[0-9]+/g,'').replace(/^[0-9+\-\s]+/,'').trim()
+                            const r = banLib.banUser(target, { reason, by: senderNum })
+                            reply(`⛔ *BAN USER*\nTarget: @${r.ban.number}\nAlasan: ${r.ban.reason || '-'}\n${r.isNew ? 'Bot sekarang mengabaikan semua pesan user ini.' : 'User ini sudah di-ban (data diperbarui).'}\n\nBuka: *${prefix}unban @user*`)
+                        } catch(e) { reply(`❌ Ban gagal: ${e?.message || e}`) }
+                    }
+                    break
+                    case 'unban': case 'unbanuser': {
+                        if (!isCreator) return reply(mess.owner)
+                        try {
+                            const target = banLib.resolveTarget({ mentionUser, quoted: (isQuotedMsg ? quoted : null), args })
+                            if (!target) return reply(`Contoh: *${prefix}unban @user* / *${prefix}unban 62812xxxx* / reply pesan`)
+                            const ok = banLib.unbanUser(target)
+                            reply(ok ? `✅ Unban berhasil: @${banLib.normNum(target)}` : `User @${banLib.normNum(target)} tidak ada di daftar ban.`)
+                        } catch(e) { reply(`❌ Unban gagal: ${e?.message || e}`) }
+                    }
+                    break
+                    case 'banlist': case 'listban': {
+                        if (!isCreator) return reply(mess.owner)
+                        try {
+                            const users = banLib.listBannedUsers()
+                            const groups = banLib.listBannedGroups()
+                            let t = `⛔ *BANLIST*\n\n👤 User (${users.length}):\n`
+                            t += users.length ? users.map((u,i) => `${i+1}. @${u.number}${u.reason ? ` — ${u.reason}` : ''}`).join('\n') : '- kosong -'
+                            t += `\n\n👥 Grup (${groups.length}):\n`
+                            t += groups.length ? groups.map((g,i) => `${i+1}. ${g.gid}${g.reason ? ` — ${g.reason}` : ''}`).join('\n') : '- kosong -'
+                            reply(t)
+                        } catch(e) { reply(`❌ Gagal: ${e?.message || e}`) }
+                    }
+                    break
+                    // ===== BAN GROUP =====
+                    case 'bangroup': case 'bangc': case 'banchat': {
+                        if (!isCreator) return reply(mess.owner)
+                        try {
+                            const gid = m.isGroup ? m.chat : String(q).trim()
+                            if (!gid || !String(gid).endsWith('@g.us')) return reply(`Jalankan di dalam grup target.\nContoh di grup: *${prefix}bangroup [alasan]*`)
+                            const reason = String(q).trim()
+                            const r = banLib.banGroup(gid, { reason, by: senderNum })
+                            reply(`⛔ *BAN GROUP*\n${r.isNew ? 'Bot sekarang mengabaikan grup ini.' : 'Grup sudah di-ban (data diperbarui).'}\nAlasan: ${reason || '-'}\n\nBuka: *${prefix}unbangroup*`)
+                        } catch(e) { reply(`❌ Ban group gagal: ${e?.message || e}`) }
+                    }
+                    break
+                    case 'unbangroup': case 'unbangc': {
+                        if (!isCreator) return reply(mess.owner)
+                        try {
+                            // owner boleh unban dari mana saja: argumen gid atau grup saat ini
+                            const gid = (m.isGroup ? m.chat : String(q).trim()) || ''
+                            if (!gid.endsWith('@g.us')) return reply(`Contoh: *${prefix}unbangroup* (di grup)`)
+                            const ok = banLib.unbanGroup(gid)
+                            reply(ok ? `✅ Unban group berhasil.` : `Grup ini tidak ada di daftar ban.`)
+                        } catch(e) { reply(`❌ Unban group gagal: ${e?.message || e}`) }
                     }
                     break
                     case 'bc': {
@@ -3474,8 +3553,6 @@ fakereply(rules)
                     bob.sendMessage(m.chat, {document: fs.readFileSync('./assets/db/commands.json'), fileName: `commands.json`, mimetype: `json`})
                     await sleep(5000)
                     bob.sendMessage(m.chat, {document: fs.readFileSync('./assets/db/mute.json'), fileName: `mute.json`, mimetype: `json`})
-                    await sleep(5000)
-                    bob.sendMessage(m.chat, {document: fs.readFileSync('./assets/db/register.json'), fileName: `register.json`, mimetype: `json`})
                     await sleep(5000)
                     joDatabase.saveDB(true)
                     bob.sendMessage(m.chat, {document: fs.readFileSync('./database.json'), fileName: `database.json`, mimetype: `json`})
@@ -3831,18 +3908,38 @@ fakereply(rules)
                     break
                     //Akhir owner menu
                     default:
-                    // ChatBot grup (sesi Puter): aktif via /chatbot on, balas HANYA bila
+                    // ChatBot grup (sesi Puter): aktif via #chatbot on [--vn|--text], balas HANYA bila
                     // user me-reply pesan bot — tanpa perlu command. Sesi = per grup.
+                    // Mode --vn: jawaban dicoba sebagai VN (TTS), gagal -> fallback teks.
                     if (isChatBot && m.isGroup && !isCmd && !m.key.fromMe) {
                         const qr = m.quoted
                         const toBot = qr && (qr.fromMe || (qr.sender && botIdList.includes(qr.sender)))
                         if (toBot && m.text) {
                             console.log("->[\x1b[1;32mNew\x1b[1;37m]", color('Question From', 'yellow'), color(pushname, 'lightblue'), `: "${m.text}"`)
-                            bob.sendPresenceUpdate("composing", m.chat);
                             try {
                                 const puterai = require('./lib/puterai')
                                 const ans = await puterai.chat(m.chat, m.text, { who: pushname })
-                                reply(ans)
+                                const mode = (gset.chatbotMode || 'text')
+                                if (mode !== 'vn') return reply(ans)
+                                // --- mode VN: coba TTS, gagal/kepanjangan -> fallback teks ---
+                                const clean = String(ans || '').trim()
+                                if (!clean) return reply(ans)
+                                if (clean.length > 400) {
+                                    // TTS max ~400 char, kepanjangan langsung teks saja
+                                    return reply(ans)
+                                }
+                                try { await bob.sendPresenceUpdate('recording', m.chat) } catch {}
+                                try {
+                                    // pakai modul mandiri (anti cache lama ai-tagbot)
+                                    const { ttsVoiceNote } = require('./lib/chatbot-vn')
+                                    if (typeof ttsVoiceNote !== 'function') throw new Error('ttsVoiceNote tidak tersedia')
+                                    const vn = await ttsVoiceNote(clean)
+                                    await bob.sendMessage(m.chat, { audio: vn, mimetype: 'audio/ogg; codecs=opus', ptt: true }, { quoted: m })
+                                } catch (eVN) {
+                                    console.log('[chatbot-vn] gagal, fallback teks:', eVN?.message || eVN)
+                                    try { await bob.sendPresenceUpdate('composing', m.chat) } catch {}
+                                    reply(ans)
+                                }
                             } catch (e) {
                                 console.log('[chatbot-puter]', e?.message || e)
                             }
