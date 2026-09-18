@@ -15,6 +15,7 @@
     "@adiwajshing/keyed-db": "^0.2.4",
     "@bochilteam/scraper": "^4.2.4",
     "@bochilteam/scraper-sosmed": "^1.0.5",
+    "@faouzkk/tiktok-dl": "^1.0.1",
     "@heyputer/puter.js": "^2.6.3",
     "@phaticusthiccy/open-apis": "^1.8.5",
     "@tobyg74/tiktok-api-dl": "^1.1.4",

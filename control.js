@@ -3713,29 +3713,45 @@ fakereply(rules)
                         limitAdd(sender, limit)
                         reply(global.mess.wait)
                         try {
-                            const api = `https://api.siputzx.my.id/api/d/tiktok/v2?url=${encodeURIComponent(url)}`
-                            const r = await axios.get(api, { timeout: 30000, validateStatus: () => true })
-                            const d = r.data && r.data.data
-                            if (!r.data || r.data.status !== true || !d) throw new Error('API tidak mengembalikan data')
-                            const stats = `👤 ${d.author_nickname || '-'}\n❤️ ${d.like_count || '-'} | ▶️ ${d.play_count || '-'} | 💬 ${d.comment_count || '-'}`
-                            // Slideshow foto: API bisa kirim array ATAU objek bernomor {"0":{url},...,"maxwidth":..}
-                            let slideItems = []
-                            if (Array.isArray(d.slides)) slideItems = d.slides
-                            else if (d.slides && typeof d.slides === 'object') {
-                                slideItems = Object.keys(d.slides).filter(k => /^\d+$/.test(k)).sort((a, b) => a - b).map(k => d.slides[k])
-                            }
-                            const slides = slideItems.map(s => (typeof s === 'string' ? s : (s && (s.url || s.image)) || '')).filter(Boolean)
-                            if (slides.length) {
-                                const cap = `📸 *TikTok Slideshow*\n${d.text ? d.text + '\n' : ''}${stats}`
-                                for (let i = 0; i < Math.min(slides.length, 10); i++) {
-                                    await bob.sendMessage(m.chat, { image: { url: slides[i] }, caption: i === 0 ? cap : '' }, { quoted: m })
+                            // via @faouzkk/tiktok-dl (ssstik.io scraper) — jika gagal, fallback ke api.siputzx
+                            const tiktokdl = require('@faouzkk/tiktok-dl')
+                            let vid = null, aud = null, ttext = ''
+                            try {
+                                const r = await tiktokdl(url)
+                                if (r && r.status === 200 && r.video) {
+                                    vid = r.video
+                                    aud = r.audio || null
+                                } else {
+                                    throw new Error(r && r.message ? r.message : 'ssstik tidak mengembalikan video')
                                 }
-                            } else {
-                                const vid = d.no_watermark_link_hd || d.no_watermark_link || d.watermark_link
+                            } catch (e1) {
+                                // fallback siputzx (stabil, support slideshow)
+                                const api = `https://api.siputzx.my.id/api/d/tiktok/v2?url=${encodeURIComponent(url)}`
+                                const r2 = await axios.get(api, { timeout: 30000, validateStatus: () => true })
+                                const d = r2.data && r2.data.data
+                                if (!r2.data || r2.data.status !== true || !d) throw new Error(e1.message || 'API tidak mengembalikan data')
+                                // slideshow foto: array atau objek bernomor
+                                let slideItems = []
+                                if (Array.isArray(d.slides)) slideItems = d.slides
+                                else if (d.slides && typeof d.slides === 'object') {
+                                    slideItems = Object.keys(d.slides).filter(k => /^\d+$/.test(k)).sort((a,b)=>a-b).map(k=>d.slides[k])
+                                }
+                                const slides = slideItems.map(s => (typeof s === 'string' ? s : (s && (s.url || s.image)) || '')).filter(Boolean)
+                                if (slides.length) {
+                                    const stats = `${d.author_nickname || '-'} — ${d.like_count || '-'} likes`
+                                    const cap = `⋆˚𐙚 TikTok Slideshow 𐙚˚⋆\n${d.text ? d.text + '\n' : ''}${stats}`
+                                    for (let i = 0; i < Math.min(slides.length, 10); i++) {
+                                        await bob.sendMessage(m.chat, { image: { url: slides[i] }, caption: i === 0 ? cap : '' }, { quoted: m })
+                                    }
+                                    return
+                                }
+                                vid = d.no_watermark_link_hd || d.no_watermark_link || d.watermark_link
                                 if (!vid) throw new Error('Link video tidak ditemukan')
-                                const cap = `🎬 *${d.text || 'TikTok Video'}*\n${stats}`
-                                await bob.sendMessage(m.chat, { video: { url: vid }, mimetype: 'video/mp4', caption: cap }, { quoted: m })
+                                ttext = d.text || ''
                             }
+                            if (!vid) throw new Error('Link video tidak ditemukan')
+                            const cap = ttext ? `⋆˚𐙚 ${ttext} 𐙚˚⋆` : `⋆˚𐙚 TikTok Video 𐙚˚⋆`
+                            await bob.sendMessage(m.chat, { video: { url: vid }, mimetype: 'video/mp4', caption: cap }, { quoted: m })
                         } catch (e) { reply(`Gagal tiktok: ${e.message}`) }
                     }
                     break
