@@ -840,6 +840,34 @@ const resolveTfTarget = async (jidLike) => {
     }
     return t
 }
+// Normalisasi nomor HP segala format: +62 882-3456-7890, 628..., 08... -> 628...
+// Return digit string (diawali 62) atau null bila tidak valid.
+const normorMenfess = (teks) => {
+    const digits = String(teks || '').replace(/[^0-9]/g, '')
+    if (digits.length < 9 || digits.length > 16) return null
+    let n = digits
+    if (n.startsWith('0')) n = '62' + n.slice(1)
+    return n
+}
+const execMenfess = async (targetJid, pesan) => {
+    if (!targetJid) return reply('Nomor tujuan tidak valid.')
+    const tDigits = String(targetJid).split('@')[0].replace(/[^0-9]/g, '')
+    const selfPhone = auth.norm(senderNum || sender)
+    if (targetJid === sender || targetJid === m.sender || (selfPhone && tDigits === selfPhone)) return reply('Gak bisa kirim menfess ke diri sendiri!')
+    pesan = String(pesan || '').trim()
+    if (!pesan) return reply('Pesan kosong.')
+    if (pesan.length > 1000) return reply('Pesan terlalu panjang (maks 1000 karakter).')
+    try {
+        const cap = `*[ FITUR BOT MENFESS/SURAT ]*\n\nDari : Tidak Diketahui\nUntuk : Kamu\nPesan : *${pesan}*`
+        const imgPath = './media/surat.jpeg'
+        if (fs.existsSync(imgPath)) {
+            await bob.sendMessage(targetJid, { image: fs.readFileSync(imgPath), caption: cap })
+        } else {
+            await bob.sendMessage(targetJid, { text: cap })
+        }
+        reply('Menfess berhasil terkirim.')
+    } catch (e) { reply('❌ Gagal kirim. Nomor salah / penerima belum pernah chat bot.') }
+}
 const execTransfer = async (targetJid, amount) => {
     targetJid = await resolveTfTarget(targetJid)
     if (!targetJid) return reply(`Target tidak valid`)
@@ -898,6 +926,29 @@ if (!isCmd && !m.key.fromMe && typeof body === 'string' && body.trim()) {
                 const target = ps.data && ps.data.target
                 inputSession.clearPending(sender)
                 await execTransfer(target, amount)
+                return
+            }
+            if (ps.type === 'menfess_nomor') {
+                if (m.isGroup) { inputSession.clearPending(sender); reply('Menfess hanya bisa di private chat.'); return }
+                const n = normorMenfess(teks)
+                if (!n) { reply(`Nomor tidak valid. Contoh: 081234567890\nCoba lagi atau *batal*.`); return }
+                if (n === auth.norm(senderNum || sender)) { reply(`Gak bisa kirim menfess ke diri sendiri! Masukkan nomor lain atau *batal*.`); return }
+                inputSession.setPending(sender, 'menfess_pesan', { target: n + '@s.whatsapp.net' })
+                reply(`Nomor tujuan: *${n}*\nSilahkan masukan pesannya:\n_(ketik *ubah* untuk ganti nomor, *batal* untuk keluar)_`)
+                return
+            }
+            if (ps.type === 'menfess_pesan') {
+                if (m.isGroup) { inputSession.clearPending(sender); reply('Menfess hanya bisa di private chat.'); return }
+                if (teks.toLowerCase() === 'ubah') {
+                    inputSession.setPending(sender, 'menfess_nomor', {})
+                    reply(`Silahkan masukan nomor telepon:`)
+                    return
+                }
+                const target = ps.data && ps.data.target
+                if (!target) { inputSession.clearPending(sender); reply('Sesi kedaluwarsa, ulangi dari *#menfess*.'); return }
+                if (!teks) { reply(`Pesan kosong. Tulis pesannya atau *batal*.`); return }
+                inputSession.clearPending(sender)
+                await execMenfess(target, teks)
                 return
             }
             inputSession.clearPending(sender)
@@ -1729,20 +1780,30 @@ ${CmD} Tangerang
                     }
                     break
                     case 'menfess': {
-                // if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
                 { const _pp = await pakaiPoin(sender); if (!_pp.ok) return reply(_pp.msg) }
-                        if (!q) return reply(`Masukan Text!\nExample : ${prefix}menfess no|pesan`)
-                        var number = q.split('|')[0] ? q.split('|')[0] : q
-                        var textnyaku = q.split('|')[1] ? q.split('|')[1] : ''
-                        if (number.startsWith('08')) return reply(`Awali Dengan 62! bukan 08\nContoh : ${sender.split("@")[0]}`)
-                        if (!number) return reply(`Masukan Nomernya.\nExample : ${CmD} ${sender.split("@")[0]}`)
-                        if (!textnyaku) return reply(`Masukan Pesan nya.\nExample : ${CmD} ${sender.split("@")[0]}|Haii`)
-                        if (m.isGroup)return reply('Hanya Bisa Di Gunakan Private Message')
-                        var caption = `*[ FITUR BOT MENFESS/SURAT ]*\n\nDari : Tidak Diketahui\nUntuk : Kamu\nPesan : *${textnyaku}*`
-                        var button = [{ buttonId: `.cnfrmmen ${m.sender}`, buttonText: { displayText: `Menfess Confirmasi` }, type: 1 }]
-                        var img = fs.readFileSync('./media/surat.jpeg')
-                        bob.sendMessage(number.replace(/[-|+| |]/gi, '') + "@s.whatsapp.net", {image: img, caption: caption})
-                        reply('Menfess Berhasil Terkirim.')
+                        if (m.isGroup) return reply('Hanya Bisa Di Gunakan Private Message')
+                        // Sekali ketik: /menfess 62812xxxx|pesan (format nomor bebas)
+                        if (q && q.includes('|')) {
+                            const parts = q.split('|')
+                            const pesan = parts.slice(1).join('|').trim()
+                            const n = normorMenfess(parts[0])
+                            if (!n) return reply('Nomor tidak valid. Contoh: 081234567890')
+                            if (!pesan) return reply('Pesan kosong.')
+                            await execMenfess(n + '@s.whatsapp.net', pesan)
+                            break
+                        }
+                        // Tag / reply / nomor langsung -> tinggal tulis pesan
+                        let mfTarget = null
+                        if (mentionUser && mentionUser.length) mfTarget = mentionUser[0]
+                        else if (m.quoted && m.quoted.sender) mfTarget = m.quoted.sender
+                        else if (q && normorMenfess(q)) mfTarget = normorMenfess(q) + '@s.whatsapp.net'
+                        if (mfTarget) {
+                            inputSession.setPending(sender, 'menfess_pesan', { target: mfTarget })
+                            return reply(`Nomor tujuan: *${String(mfTarget).split('@')[0]}*\nSilahkan masukan pesannya:\n_(ketik *ubah* untuk ganti nomor, *batal* untuk keluar)_`)
+                        }
+                        // Bertahap: tanya nomor dulu
+                        inputSession.setPending(sender, 'menfess_nomor', {})
+                        return reply(`Silahkan masukan nomor telepon:`)
                     } 
                     break
                     case 'ppcp':{
@@ -3861,7 +3922,12 @@ fakereply(rules)
                     // ========== MENFESS (UTAMA, pakai database tracking) ==========
                     case 'confess': {
                         { const _pp = await pakaiPoin(sender); if (!_pp.ok) return reply(_pp.msg) }
-                        if (!q || !q.includes('|')) return reply(`Format: ${prefix}menfess 62812xxxx|pesan rahasia`)
+                        if (!q || !q.includes('|')) {
+                            // Tanpa format lengkap -> sesi bertahap (sama seperti menfess)
+                            if (m.isGroup) return reply('Hanya Bisa Di Gunakan Private Message')
+                            inputSession.setPending(sender, 'menfess_nomor', {})
+                            return reply(`Silahkan masukan nomor telepon:`)
+                        }
                         let [jidRaw, pesan] = q.split('|')
                         if (!jidRaw || !pesan) return reply(`Format: ${prefix}menfess 62812xxxx|Halo`)
                         let target = jidRaw.trim().replace(/[^0-9]/g, '')
