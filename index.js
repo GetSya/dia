@@ -60,12 +60,9 @@ global.reload = (_event, filename) => {
 }
 Object.freeze(global.reload)
 fs.watch(path.join(__dirname, 'command'), global.reload)
-//----> END
 
-/*global.api = (name, path = '/', query = {}, apikeyqueryname) => (name in global.APIs ? global.APIs[name] : name) + path + (query || apikeyqueryname ? '?' + new URLSearchParams(Object.entries({ ...query, ...(apikeyqueryname ? { [apikeyqueryname]: global.APIKeys[name in global.APIs ? global.APIs[name] : name] } : {}) })) : '')*/
 
 async function startBot() {
-    // Banner animasi JojoBot By Arasya — hanya sekali saat boot awal
     if (!global.__jojoBannerShown) {
         global.__jojoBannerShown = true
         await banner.showBanner()
@@ -74,7 +71,7 @@ async function startBot() {
     spin.start()
     const {
         default: WASocket,
-        useMultiFileAuthState,
+        useMultiFileAuthState, //pake ginian ternyata
         DisconnectReason,
         fetchLatestBaileysVersion,
         generateForwardMessageContent,
@@ -85,7 +82,7 @@ async function startBot() {
         Browsers,
     } = await loadBaileys()
     spin.update('Membaca sesi tersimpan...')
-    const { state, saveCreds } = await useMultiFileAuthState(`./session`)
+    const { state, saveCreds } = await useMultiFileAuthState(`./session`) //pakai sessions folder baru ternyata
     const store = makeSimpleStore()
 
     spin.update('Mengecek versi WhatsApp...')
