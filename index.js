@@ -235,6 +235,23 @@ async function startBot() {
         if (!bob.public && !mek.key.fromMe && chatUpdate.type === 'notify') return
         if (mek.key.id.startsWith('BAE5') && mek.key.id.length === 16) return
         if (mek.key.id.startsWith('Sya')) return
+        // Dedup: Baileys bisa mengirim pesan yang sama berkali-kali (notify +
+        // append/history-sync). Tanpa ini tiap duplikat diproses penuh:
+        // balasan ganda + poin kepotong 2x + reward dobel.
+        try {
+            if (!global.__processedMsg) global.__processedMsg = new Map()
+            const mid = (mek.key.remoteJid || '') + '|' + (mek.key.id || '') + '|' + (mek.key.participant || '')
+            const now = Date.now()
+            const seen = global.__processedMsg.get(mid)
+            if (seen && now - seen < 10 * 60 * 1000) return
+            global.__processedMsg.set(mid, now)
+            if (global.__processedMsg.size > 5000) {
+                for (const [k, ts] of global.__processedMsg) {
+                    if (now - ts > 10 * 60 * 1000) global.__processedMsg.delete(k)
+                    if (global.__processedMsg.size <= 4000) break
+                }
+            }
+        } catch {}
         m = smsg(bob, mek, store)
         require("./control.js")(bob, m, chatUpdate, store, welcome)
         } catch (err) {
