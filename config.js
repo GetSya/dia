@@ -19,20 +19,23 @@ global.botName = 'JOJO - BOT'
 global.ownerName = 'Arasya'
 global.packname = 'My Sticker'
 global.author = 'Sticker Saya'
-global.limitCount = 25
 global.gamewaktu = 50
+// Kipay.id payment gateway (QRIS) untuk shop Rupiah asli.
+// Key dipakai sebagai {apiKey} di path: https://api.kipay.id/api/pay/{apiKey}/transactions
+global.kipayApiKey = process.env.KIPAY_API_KEY || 'qpg_pub_8bfLiD1kO2KC__J1DMa-umUlp12nJADu'
 // Token AI Puter (https://puter.com) untuk fitur #ai / chatbot.
 // PERHATIAN: file ini ter-track git — jangan push ke repo publik tanpa menghapus token!
 global.puterToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6InYyIn0.eyJ0IjoidCIsInYiOiIyIiwidG9rZW5fdWlkIjoiOWE4NDA1YzgtMTg3YS00OTJkLWE3NzgtNjFkM2JjZWQ1NDI4IiwidXUiOiJ4cnladEZBQ1RLTzRPM1pZYXF3cWZRPT0iLCJzdSI6InlSZ3VHMG1ZVDZlT3dXQlVvS0liK1E9PSIsImFpIjoieHJ5WnRGQUNUS080TzNaWWFxd3FmUT09IiwiZnVsbF9hY2Nlc3MiOnRydWUsImlhdCI6MTc4OTUyNjI0NX0.lfjEFtBMMH1G07YJ9dRzbzuy8N6XvNZlrIR9n5wEVbo'
 global.prefa = ['#']
 global.apikey = `arasyaku`
-global.botWebsite = 'https://bot.acamedia.xyz'
-global.registWebsite = 'https://bot.acamedia.xyz'
-global.jvault = {
-    binId: '255feaaa-e64c-4b4e-b2de-5f2ec0ee54b3',
-    apiKey: 'jv_59c80af7ea55b398e7e4ebaeb14eb5d6dc88772dd7245a8cb432c1d7f16a',
-    url: 'https://jvault.aerialstudio.tech/api'
-}
+global.botWebsite = 'https://bot.arasyarafi.xyz'
+global.registWebsite = 'https://bot.arasyarafi.xyz'
+// Auth register/login via website + verifikasi JVault (read-only).
+// REGISTER: https://bot.arasyarafi.xyz?nomor=<nomor user>
+// LOGIN: cek nomor di bin verify di bawah (users[].phone). Ada = bisa login.
+global.authVerifyBinId = '1971982d-eb61-456b-bd54-92ad885fa550'
+global.authVerifyApiKey = 'jv_59c80af7ea55b398e7e4ebaeb14eb5d6dc88772dd7245a8cb432c1d7f16a'
+global.authVerifyApi = 'https://jvault.aerialstudio.tech/api'
 global.mess = {
     success: '✓ Success',
     admin: 'Fitur Khusus Admin Group!',

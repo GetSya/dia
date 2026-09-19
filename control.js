@@ -48,7 +48,6 @@ const { jadianime } = require("./lib/scraper/jadianime.js")
 const { youtube, searchResult } = require("./lib/scraper/ytdl.js")
 const { TiktokDownloader } = require("./lib/scraper/tiktokdl.js")
 const { addPlayGame, getJawabanGame, isPlayGame, cekWaktuGame, getGamePosi } = require("./lib/game.js");
-const { isLimit, limitAdd, getLimit, giveLimit, addBalance, kurangBalance, getBalance } = require("./lib/limit.js");
 const { addPrem, deletePrem, checkPrem} = require("./lib/prem2.js");
 const { twitter } = require("./lib/scraper/twitter.js")
 const { exec, spawn, execSync } = require("child_process")
@@ -118,9 +117,6 @@ let premium = JSON.parse(fs.readFileSync('./assets/db/premium.json'));
 let commandsDB = JSON.parse(fs.readFileSync('./assets/db/commands.json'));
 let prem2 = JSON.parse(fs.readFileSync('./assets/db/prem2.json'));
 let token = JSON.parse(fs.readFileSync('./assets/db/token.json'));
-let limit = JSON.parse(fs.readFileSync('./assets/db/limit.json'));
-let balance = JSON.parse(fs.readFileSync('./assets/db/balance.json'));
-let glimit = JSON.parse(fs.readFileSync('./assets/db/glimit.json'));
 
 
 module.exports = bob = async (bob, m, chatUpdate, store, welcome, mentioned) => {
@@ -147,7 +143,7 @@ module.exports = bob = async (bob, m, chatUpdate, store, welcome, mentioned) => 
         const CmD = body.slice(0).trim().split(/ +/).shift().toLowerCase()
         const args = body.trim().split(/ +/).slice(1)
         const pushname = m.pushName || "No Name"
-        // hanya user yang pakai command yang masuk database.json + sync JVault
+        // hanya user yang pakai command yang masuk database.json (lokal saja)
         if (isCmd) { try { joDatabase.addUser(m.sender, pushname, m.chat) } catch {} }
         const botNumber = await bob.decodeJid(bob.user.id)
         // Normalisasi nomor pengirim agar tahan JID LID/device baru WA.
@@ -402,6 +398,25 @@ module.exports = bob = async (bob, m, chatUpdate, store, welcome, mentioned) => 
         const reply = (teks) => {
 			bob.sendMessage(m.chat, { text: teks }, { quoted: m})
 		}
+        // ===== SISTEM POIN (pengganti limit.js) =====
+        // Tiap pemakaian fitur = 1 poin. Owner, premium (prem2), dan
+        // pemilik Unlimited Poin gratis. Poin didapat dari daftar (+40),
+        // menang game, beli pakai uang (/belipoin), atau shop Rupiah (/shop).
+        const pakaiPoin = async (jid) => {
+            if (isCreator || isPremium) return { ok: true, gratis: true }
+            try { if (economy.hasUnlimited(jid)) return { ok: true, gratis: true } } catch {}
+            try {
+                await economy.removePoint(jid, economy.CONFIG.POINT_COST_PER_FEATURE, 'POINT_SPEND', 'Biaya pemakaian fitur')
+                return { ok: true }
+            } catch (e) {
+                if (e && e.code === 'INSUFFICIENT_POINT') {
+                    let sisa = 0
+                    try { sisa = economy.getWallet(jid).point || 0 } catch {}
+                    return { ok: false, msg: `Poin kamu tidak cukup.\n\nPoin kamu: *${economy.formatPoint(sisa)}*\nBiaya fitur ini: *1 Poin*\n\nCara dapat poin:\n• Daftar lalu login: *+40 poin*\n• Menangkan game\n• Beli pakai uang: *${prefix}belipoin <jumlah>*\n• Beli pakai Rupiah: *${prefix}shop*\n\nCek saldo: *${prefix}uang*` }
+                }
+                return { ok: false, msg: `Gagal memotong poin: ${(e && e.message) || e}` }
+            }
+        }
         const fakereply = (teks) => {
 			bob.sendMessage(m.chat, { text: teks }, { quoted: fake})
 		}
@@ -539,7 +554,7 @@ const fake = {
     var texttg = `*Selamat @${m.sender.split("@")[0]} Jawaban Kamu Benar 🎉*\n\nJawaban : ${getJawabanGame(m.chat, tebakgambar)}\nKode Game : ${makeid(15)}\n\nIngin bermain lagi? Ketik /tebakgambar`
     bob.sendMessage(m.chat, {text: texttg, mentions: [m.sender]}, {quoted: m}) 
     tebakgambar.splice(getGamePosi(m.chat, tebakgambar), 1)
-    giveLimit(sender, parseInt(`2`), limit)
+    economy.addPoint(sender, 2, 'GAME_REWARD', 'Bonus menang game').catch(()=>{})
     _ecoReward(sender, 'tebakgambar')
 }
 }
@@ -549,7 +564,7 @@ if (isPlayGame(m.chat, tebakkata) ) {
         var texttg = `*Selamat @${m.sender.split("@")[0]} Jawaban Kamu Benar 🎉*\n\nJawaban : ${getJawabanGame(m.chat, tebakkata)}\nKode Game : ${makeid(15)}\n\nIngin bermain lagi? Ketik /tebakkata`
         bob.sendMessage(m.chat, {text: texttg, mentions: [m.sender]}, {quoted: m}) 
         tebakkata.splice(getGamePosi(m.chat, tebakkata), 1)
-        giveLimit(sender, parseInt(`2`), limit)
+        economy.addPoint(sender, 2, 'GAME_REWARD', 'Bonus menang game').catch(()=>{})
         _ecoReward(sender, 'tebakkata')
     }
 }
@@ -559,7 +574,7 @@ if (isPlayGame(m.chat, siapakahaku) ) {
         var texttg = `*Selamat @${m.sender.split("@")[0]} Jawaban Kamu Benar 🎉*\n\nJawaban : ${getJawabanGame(m.chat, siapakahaku)}\nKode Game : ${makeid(15)}\n\nIngin bermain lagi? Ketik /siapakahaku`
         bob.sendMessage(m.chat, {text: texttg, mentions: [m.sender]}, {quoted: m}) 
         siapakahaku.splice(getGamePosi(m.chat, siapakahaku), 1)
-        giveLimit(sender, parseInt(`2`), limit)
+        economy.addPoint(sender, 2, 'GAME_REWARD', 'Bonus menang game').catch(()=>{})
         _ecoReward(sender, 'siapakahaku')
     }
 }
@@ -569,7 +584,7 @@ if (isPlayGame(m.chat, caklontong) ) {
         var texttg = `*Selamat @${m.sender.split("@")[0]} Jawaban Kamu Benar 🎉*\n\nJawaban : ${getJawabanGame(m.chat, caklontong)}\nKode Game : ${makeid(15)}\n\nIngin bermain lagi? Ketik /caklontong`
         bob.sendMessage(m.chat, {text: texttg, mentions: [m.sender]}, {quoted: m}) 
     caklontong.splice(getGamePosi(m.chat, caklontong), 1)
-    giveLimit(sender, parseInt(`2`), limit)
+    economy.addPoint(sender, 2, 'GAME_REWARD', 'Bonus menang game').catch(()=>{})
     _ecoReward(sender, 'caklontong')
 }
 }
@@ -579,7 +594,7 @@ if (isPlayGame(m.chat, soal) ) {
         var texttg = `*Selamat @${m.sender.split("@")[0]} Jawaban Kamu Benar 🎉*\n\nJawaban : ${getJawabanGame(m.chat, soal)}\nKode Game : ${makeid(15)}\n\nIngin bermain lagi? Ketik /soal`
         bob.sendMessage(m.chat, {text: texttg, mentions: [m.sender]}, {quoted: m}) 
     soal.splice(getGamePosi(m.chat, soal), 1)
-    giveLimit(sender, parseInt(`2`), limit)
+    economy.addPoint(sender, 2, 'GAME_REWARD', 'Bonus menang game').catch(()=>{})
     _ecoReward(sender, 'soal')
 }
 }
@@ -589,7 +604,7 @@ if (isPlayGame(m.chat, tebaklagu) ) {
         var texttg = `*Selamat @${m.sender.split("@")[0]} Jawaban Kamu Benar 🎉*\n\nJawaban : ${getJawabanGame(m.chat, tebaklagu)}\nKode Game : ${makeid(15)}\n\nIngin bermain lagi? Ketik /tebaklagu`
         bob.sendMessage(m.chat, {text: texttg, mentions: [m.sender]}, {quoted: m}) 
         tebaklagu.splice(getGamePosi(m.chat, tebaklagu), 1)
-        giveLimit(sender, parseInt(`2`), limit)
+        economy.addPoint(sender, 2, 'GAME_REWARD', 'Bonus menang game').catch(()=>{})
         _ecoReward(sender, 'tebaklagu')
         }
     }
@@ -599,7 +614,7 @@ if (isPlayGame(m.chat, teki) ) {
         var texttg = `*Selamat @${m.sender.split("@")[0]} Jawaban Kamu Benar 🎉*\n\nJawaban : ${getJawabanGame(m.chat, teki)}\nKode Game : ${makeid(15)}\n\nIngin bermain lagi? Ketik /tebakkimia`
         bob.sendMessage(m.chat, {text: texttg, mentions: [m.sender]}, {quoted: m}) 
         teki.splice(getGamePosi(m.chat, teki), 1)
-        giveLimit(sender, parseInt(`2`), limit)
+        economy.addPoint(sender, 2, 'GAME_REWARD', 'Bonus menang game').catch(()=>{})
         _ecoReward(sender, 'teki')
         }
     }
@@ -643,7 +658,6 @@ function randomNomor(min, max = null) {
     }
         // Push Message To Console && Auto Read
         if (m.message) {
-            addBalance(m.sender, randomNomor(60), balance)
             bob.readMessages([m.key])           
         }
 
@@ -664,7 +678,7 @@ function randomNomor(min, max = null) {
          if (!m.isGroup && isCmd) console.log('\x1b[1;31m~\x1b[1;37m>', '[\x1b[1;32m ✓ \x1b[1;37m]', color(pushname), 'use', color(command), 'args :', color(args.length))
             if (isCmd && m.isGroup) console.log('\x1b[1;31m~\x1b[1;37m>', '[\x1b[1;32m ✓ \x1b[1;37m]', color(pushname), 'use', color(command), 'in group', color(groupName), 'args :', color(args.length))
 
-var LimitKu = `${getLimit(m.sender, limitCount, limit)}/${limitCount}`
+var _wMenu = economy.getWallet(m.sender); var PoinKu = economy.formatPoint(_wMenu.point || 0); var _bebasPoin = isCreator || isPremium || economy.hasUnlimited(m.sender)
 // Menu otomatis: setiap case baru di bawah marker ===== MENU:X ===== langsung muncul di sini
 const menuSections = require('./lib/menu').renderMenuSections(prefix)
 const menuku = `${ucapanWaktu} ${pushname}
@@ -674,7 +688,7 @@ const menuku = `${ucapanWaktu} ${pushname}
 *⦿ Tag :* @${sender.split('@')[0]}
 *⦿ Status :* ${premi}
 *⦿ Jam :* ${jam}
-*⦿ Poin :* ${isPremium || isCreator ? 'Unlimited' : LimitKu}
+*⦿ Poin :* ${_bebasPoin ? 'Unlimited' : PoinKu}
 *⦿ Tanggal :* ${tgl}
 ───────────────────
 ${readmore}
@@ -772,7 +786,6 @@ if (!isCmd && !m.key.fromMe && typeof body === 'string' && body.trim()) {
             body, sender, num: senderNum, pushname,
             reply: async (t) => reply(t),
             onWin: (jid) => {
-                try { giveLimit(jid, 2, limit) } catch {}
                 try {
                     let wid = String(jid||'')
                     if (!wid.includes('@')) {
@@ -780,6 +793,7 @@ if (!isCmd && !m.key.fromMe && typeof body === 'string' && body.trim()) {
                         const ttt = require('./lib/ttt')
                         wid = ttt.jidOf(wid)
                     }
+                    economy.addPoint(wid, 2, 'GAME_REWARD', 'Bonus menang TicTacToe').catch(()=>{})
                     economy.giveGameReward(wid, 'ttt_win').catch(()=>{})
                 } catch {}
             }
@@ -943,7 +957,7 @@ ${isi}
                 try {
                     const { sendFakeLink } = require('./lib/fakelink')
                     await sendFakeLink(bob, m.chat, {
-                        url: global.botWebsite || 'https://bot.acamedia.xyz',
+                        url: global.botWebsite || 'https://bot.arasyarafi.xyz',
                         title: `🤖 ${global.botName} • All Menu`,
                         description: `Daftar lengkap fitur ${global.botName} — ketik perintahnya untuk memakai!`,
                         thumbUrl: 'https://files.catbox.moe/0rhzw7.png',
@@ -967,6 +981,18 @@ ${isi}
                 if (!isCreator) throw mess.owner
                 bob.public = false
                 reply('Sukses Change To Self Usage')
+            }
+            break
+            case 'restart': {
+                // Owner only: muat ulang bot agar case baru di control.js langsung aktif & kebaca menu.
+                // Menu allmenu auto-scan case dari control.js tiap pesan, jadi setelah restart
+                // command baru otomatis muncul tanpa edit menu manual.
+                if (!isCreator) return reply(mess.owner)
+                reply('🔄 Merestart bot...\nTunggu ±10 detik lalu ketik *#allmenu* lagi.')
+                await sleep(1000)
+                exec(`pm2 restart index.js`, (err) => {
+                    if (err) reply(`Gagal restart otomatis: ${err.message}\nRestart manual via server/PM2.`)
+                })
             }
             break
                 case 'button':{
@@ -1043,8 +1069,7 @@ ${isi}
                     case 'qr':{
                 // if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
                 if (!q) throw (`Silahkan Masukan Text\nExample : ${CmD} Mine`)
-                    if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
-                    limitAdd(sender, limit)
+                    { const _pp = await pakaiPoin(sender); if (!_pp.ok) return reply(_pp.msg) }
                     bob.sendMessage(m.chat, {caption: q, image: {url: `https://api.qrserver.com/v1/create-qr-code/?size=790x790&data=${q}`}}, {quoted: m})
                     }
                     break
@@ -1070,8 +1095,7 @@ ${isi}
                     // Game
                     // ===== MENU:Game Menu =====
                     case 'dadu': case 'dice': {
-                        if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
-                        limitAdd(sender, limit)
+                        { const _pp = await pakaiPoin(sender); if (!_pp.ok) return reply(_pp.msg) }
                         // eco reward dadu
                         economy.giveGameReward(sender, 'dadu', { idempotency: makeid(6) }).then(r=>{ if(r&&r.amount) bob.sendMessage(m.chat, {text: `𐙚 +Rp ${economy.formatMoney(r.amount)} Money`}, {quoted: m}).catch(()=>{}) }).catch(()=>{})
                         reply(mess.wait)
@@ -1095,19 +1119,16 @@ ${isi}
                         const me = senderNum || ttt.digitsOf(sender)
                         const help = `*${ttt.X} TIC-TAC-TOE ${ttt.O}*\n\n• *${prefix}ttt bot* — main lawan bot\n• *${prefix}ttt @tag* / reply *${prefix}ttt* — tantang member (grup)\n• *${prefix}ttt create* — buat room + kode\n• *${prefix}ttt join KODE* — gabung room (bisa beda chat!)\n• *${prefix}ttt papan* — lihat papan\n• *${prefix}ttt stop* — menyerah/berhenti\n\nLangkah: kirim angka *1-9*. Tantangan dijawab *y* / *n*.\nSeri otomatis bila papan terkunci 🔒.`
                         const busy = ttt.roomOf(me) || ttt.waitingFor(me)
-                        const needPoin = () => {
-                            if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) {
-                                reply(`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
-                                return true
-                            }
+                        const needPoin = async () => {
+                            const _pp = await pakaiPoin(sender)
+                            if (!_pp.ok) { reply(_pp.msg); return true }
                             return false
                         }
                         if (!sub) return reply(help)
                         // --- lawan bot ---
                         if (sub === 'bot') {
                             if (busy) return reply(`Kamu masih punya game aktif! Selesaikan dulu atau *${prefix}ttt stop*.`)
-                            if (needPoin()) return
-                            limitAdd(sender, limit)
+                            if (await needPoin()) return
                             const room = ttt.baseRoom(m.chat, me, ttt.BOT, 'bot')
                             room.status = 'playing'
                             room.names[me] = pushname
@@ -1117,8 +1138,7 @@ ${isi}
                         // --- buat room ---
                         if (sub === 'create' || sub === 'buat' || sub === 'room') {
                             if (busy) return reply(`Kamu masih punya game aktif! Selesaikan dulu atau *${prefix}ttt stop*.`)
-                            if (needPoin()) return
-                            limitAdd(sender, limit)
+                            if (await needPoin()) return
                             const room = ttt.baseRoom(m.chat, me, null, 'room')
                             room.o = null
                             room.names[me] = pushname
@@ -1179,7 +1199,6 @@ ${isi}
                         if (busy) return reply(`Kamu masih punya game aktif! Selesaikan dulu atau *${prefix}ttt stop*.`)
                         if (ttt.roomOf(target) || ttt.waitingFor(target)) return reply(`Dia sedang bermain. Tunggu selesai dulu!`)
                         if (needPoin()) return
-                        limitAdd(sender, limit)
                         const room = ttt.baseRoom(m.chat, me, target, 'pvp')
                         room.status = 'waiting'
                         room.names[me] = pushname
@@ -1231,6 +1250,7 @@ ${isi}
                     case 'tebakgambar': {
                 // if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
                 if (isPlayGame(m.chat, tebakgambar)) return reply(m.chat, `Masih ada game yang belum diselesaikan`, tebakgambar[getGamePosi(m.chat, tebakgambar)].m)
+                    { const _pp = await pakaiPoin(sender); if (!_pp.ok) return reply(_pp.msg) }
                         var tg = JSON.parse(fs.readFileSync('./assets/tebakgambar.json'))
                     var data = pickRandom(tg)
                     data.jawaban = data.jawaban.split('Jawaban ').join('')
@@ -1239,12 +1259,12 @@ ${isi}
                     .then( res => {
                     var jawab = data.jawaban.toLowerCase()
                     addPlayGame(m.chat, 'TEBAK GAMBAR', jawab, global.gamewaktu, res, tebakgambar)
-                    limitAdd(sender, limit)
                     })}
                     break
                     case 'tebakkata': {
                 // if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
                 if (isPlayGame(m.chat, tebakkata)) return reply(m.chat, `Masih ada game yang belum diselesaikan`, tebakkata[getGamePosi(m.chat, tebakkata)].m)
+                    { const _pp = await pakaiPoin(sender); if (!_pp.ok) return reply(_pp.msg) }
                     var tg = JSON.parse(fs.readFileSync('./assets/tebakkata.json'))
                     var data = pickRandom(tg)
                     data.jawaban = data.jawaban.split('Jawaban ').join('')
@@ -1253,13 +1273,11 @@ ${isi}
                     .then( res => {
                     var jawab = data.jawaban.toLowerCase()
                     addPlayGame(m.chat, 'TEBAK KATA', jawab, global.gamewaktu, res, tebakkata)
-                    limitAdd(sender, limit)
                     })}
                     break
                     case 'tod': case 'truth': case 'dare':{
                 // if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
-                if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
-                    limitAdd(sender, limit)
+                { const _pp = await pakaiPoin(sender); if (!_pp.ok) return reply(_pp.msg) }
                         var randomtod = ["TRUTH","DARE"]
                         var randomtod2 = pickRandom(randomtod)
 var textkuy = `❔ *[ TRUTH OR DARE ]* ❔
@@ -1289,12 +1307,12 @@ _Hasil :_ `
                         var randomdare = pickRandom(dare)
                         bob.sendMessage(m.chat, {text: randomdare}, {quoted: m})
                        }
-                       limitAdd(sender, limit)
                      }
                     break
                     case 'siapakahaku': {
                 // if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
                 if (isPlayGame(m.chat, siapakahaku)) return reply(m.chat, `Masih ada game yang belum diselesaikan`, siapakahaku[getGamePosi(m.chat, siapakahaku)].m)
+                    { const _pp = await pakaiPoin(sender); if (!_pp.ok) return reply(_pp.msg) }
                     var tg = JSON.parse(fs.readFileSync('./assets/siapakahaku.json'))
                     var data = pickRandom(tg)
                     data.jawaban = data.jawaban.split('Jawaban ').join('')
@@ -1303,13 +1321,13 @@ _Hasil :_ `
                     .then( res => {
                     var jawab = data.jawaban.toLowerCase()
                     addPlayGame(m.chat, 'SIAPAKAH AKU?', jawab, global.gamewaktu, res, siapakahaku)
-                    limitAdd(sender, limit)
 
                     })}
                     break
                     case 'caklontong': {
                 // if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
                 if (isPlayGame(m.chat, caklontong)) return reply(m.chat, `Masih ada game yang belum diselesaikan`, caklontong[getGamePosi(m.chat, caklontong)].m)
+                    { const _pp = await pakaiPoin(sender); if (!_pp.ok) return reply(_pp.msg) }
                     var tg = JSON.parse(fs.readFileSync('./assets/caklontong.json'))
                     var data = pickRandom(tg)
                     data.jawaban = data.jawaban.split('Jawaban ').join('')
@@ -1318,12 +1336,12 @@ _Hasil :_ `
                     .then( res => {
                     var jawab = data.jawaban.toLowerCase()
                     addPlayGame(m.chat, 'CAK LONTONG', jawab, global.gamewaktu, res, caklontong)
-                    limitAdd(sender, limit)
 
                     })}
                     case 'soal': {
                 // if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
                 if (isPlayGame(m.chat, soal)) return reply(m.chat, `Masih ada game yang belum diselesaikan`, soal[getGamePosi(m.chat, soal)].m)
+                    { const _pp = await pakaiPoin(sender); if (!_pp.ok) return reply(_pp.msg) }
                     var tg = JSON.parse(fs.readFileSync('./assets/soal.json'))
                     var data = pickRandom(tg)
                     data.jawaban = data.jawaban.split('Jawaban ').join('')
@@ -1332,13 +1350,13 @@ _Hasil :_ `
                     .then( res => {
                     var jawab = data.jawaban.toLowerCase()
                     addPlayGame(m.chat, 'SOAL RANDOM', jawab, global.gamewaktu, res, soal)
-                    limitAdd(sender, limit)
 
                     })}
                     break
                     case 'tebakkimia': {
                 // if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
                 if (isPlayGame(m.chat, teki)) return reply(m.chat, `Masih ada game yang belum diselesaikan`, teki[getGamePosi(m.chat, teki)].m)
+                    { const _pp = await pakaiPoin(sender); if (!_pp.ok) return reply(_pp.msg) }
                     var tg = JSON.parse(fs.readFileSync('./assets/tebakkimia.json'))
                     var data = pickRandom(tg)
                     data.jawaban = data.lambang.split('Jawaban ').join('')
@@ -1347,13 +1365,13 @@ _Hasil :_ `
                     .then( res => {
                     var jawab = data.jawaban.toLowerCase()
                     addPlayGame(m.chat, 'TEBAK KIMIA', jawab, global.gamewaktu, res, teki)
-                    limitAdd(sender, limit)
 
                     })}
                     break
                     case 'tebaklagu': {
                 // if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
                 if (isPlayGame(m.chat, tebaklagu)) return reply(m.chat, `Masih ada game yang belum diselesaikan`, tebaklagu[getGamePosi(m.chat, tebaklagu)].m)
+                    { const _pp = await pakaiPoin(sender); if (!_pp.ok) return reply(_pp.msg) }
                     var tg = JSON.parse(fs.readFileSync('./assets/tebaklagu.json'))
                     var data = pickRandom(tg)
                     data.jawaban = data.judul.split('Jawaban ').join('')
@@ -1363,7 +1381,6 @@ _Hasil :_ `
                     .then( res => {
                     var jawab = data.judul.toLowerCase()
                     addPlayGame(m.chat, 'TEBAK LAGU', jawab, 300, res, tebaklagu)
-                    limitAdd(sender, limit)
                     })}
                     break
                     // Akhir Game
@@ -1390,8 +1407,7 @@ _Hasil :_ `
                     break
                     case 'tomp3': {
                 // if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
-                if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
-                        limitAdd(sender, limit)
+                { const _pp = await pakaiPoin(sender); if (!_pp.ok) return reply(_pp.msg) }
                         if (!/video/.test(mime) && !/audio/.test(mime)) return reply(`Kirim/Reply Video/Audio Yang Ingin Dijadikan MP3 Dengan Caption ${prefix + command}`)
                         reply(mess.wait)
                         try {
@@ -1411,8 +1427,7 @@ _Hasil :_ `
                     break
                     case 'bajingan':{
                 // if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
-                if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
-                    limitAdd(sender, limit)
+                { const _pp = await pakaiPoin(sender); if (!_pp.ok) return reply(_pp.msg) }
                     if (!q) return reply(`Masukan Nama\nExample : ${CmD} ${pushname}`)
                     var link = `https://api.memegen.link/images/custom/Bajingan_Lu/${q}.png?background=https://telegra.ph/file/d608ec3cb57ff6b9ac708.jpg`
                     bob.sendImageAsSticker(m.chat, link, m, { packname: global.packname, author: global.author })
@@ -1422,8 +1437,7 @@ _Hasil :_ `
                         case 'sholatku':
                             case 'jadwalsholat': {
                 // if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
-                if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
-                    limitAdd(sender, limit)
+                { const _pp = await pakaiPoin(sender); if (!_pp.ok) return reply(_pp.msg) }
                     var tglsholat = moment.tz('Asia/Jakarta').format('YY/MM/DD')
                     if (q) { 
                     try {
@@ -1486,8 +1500,7 @@ ${CmD} Tangerang
                     break
                     case 'toimg':{
                 // if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
-                if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
-                    limitAdd(sender, limit)
+                { const _pp = await pakaiPoin(sender); if (!_pp.ok) return reply(_pp.msg) }
                         if (!/webp/.test(mime)) return m.reply(`Reply sticker dengan caption *${prefix + command}*`)
                         let media = await bob.downloadAndSaveMediaMessage(qmsg)
                         let ran = await getRandom('.png')
@@ -1503,8 +1516,7 @@ ${CmD} Tangerang
                     case 'translate': case 'tr':{
                 // if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
                 if (!isQuotedMsg) return reply(`Reply Pesan.`)
-                        if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
-                    limitAdd(sender, limit)
+                        { const _pp = await pakaiPoin(sender); if (!_pp.ok) return reply(_pp.msg) }
                         translate.translate(quoted.text, {to: `id`}).then ( data => {
                             bob.sendMessage(m.chat, {text: data.text}, {quoted: m})
                         })
@@ -1512,8 +1524,7 @@ ${CmD} Tangerang
                     break
                     case 'quotes': {
                 // if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
-                if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
-                    limitAdd(sender, limit)
+                { const _pp = await pakaiPoin(sender); if (!_pp.ok) return reply(_pp.msg) }
                         var kotes2 = JSON.parse(fs.readFileSync('./assets/quotes.json'))
                         var hasil = pickRandom(kotes2)
                         var img = fs.readFileSync('./media/icon.png')
@@ -1529,8 +1540,7 @@ ${CmD} Tangerang
                     break
                     case 'tts': case 'sbot' :{
                 // if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
-                if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
-                    limitAdd(sender, limit)
+                { const _pp = await pakaiPoin(sender); if (!_pp.ok) return reply(_pp.msg) }
                         if (!q) return reply(`Masukan Text!\nExample : ${prefix}tts Halo, saya Jojo`)
                         if (q.length > 300) return reply(`Text Terlalu Panjang (max 300 karakter)`)
                         try {
@@ -1556,8 +1566,7 @@ ${CmD} Tangerang
                     case 'vn':{
                         if (isQuotedMsg) {
 
-                            if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
-                            limitAdd(sender, limit)
+                            { const _pp = await pakaiPoin(sender); if (!_pp.ok) return reply(_pp.msg) }
                             
                             vitsUmamusumeVoiceSynthesizer(quoted.text, `草上飞 Grass Wonder (Umamusume Pretty Derby)`).then ( data => {
                                 bob.sendMessage(m.chat, {audio: {url: data.url}, mimetype: 'audio/mp4', ptt: true}, {quoted: m})
@@ -1574,8 +1583,7 @@ ${CmD} Tangerang
                     break
                     case 'ttsjp': case 'jpbot' :{
                 // if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
-                if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
-                    limitAdd(sender, limit)
+                { const _pp = await pakaiPoin(sender); if (!_pp.ok) return reply(_pp.msg) }
                         if (!q) return reply(`Masukan Text!\nExample : ${prefix}ttsjp Konnichiwa`)
                         if (q.length > 300) return reply(`Text Terlalu Panjang (max 300 karakter)`)
                         try {
@@ -1594,8 +1602,7 @@ ${CmD} Tangerang
                     break
                     case 'decode':{
                 // if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
-                if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
-                    limitAdd(sender, limit)
+                { const _pp = await pakaiPoin(sender); if (!_pp.ok) return reply(_pp.msg) }
                     if (!q) return reply(`Format salah!\n\nKirim perintah: ${prefix}decode *text*\nContoh: ${prefix}debinary 01110100 01100101 01110011`)
                     if (q.length > 2048) return reply('Maximal 2.048 String!')
                     function decodebinary(char) {
@@ -1606,8 +1613,7 @@ ${CmD} Tangerang
                     break
                     case 'encode':{
                 // if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
-                if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
-                    limitAdd(sender, limit)
+                { const _pp = await pakaiPoin(sender); if (!_pp.ok) return reply(_pp.msg) }
                     if (!q) return reply(`Format salah!\n\nKirim perintah: ${prefix}encode *text*\nContoh: ${prefix}encode i Love you`)
                     if (q.length > 2048) return reply('Maximal 2.048 String!')
                     function encodeBinary(char) {
@@ -1621,8 +1627,7 @@ ${CmD} Tangerang
                     break
                     case 'menfess': {
                 // if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
-                if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
-                    limitAdd(sender, limit)
+                { const _pp = await pakaiPoin(sender); if (!_pp.ok) return reply(_pp.msg) }
                         if (!q) return reply(`Masukan Text!\nExample : ${prefix}menfess no|pesan`)
                         var number = q.split('|')[0] ? q.split('|')[0] : q
                         var textnyaku = q.split('|')[1] ? q.split('|')[1] : ''
@@ -1639,8 +1644,7 @@ ${CmD} Tangerang
                     break
                     case 'ppcp':{
                 // if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
-                if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
-                    limitAdd(sender, limit)
+                { const _pp = await pakaiPoin(sender); if (!_pp.ok) return reply(_pp.msg) }
                     var ppcpnya =  await fetchJson(`https://raw.githubusercontent.com/VamsesOfficial/database2/master/image/ppcp.js`)
                     var randomppcp = pickRandom(ppcpnya)
                     bob.sendMessage(m.chat, {image: {url: randomppcp.cowo}, caption: `Cowo`})
@@ -1679,8 +1683,7 @@ ${CmD} Tangerang
                     break
                     /*
                     case 'esrgan': case 'remini': case 'tohd': case 'bagusin':{
-                        if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
-                    limitAdd(sender, limit)
+                        { const _pp = await pakaiPoin(sender); if (!_pp.ok) return reply(_pp.msg) }
                         if (!isImage && !isQuotedImage) return reply(`Reply Gambar Atau Kirim Gambar dengan caption ${CmD}`)
                         reply(global.mess.wait + `\nTunggu 1 Menit Kurang`)
                         try {
@@ -1706,8 +1709,7 @@ ${CmD} Tangerang
                     break*/
                     case 'remini': case 'tohd':{
                     // if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
-                    if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
-                    limitAdd(sender, limit)
+                    { const _pp = await pakaiPoin(sender); if (!_pp.ok) return reply(_pp.msg) }
                     if (!isImage && !isQuotedImage) return reply(`Kirim gambar dengan caption ${CmD} atau Reply Gambar dengan text ${CmD}`)
                     reply(mess.wait)
                     try {
@@ -1727,8 +1729,7 @@ ${CmD} Tangerang
   
                     case 'ssweb': case 'ss': {
                 // if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
-                if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
-                    limitAdd(sender, limit)
+                { const _pp = await pakaiPoin(sender); if (!_pp.ok) return reply(_pp.msg) }
                     if (!q) return reply(`Masukan Text!\nExample ${CmD} https://youtube.com`)
                     if (q.includes('xnxx') && q.includes('pornhub')) return reply("Bokep Mulu Pikiran nya")
                     reply(global.mess.wait)
@@ -1737,8 +1738,7 @@ ${CmD} Tangerang
                     break
                     case 'google': case 'ggl':{
                 // if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
-                if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
-                    limitAdd(sender, limit)
+                { const _pp = await pakaiPoin(sender); if (!_pp.ok) return reply(_pp.msg) }
                     gugel.search(q).then ( data => {
                         var gugelnya = `*[ GOOGLE ]*\n\nSearch : *${q}*\n\nJudul : *${data.results[1].title}*\n\nDeskripsi :\n` + monospace(`${data.results[1].description}`) + `\n\nLink : _${data.results[0].url}_`
                         reply(gugelnya)
@@ -1747,8 +1747,7 @@ ${CmD} Tangerang
                     break
                     case 'stiksearch': case 'searchstik':{
                 // if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
-                if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
-                    limitAdd(sender, limit)
+                { const _pp = await pakaiPoin(sender); if (!_pp.ok) return reply(_pp.msg) }
                     var linkstik = stickersearch(q)
                     stickersearch(q).then ( data => {
                     var asu = pickRandom(data.sticker_url)
@@ -1791,8 +1790,7 @@ ${CmD} Tangerang
                          break
                          case 'take': case 'swm': case 'stickerwm': case 'ambil': {
                 // if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
-                if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
-                    limitAdd(sender, limit)
+                { const _pp = await pakaiPoin(sender); if (!_pp.ok) return reply(_pp.msg) }
                         try {
                         if (!isImage && !isQuotedImage && !isQuotedSticker) return reply(`Kirim/Reply Gambar/Reply Sticker Dengan PackName Dan Author\nExample : ${CmD} ${pushname}|Sticker Aku`)
                             let packnem = q.split("|")[0]
@@ -1824,8 +1822,7 @@ ${CmD} Tangerang
                              break
                     case 'tourl': case 'tolink': {
                 // Upload media -> URL publik (Catbox permanen -> fallback Uguu)
-                if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
-                    limitAdd(sender, limit)
+                { const _pp = await pakaiPoin(sender); if (!_pp.ok) return reply(_pp.msg) }
                     try {
                         const { uploadFile } = require('./lib/tourl')
                         let qq = (m.quoted && ((m.quoted.msg || m.quoted).mimetype)) ? m.quoted : m
@@ -1852,8 +1849,7 @@ ${CmD} Tangerang
 
                     case 'stcmeme': case 'smeme': {
                 // if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
-                if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
-                    limitAdd(sender, limit)
+                { const _pp = await pakaiPoin(sender); if (!_pp.ok) return reply(_pp.msg) }
                         if (!isImage && !isQuotedImage && !isQuotedSticker) return reply(`Reply Gambar Atau Kirim Gambar dengan caption ${prefix}stcmeme Kamu|Wibu`)
                         let name = q.split("|")[0]
                         let isi = q.split("|")[1]
@@ -1917,6 +1913,13 @@ ${CmD} Tangerang
                         }
                         auth.markVerified(phoneL, pushname)
                         try { joDatabase.addUser(sender, pushname, m.chat) } catch {}
+                        // Bonus pendaftaran: +40 poin, sekali saja per user
+                        try {
+                            const _rb = await economy.grantRegisterBonus(sender)
+                            if (_rb && _rb.granted) {
+                                await bob.sendMessage(m.chat, { text: `🎁 *BONUS PENDAFTARAN*\nKamu mendapat *+40 poin*!\nSaldo poin: *${economy.formatPoint(_rb.wallet.point)}*\n\nTiap pemakaian fitur memakai 1 poin.\nCek saldo: *${prefix}uang*` }, { quoted: m }).catch(()=>{})
+                            }
+                        } catch(e){ console.log('[register-bonus]', e?.message || e) }
                         if (key) await bob.sendMessage(m.chat, { text: `✅ *[ LOGIN BERHASIL ]*\nSelamat datang *${pushname}*!\nNomor: ${phoneL} terverifikasi di database.`, edit: key }).catch(() => reply(`✅ *[ LOGIN BERHASIL ]*\nSelamat datang *${pushname}*!`))
                         else reply(`✅ *[ LOGIN BERHASIL ]*\nSelamat datang *${pushname}*!\nNomor: ${phoneL} terverifikasi di database.`)
                         await sleep(600)
@@ -1934,8 +1937,7 @@ ${CmD} Tangerang
                     }
                     break
                     case 'stcmeme2': case 'smeme2': {
-                        if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
-                    limitAdd(sender, limit)
+                        { const _pp = await pakaiPoin(sender); if (!_pp.ok) return reply(_pp.msg) }
                         if (!isImage && !isQuotedImage) return reply(`Reply Gambar Atau Kirim Gambar dengan caption ${prefix}stcmeme Kamu|Wibu`)
                         if (!q) return reply(`Masukan Text!\nExample : ${prefix}stcmeme2 Anjay`)
                         reply('Proses Membuat...')
@@ -1953,8 +1955,7 @@ ${CmD} Tangerang
                     break
                     case 'memegen': case 'memeg': {
                 // if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
-                if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
-                    limitAdd(sender, limit)
+                { const _pp = await pakaiPoin(sender); if (!_pp.ok) return reply(_pp.msg) }
                         if (!isImage && !isQuotedImage) return reply(`Reply Gambar Atau Kirim Gambar dengan caption ${prefix}memegen Kamu|Wibu`)
                         reply(global.mess.wait)
                         let name = q.split("|")[0]
@@ -1990,8 +1991,7 @@ ${CmD} Tangerang
                     break*/
                     case 'meme':{
                 // if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
-                if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
-                    limitAdd(sender, limit)
+                { const _pp = await pakaiPoin(sender); if (!_pp.ok) return reply(_pp.msg) }
                     var link = JSON.parse(fs.readFileSync(`./assets/darkjokes.json`))
                     var randomeme = pickRandom(link)
                     bob.sendMessage(m.chat, {image: {url: randomeme.result}}, {quoted: m})
@@ -2016,73 +2016,59 @@ ${CmD} Tangerang
                     }
                     break
                     // ===== MENU:Poin Menu =====
-                    case 'pointop': {
-                        
-                        limit.sort((a, b) => (a.limit < b.limit) ? 1 : -1)
-                        let top = '*── 「 SELAMAT 」 ──*\n\n'
-                        let arrTop = []
-                        var total = 1
-                        if (limit.length < 1) total = limit.length
-                        for (let i = 0; i < total; i ++){
-                        top += `Selamat Kepada :\n@${limit[i].id.split("@")[0]} Telah Memakai Fitur\nBot Sebanyak: ${limit[i].limit} Fitur\n\nPada Tanggal : ${tgl}`
-                        arrTop.push(limit[i].id)
-                        }
-                        ngetag(top, arrTop, true)
-                        
-                    }
-                    break
-                    case 'poin': case 'limit': {
-                // if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
-                var limitPrib = `${getLimit(m.sender, limitCount, limit)}/${limitCount}`
-                  //  reply(`Limit : ${limitPrib}\nBalance : $${getBalance(m.sender, balance)}\n\nKamu dapat membeli poin dengan cara ketik ${prefix}buypoin`)
-                    var textbro = 
-`✨ *𝗜𝗡𝗙𝗢𝗥𝗠𝗔𝗦𝗜 𝗣𝗢𝗜𝗡 ✨
-
-💰 Poin Ku : ${isPremium || isCreator ? '*Unlimited*' : limitPrib}\n\n` + monospace(`POIN Akan Di Reset Setiap Harinya!\nCapai Top 1 Pengguna JOJO BOT!.\nKetik #top Untuk Melihat Saingan Kamu!`)
-                    reply(textbro)
+                    case 'poin': {
+                    // Info poin dari wallet ekonomi (pengganti limit.js)
+                    try {
+                        const w = economy.getWallet(sender)
+                        const bebas = isCreator || isPremium || economy.hasUnlimited(sender)
+                        reply(`✨ *INFORMASI POIN* ✨\n\n💰 Poin kamu: *${bebas ? 'Unlimited' : economy.formatPoint(w.point)}*\n\nCara dapat poin:\n• Daftar lalu login: *+40 poin*\n• Menangkan game: *+2 poin*\n• Beli pakai uang: *${prefix}belipoin <jumlah>*\n• Beli pakai Rupiah: *${prefix}shop*\n\nTiap pemakaian fitur memakai *1 poin*.${bebas ? '\n\nKamu bebas biaya poin.' : `\n\nCek saldo lengkap: *${prefix}uang*`}`)
+                    } catch(e){ reply(`Gagal: ${e.message}`) }
                     }
                     break
                     case 'top':{
-                // if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
-                limit.sort((a, b) => (a.limit < b.limit) ? 1 : -1)
-                        let top = '*── 「 TOP PAKAI 」 ──*\n\n'
-                        let arrTop = []
-                        var total = 10
-                        if (limit.length < 10) total = limit.length
-                        for (let i = 0; i < total; i ++){
-                        top += `${i + 1}. @${limit[i].id.split("@")[0]} => Telah Memakai : ${limit[i].limit} \n\n`
-                        arrTop.push(limit[i].id)
+                    // Top 10 pemilik poin terbanyak
+                    try {
+                        const data = economy.getLeaderboard('point', 10)
+                        if (!data.leaderboard.length) return reply(`Belum ada data.`)
+                        let top = `🏆 *TOP POIN*\n· · ───── · ·\n`
+                        const arrTop = []
+                        for (const e of data.leaderboard) {
+                            top += `${e.rank}. @${e.user_id.split('@')[0]} — ${economy.formatPoint(e.value)} poin\n`
+                            if (e.user_id.includes('@')) arrTop.push(e.user_id)
                         }
+                        top += `\nLihat lengkap: *${prefix}peringkat poin*`
                         ngetag(top, arrTop, true)
+                    } catch(e){ reply(`Gagal: ${e.message}`) }
                     }
                     break
                     // ===== MENU:Economy Menu =====
-                    case 'balance': case 'wallet': case 'dompet': case 'saldo': {
+                    case 'uang': {
                         try {
                             const w = economy.getWallet(sender)
                             const today = economy.getTodayEarnings(sender)
                             const cday = economy.canClaimDaily(sender)
-                            const text = `⋆˚𐙚 WALLET — ${pushname} 𐙚˚⋆\n` +
+                            const bebas = isCreator || isPremium || economy.hasUnlimited(sender)
+                            const text = `⋆˚𐙚 UANG & POIN — ${pushname} 𐙚˚⋆\n` +
                                 `· · ───── · ·\n` +
-                                `Money : *Rp ${economy.formatMoney(w.money)}*\n` +
-                                `Point : *${economy.formatPoint(w.point)}*\n\n` +
-                                `Total Earned : Rp ${economy.formatMoney(w.total_earned || 0)}\n` +
-                                `Total Spent : Rp ${economy.formatMoney(w.total_spent || 0)}\n` +
-                                `Total Transferred : Rp ${economy.formatMoney(w.total_transferred || 0)}\n\n` +
+                                `Uang : *Rp ${economy.formatMoney(w.money)}*\n` +
+                                `Poin : *${bebas ? 'Unlimited' : economy.formatPoint(w.point)}*\n\n` +
+                                `Total dapat : Rp ${economy.formatMoney(w.total_earned || 0)}\n` +
+                                `Total belanja : Rp ${economy.formatMoney(w.total_spent || 0)}\n` +
+                                `Total transfer : Rp ${economy.formatMoney(w.total_transferred || 0)}\n\n` +
                                 `Hari ini : +Rp ${economy.formatMoney(today.earned)}\n` +
-                                `Daily Streak : ${cday.streak || 0} | ${cday.can ? `Bisa claim *${prefix}daily* (+Rp ${economy.formatMoney(cday.amount)})` : `Sudah claim hari ini`}\n\n` +
-                                `Kurs : 100 Money = 1 Point | 1 Point = 75 Money\n` +
-                                `Ketik *${prefix}transactions* untuk riwayat`
+                                `Harian beruntun : ${cday.streak || 0} | ${cday.can ? `Bisa klaim *${prefix}harian* (+Rp ${economy.formatMoney(cday.amount)})` : `Sudah diklaim hari ini`}\n\n` +
+                                `Kurs : 100 uang = 1 poin | 1 poin = 75 uang\n` +
+                                `Ketik *${prefix}transaksi* untuk riwayat`
                             const btn = [
-                                { name: "quick_reply", buttonParamsJson: JSON.stringify({ display_text: "Riwayat", id: `${prefix}transactions` }) },
-                                { name: "quick_reply", buttonParamsJson: JSON.stringify({ display_text: "Leaderboard", id: `${prefix}leaderboard money` }) },
-                                { name: "quick_reply", buttonParamsJson: JSON.stringify({ display_text: "Daily", id: `${prefix}daily` }) }
+                                { name: "quick_reply", buttonParamsJson: JSON.stringify({ display_text: "Riwayat", id: `${prefix}transaksi` }) },
+                                { name: "quick_reply", buttonParamsJson: JSON.stringify({ display_text: "Peringkat", id: `${prefix}peringkat uang` }) },
+                                { name: "quick_reply", buttonParamsJson: JSON.stringify({ display_text: "Harian", id: `${prefix}harian` }) }
                             ]
-                            try { await bob.sendButton(m.chat, text, `> Jojo Economy`, 'WALLET', btn) } catch { reply(text) }
+                            try { await bob.sendButton(m.chat, text, `> Jojo Economy`, 'DOMPET', btn) } catch { reply(text) }
                         } catch(e){ reply(`❌ Gagal: ${e.message}`)}
                     }
                     break
-                    case 'transfer': case 'tf': case 'kirim': {
+                    case 'transfer': case 'tf': {
                         try {
                             let targetJid = null
                             if (mentionUser && mentionUser.length) targetJid = mentionUser[0]
@@ -2094,7 +2080,7 @@ ${CmD} Tangerang
                             // parse amount: last numeric token
                             let amountStr = args[args.length - 1]
                             let amount = parseInt(String(amountStr).replace(/[^0-9]/g,''),10)
-                            if (!amountStr || isNaN(amount) || amount <= 0) return reply(`Format: *${prefix}transfer @user <jumlah>*\nContoh: *${prefix}transfer @Arasya 5000*\nFee: 2% (min Rp 10)`)
+                            if (!amountStr || isNaN(amount) || amount <= 0) return reply(`Format: *${prefix}transfer @user <jumlah>*\nContoh: *${prefix}transfer @Arasya 5000*\nBiaya: 2% (min Rp 10)`)
                             // resolve target if not via mention/quoted: first arg is user
                             if (!targetJid) {
                                 // try first arg as number
@@ -2120,8 +2106,8 @@ ${CmD} Tangerang
                             }
                             if (!targetJid) return reply(`Target tidak valid`)
                             const res = await economy.transferMoney(sender, targetJid, amount)
-                            reply(`⋆˚𐙚 Transfer Berhasil 𐙚˚⋆\n· · ───── · ·\n*-Rp ${economy.formatMoney(res.totalDeduct)} Money* (termasuk fee Rp ${economy.formatMoney(res.fee)})\nPenerima: @${targetJid.split('@')[0]} *+Rp ${economy.formatMoney(amount)}*\n\nSaldo kamu: *Rp ${economy.formatMoney(res.sender.money)}*`)
-                            try { await bob.sendMessage(targetJid, { text: `𐙚 Kamu menerima *Rp ${economy.formatMoney(amount)} Money* dari @${sender.split('@')[0]}!\nSaldo kini: Rp ${economy.formatMoney(res.receiver.money)}`, mentions: [sender] }) } catch {}
+                            reply(`⋆˚𐙚 Transfer Berhasil 𐙚˚⋆\n· · ───── · ·\n*-Rp ${economy.formatMoney(res.totalDeduct)}* (termasuk biaya Rp ${economy.formatMoney(res.fee)})\nPenerima: @${targetJid.split('@')[0]} *+Rp ${economy.formatMoney(amount)}*\n\nSaldo kamu: *Rp ${economy.formatMoney(res.sender.money)}*`)
+                            try { await bob.sendMessage(targetJid, { text: `𐙚 Kamu menerima *Rp ${economy.formatMoney(amount)} uang* dari @${sender.split('@')[0]}!\nSaldo kini: Rp ${economy.formatMoney(res.receiver.money)}`, mentions: [sender] }) } catch {}
                         } catch(e){
                             if (e.code === 'INSUFFICIENT') return reply(`Saldo tidak cukup.\nDibutuhkan: Rp ${economy.formatMoney(e.need)} (termasuk fee)\nSaldo Anda: Rp ${economy.formatMoney(e.have)}\nKekurangan: Rp ${economy.formatMoney(e.need - e.have)}`)
                             if (e.message.includes('diri sendiri')) return reply(`Tidak bisa transfer ke diri sendiri!`)
@@ -2130,127 +2116,169 @@ ${CmD} Tangerang
                         }
                     }
                     break
-                    case 'buypoint': case 'buy_point': case 'belipoint': {
+                    case 'belipoin': {
                         try {
                             const qty = parseInt(String(q || args[0] || '').replace(/[^0-9]/g,''),10)
                             if (!qty || qty <=0) {
                                 const w = economy.getWallet(sender)
-                                return reply(`⋆˚𐙚 BUY POINT 𐙚˚⋆\n· · ───── · ·\nKurs: *100 Money = 1 Point*\nSaldo Money: Rp ${economy.formatMoney(w.money)}\nSaldo Point: ${economy.formatPoint(w.point)}\n\nContoh: *${prefix}buypoint 100* (= Rp ${economy.formatMoney(100*economy.CONFIG.BUY_RATE)})\n\nGunakan: *${prefix}buypoint <jumlah Point>*`)
+                                return reply(`⋆˚𐙚 BELI POIN 𐙚˚⋆\n· · ───── · ·\nKurs: *100 uang = 1 poin*\nSaldo uang: Rp ${economy.formatMoney(w.money)}\nSaldo poin: ${economy.formatPoint(w.point)}\n\nContoh: *${prefix}belipoin 100* (= Rp ${economy.formatMoney(100*economy.CONFIG.BUY_RATE)})\n\nGunakan: *${prefix}belipoin <jumlah poin>*`)
                             }
                             const res = await economy.buyPoint(sender, qty)
-                            reply(`⋆˚𐙚 Berhasil Beli Point 𐙚˚⋆\n· · ───── · ·\n-${economy.formatMoney(res.cost)} Money\n+${economy.formatPoint(qty)} Point\n\nSaldo Money: Rp ${economy.formatMoney(res.wallet.money)}\nSaldo Point: ${economy.formatPoint(res.wallet.point)}`)
+                            reply(`⋆˚𐙚 Berhasil Beli Poin 𐙚˚⋆\n· · ───── · ·\n-Rp ${economy.formatMoney(res.cost)} uang\n+${economy.formatPoint(qty)} poin\n\nSaldo uang: Rp ${economy.formatMoney(res.wallet.money)}\nSaldo poin: ${economy.formatPoint(res.wallet.point)}`)
                         } catch(e){
-                            if (e.code === 'INSUFFICIENT') return reply(`Saldo Money tidak cukup.\nDibutuhkan: Rp ${economy.formatMoney(e.need)}\nSaldo Anda: Rp ${economy.formatMoney(e.have)}\nKekurangan: Rp ${economy.formatMoney(e.need - e.have)}`)
+                            if (e.code === 'INSUFFICIENT') return reply(`Saldo uang tidak cukup.\nDibutuhkan: Rp ${economy.formatMoney(e.need)}\nSaldo Anda: Rp ${economy.formatMoney(e.have)}\nKekurangan: Rp ${economy.formatMoney(e.need - e.have)}\n\nDapatkan uang dari main game atau *${prefix}harian*`)
                             reply(`Gagal: ${e.message}`)
                         }
                     }
                     break
-                    case 'sellpoint': case 'pointmoney': case 'jualpoint': {
+                    case 'jualpoin': {
                         try {
                             const qty = parseInt(String(q || args[0] || '').replace(/[^0-9]/g,''),10)
                             if (!qty || qty <=0) {
                                 const w = economy.getWallet(sender)
-                                return reply(`⋆˚𐙚 SELL POINT 𐙚˚⋆\n· · ───── · ·\nKurs jual: *1 Point = 75 Money* (spread 25%)\nSaldo Point: ${economy.formatPoint(w.point)}\nSaldo Money: Rp ${economy.formatMoney(w.money)}\n\nContoh: *${prefix}sellpoint 100* (= Rp ${economy.formatMoney(100*economy.CONFIG.SELL_RATE)})\n\nGunakan: *${prefix}sellpoint <jumlah Point>*`)
+                                return reply(`⋆˚𐙚 JUAL POIN 𐙚˚⋆\n· · ───── · ·\nKurs jual: *1 poin = 75 uang*\nSaldo poin: ${economy.formatPoint(w.point)}\nSaldo uang: Rp ${economy.formatMoney(w.money)}\n\nContoh: *${prefix}jualpoin 100* (= Rp ${economy.formatMoney(100*economy.CONFIG.SELL_RATE)})\n\nGunakan: *${prefix}jualpoin <jumlah poin>*`)
                             }
                             const res = await economy.sellPoint(sender, qty)
-                            reply(`⋆˚𐙚 Berhasil Jual Point 𐙚˚⋆\n· · ───── · ·\n-${economy.formatPoint(qty)} Point\n+Rp ${economy.formatMoney(res.gain)} Money\n\nSaldo Money: Rp ${economy.formatMoney(res.wallet.money)}\nSaldo Point: ${economy.formatPoint(res.wallet.point)}`)
+                            reply(`⋆˚𐙚 Berhasil Jual Poin 𐙚˚⋆\n· · ───── · ·\n-${economy.formatPoint(qty)} poin\n+Rp ${economy.formatMoney(res.gain)} uang\n\nSaldo uang: Rp ${economy.formatMoney(res.wallet.money)}\nSaldo poin: ${economy.formatPoint(res.wallet.point)}`)
                         } catch(e){
-                            if (e.code === 'INSUFFICIENT_POINT') return reply(`Point tidak cukup.\nDibutuhkan: ${economy.formatPoint(e.need)} Point\nSaldo Anda: ${economy.formatPoint(e.have)} Point`)
+                            if (e.code === 'INSUFFICIENT_POINT') return reply(`Poin tidak cukup.\nDibutuhkan: ${economy.formatPoint(e.need)} poin\nSaldo Anda: ${economy.formatPoint(e.have)} poin`)
                             reply(`Gagal: ${e.message}`)
                         }
                     }
                     break
-                    case 'transactions': case 'riwayat': case 'history': case 'tx': {
+                    case 'transaksi': {
                         try {
                             const page = parseInt(String(args[0]||'1').replace(/[^0-9]/g,''),10) || 1
                             const limitTx = 5
                             const offset = (page-1)*limitTx
                             const data = economy.getTransactions(sender, limitTx, offset)
                             if (!data.total) return reply(`Belum ada transaksi.`)
-                            let text = `⋆˚𐙚 TRANSACTION HISTORY — Hal ${page} 𐙚˚⋆\n· · ───── · ·\n`
+                            let text = `⋆˚𐙚 RIWAYAT TRANSAKSI — Hal ${page} 𐙚˚⋆\n· · ───── · ·\n`
                             for (const tx of data.transactions) {
                                 const sign = tx.amount > 0 ? '+' : ''
-                                const cur = tx.currency === 'money' ? 'Money' : 'Point'
+                                const cur = tx.currency === 'money' ? 'uang' : 'poin'
                                 const amt = tx.currency === 'money' ? economy.formatMoney(tx.amount) : economy.formatPoint(tx.amount)
                                 const d = new Date(tx.created_at)
                                 const t = d.toLocaleString('id-ID', { timeZone: 'Asia/Jakarta', day:'2-digit', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit'})
                                 text += `${sign}${amt} ${cur}\n${tx.type} — ${tx.description}\n${t}\n\n`
                             }
-                            text += `Total: ${data.total} transaksi\nKetik *${prefix}transactions ${page+1}* untuk halaman berikutnya`
+                            text += `Total: ${data.total} transaksi\nKetik *${prefix}transaksi ${page+1}* untuk halaman berikutnya`
                             reply(text)
                         } catch(e){ reply(`Gagal: ${e.message}`)}
                     }
                     break
-                    case 'leaderboard': case 'lb': case 'rich': case 'topmoney': {
+                    case 'peringkat': {
                         try {
-                            const cur = String(args[0]||'money').toLowerCase()
-                            const currency = cur === 'point' ? 'point' : 'money'
+                            const raw = String(args[0]||'uang').toLowerCase()
+                            const currency = (raw === 'poin' || raw === 'point') ? 'point' : 'money'
+                            const label = currency === 'point' ? 'poin' : 'uang'
                             const page = parseInt(String(args[1]||'1').replace(/[^0-9]/g,''),10) || 1
                             const perPage = 10
                             const offset = (page-1)*perPage
                             const data = economy.getLeaderboard(currency, perPage, offset)
-                            if (!data.leaderboard.length) return reply(`Belum ada data leaderboard.`)
-                            let text = `⋆˚𐙚 LEADERBOARD ${currency.toUpperCase()} — Hal ${page} 𐙚˚⋆\n· · ───── · ·\n`
+                            if (!data.leaderboard.length) return reply(`Belum ada data peringkat.`)
+                            let text = `⋆˚𐙚 PERINGKAT ${label.toUpperCase()} — Hal ${page} 𐙚˚⋆\n· · ───── · ·\n`
                             const medals = ['1.','2.','3.']
                             for (const e of data.leaderboard) {
                                 const med = medals[e.rank-1] || `${e.rank}.`
-                                const val = currency === 'money' ? `Rp ${economy.formatMoney(e.value)}` : `${economy.formatPoint(e.value)} Point`
+                                const val = currency === 'money' ? `Rp ${economy.formatMoney(e.value)}` : `${economy.formatPoint(e.value)} poin`
                                 text += `${med} @${e.user_id.split('@')[0]} — ${val}\n`
                             }
-                            text += `· · ───── · ·\nTotal user: ${data.total}\nKetik *${prefix}leaderboard ${currency} ${page+1}* untuk lanjut`
+                            text += `· · ───── · ·\nTotal user: ${data.total}\nKetik *${prefix}peringkat ${label} ${page+1}* untuk lanjut`
                             const mentions = data.leaderboard.map(e=>e.user_id).filter(j=>j.includes('@'))
                             await bob.sendMessage(m.chat, { text, mentions }, { quoted: m })
                         } catch(e){ reply(`Gagal: ${e.message}`)}
                     }
                     break
-                    case 'daily': case 'claim': case 'harian': {
+                    case 'harian': {
                         try {
                             const res = await economy.claimDaily(sender)
-                            reply(`⋆˚𐙚 Daily Reward Claimed 𐙚˚⋆\n· · ───── · ·\nHari ke-${res.streak}: *+Rp ${economy.formatMoney(res.amount)} Money*\nStreak: ${res.streak}/7\nSaldo Money: Rp ${economy.formatMoney(res.wallet.money)}\n\nDatang lagi besok untuk streak berikutnya!`)
+                            reply(`⋆˚𐙚 Hadiah Harian Diklaim 𐙚˚⋆\n· · ───── · ·\nHari ke-${res.streak}: *+Rp ${economy.formatMoney(res.amount)} uang*\nBeruntun: ${res.streak}/7\nSaldo uang: Rp ${economy.formatMoney(res.wallet.money)}\n\nDatang lagi besok untuk streak berikutnya!`)
                         } catch(e){
-                            if (e.code === 'ALREADY_CLAIMED') return reply(`Kamu sudah claim hari ini!\nDatang lagi besok ya.`)
+                            if (e.code === 'ALREADY_CLAIMED') return reply(`Kamu sudah klaim hari ini!\nDatang lagi besok ya.`)
                             reply(`Gagal: ${e.message}`)
                         }
                     }
                     break
-                    case 'shop': case 'toko': case 'store': {
+                    case 'shop': {
+                        // Shop Rupiah asli via Kipay.id (QRIS). Order tersimpan di database.json.
+                        const payments = require('./lib/payments')
+                        const kipay = require('./lib/kipay')
+                        const fmtRp = (n) => kipay.formatRupiah(n)
+                        const shopList = () => {
+                            let t = `⋆˚𐙚 JOJO SHOP — Bayar Rupiah Asli (QRIS) 𐙚˚⋆\n· · ───── · ·\n`
+                            for (const it of payments.REAL_ITEMS) {
+                                t += `\n• *${it.id}*\n  ${it.name}\n  Harga: *${fmtRp(it.price)}*\n  _${it.desc}_\n`
+                            }
+                            t += `\n· · ───── · ·\nCara beli:\n*${prefix}shop beli <id>*\nContoh: *${prefix}shop beli point_1000*\n\nCek bayar: *${prefix}shop cek*\nPesananku: *${prefix}shop pesanan*`
+                            return t
+                        }
                         try {
                             const sub = String(args[0]||'').toLowerCase()
-                            if (!sub) {
-                                const items = economy.getShopItems()
-                                let text = `⋆˚𐙚 JOJO SHOP 𐙚˚⋆\n· · ───── · ·\n`
-                                let lastCat = ''
-                                for (const it of items) {
-                                    if (it.category !== lastCat) { text += `\n*${it.category}*\n`; lastCat = it.category }
-                                    const priceStr = it.currency === 'money' ? `Rp ${economy.formatMoney(it.price)}` : `${economy.formatPoint(it.price)} Point`
-                                    const stockStr = it.stock === -1 ? '' : ` | Stok: ${it.remaining}/${it.stock}`
-                                    text += `• *${it.id}* — ${it.name}\n  ${priceStr}${stockStr}\n  _${it.desc}_\n`
-                                }
-                                text += `\n· · ───── · ·\nCara beli: *${prefix}shop buy <id> [qty]*\nContoh: *${prefix}shop buy lucky_ticket 1*`
-                                return reply(text)
-                            }
-                            if (sub === 'buy' || sub === 'beli') {
+                            if (!sub || sub === 'list' || sub === 'daftar') return reply(shopList())
+                            if (sub === 'beli') {
                                 const itemId = String(args[1]||'').toLowerCase()
-                                const qty = parseInt(String(args[2]||'1').replace(/[^0-9]/g,''),10) || 1
-                                if (!itemId) return reply(`Gunakan: *${prefix}shop buy <id> [qty]*\nLihat daftar: *${prefix}shop*`)
-                                const res = await economy.purchaseShop(sender, itemId, qty)
-                                const curStr = res.item.currency === 'money' ? `Rp ${economy.formatMoney(res.total)}` : `${economy.formatPoint(res.total)} Point`
-                                return reply(`⋆˚𐙚 Pembelian Berhasil 𐙚˚⋆\n· · ───── · ·\n${res.item.name} x${qty}\nBayar: ${curStr}\n\nSisa Money: Rp ${economy.formatMoney(res.wallet.money)}\nSisa Point: ${economy.formatPoint(res.wallet.point)}\nInventory ${res.item.id}: ${res.wallet.inventory[res.item.id] || 0}`)
+                                if (!itemId) return reply(`Pilih item dulu:\n${shopList()}`)
+                                let order
+                                try {
+                                    ({ order } = await payments.createOrder(sender, itemId, pushname))
+                                } catch(e) {
+                                    if (e.code === 'ORDER_PENDING') {
+                                        const p = e.order
+                                        return reply(`Kamu masih punya pesanan belum dibayar:\n\n*${p.itemName}* — *${fmtRp(p.payableAmount)}*\nKode: *${p.orderId}*\n\nBayar dulu lalu ketik *${prefix}shop cek*, atau tunggu kedaluwarsa.`)
+                                    }
+                                    return reply(`Gagal: ${e.message}`)
+                                }
+                                let qrBuf = null
+                                try { qrBuf = await kipay.getQrImage(order.qrUrl || order.trxId) } catch(e){ console.log('[shop-qr]', e?.message || e) }
+                                const cap = `⋆˚𐙚 PESANAN DIBUAT 𐙚˚⋆\n· · ───── · ·\n${order.itemName}\nKode: *${order.orderId}*\nBayar: *${fmtRp(order.payableAmount)}* (sudah termasuk kode unik)\n\n1. Scan QR di atas pakai e-wallet/bank apa saja\n2. Setelah bayar, ketik *${prefix}shop cek*\n\nPesanan kedaluwarsa ±15 menit.`
+                                if (qrBuf) await bob.sendMessage(m.chat, { image: qrBuf, caption: cap }, { quoted: m })
+                                else reply(cap + (order.qrUrl ? `\n\nQR: ${order.qrUrl}` : ''))
+                                return
                             }
-                            // direct buy: /shop itemId
-                            const itemId2 = sub
-                            const qty2 = parseInt(String(args[1]||'1').replace(/[^0-9]/g,''),10) || 1
-                            const res2 = await economy.purchaseShop(sender, itemId2, qty2)
-                            const curStr2 = res2.item.currency === 'money' ? `Rp ${economy.formatMoney(res2.total)}` : `${economy.formatPoint(res2.total)} Point`
-                            return reply(`⋆˚𐙚 Pembelian Berhasil 𐙚˚⋆\n· · ───── · ·\n${res2.item.name} x${qty2}\nBayar: ${curStr2}\n\nSisa Money: Rp ${economy.formatMoney(res2.wallet.money)}`)
-                        } catch(e){
-                            if (e.code === 'INSUFFICIENT') return reply(`Money tidak cukup.\nDibutuhkan: Rp ${economy.formatMoney(e.need)}\nSaldo: Rp ${economy.formatMoney(e.have)}`)
-                            if (e.code === 'INSUFFICIENT_POINT') return reply(`Point tidak cukup.\nDibutuhkan: ${economy.formatPoint(e.need)} Point\nSaldo: ${economy.formatPoint(e.have)} Point`)
-                            reply(`Gagal: ${e.message}`)
-                        }
+                            if (sub === 'cek' || sub === 'bayar') {
+                                const key = String(args[1]||'').trim() || null
+                                const order = key ? payments.getOrder(key) : payments.latestPendingOrder(sender)
+                                if (!order) return reply(`Tidak ada pesanan menunggu bayar.\nBuat dulu: *${prefix}shop beli <id>*\nLihat daftar: *${prefix}shop*`)
+                                if (order.jid !== sender && !isCreator) return reply(`Itu bukan pesananmu.`)
+                                let fresh
+                                try { fresh = await payments.refreshOrder(order.orderId) }
+                                catch(e){ return reply(`Gagal cek status: ${e.message}\nCoba lagi sebentar.`) }
+                                if (fresh.status === 'paid' || fresh.status === 'fulfilled') {
+                                    try {
+                                        const grantPremium = async (jid) => {
+                                            if (!prem2.includes(jid)) { prem2.push(jid); fs.writeFileSync('./assets/db/prem2.json', JSON.stringify(prem2)) }
+                                        }
+                                        const res = await payments.fulfillOrder(fresh.orderId, { grantPremium })
+                                        if (res.already) return reply(`Pesanan *${fresh.orderId}* sudah diproses sebelumnya.`)
+                                        const w = economy.getWallet(sender)
+                                        let bonus = ''
+                                        if (fresh.itemId === 'premium_unlock') bonus = `✅ Premium permanen aktif\n✅ Unlimited Poin aktif\n✅ +Rp4.000.000 uang bot`
+                                        else if (fresh.itemId === 'unlimited_poin') bonus = `✅ Unlimited Poin aktif — semua fitur bebas biaya poin`
+                                        else if (fresh.itemId === 'money_1jt') bonus = `✅ +Rp1.000.000 uang bot`
+                                        else if (fresh.itemId === 'point_1000') bonus = `✅ +1.000 poin`
+                                        return reply(`⋆˚𐙚 PEMBAYARAN DITERIMA 𐙚˚⋆\n· · ───── · ·\n${fresh.itemName} (*${fresh.orderId}*)\n\n${bonus}\n\nSaldo uang: Rp ${economy.formatMoney(w.money)}\nSaldo poin: ${economy.hasUnlimited(sender) ? 'Unlimited' : economy.formatPoint(w.point)}\n\nTerima kasih sudah belanja!`)
+                                    } catch(e){ return reply(`Gagal memproses pesanan: ${e.message}`) }
+                                }
+                                if (fresh.status === 'expired') return reply(`Pesanan *${fresh.orderId}* kedaluwarsa.\nBuat pesanan baru: *${prefix}shop beli ${fresh.itemId}*`)
+                                return reply(`⏳ Pesanan *${fresh.orderId}* masih *belum dibayar*.\n${fresh.itemName} — *${fmtRp(fresh.payableAmount)}*\n\nSudah bayar? Tunggu sebentar lalu ketik *${prefix}shop cek* lagi.`)
+                            }
+                            if (sub === 'pesanan' || sub === 'order' || sub === 'orders') {
+                                const list = payments.getUserOrders(sender)
+                                if (!list.length) return reply(`Kamu belum punya pesanan.\nLihat daftar: *${prefix}shop*`)
+                                let t = `⋆˚𐙚 PESANANKU 𐙚˚⋆\n· · ───── · ·\n`
+                                for (const o of list.slice(0, 10)) {
+                                    const st = o.status === 'paid' ? 'DIBAYAR' : o.status === 'fulfilled' ? 'SELESAI' : o.status === 'expired' ? 'KEDALUWARSA' : 'MENUNGGU BAYAR'
+                                    t += `\n• *${o.orderId}* — ${o.itemName}\n  ${fmtRp(o.payableAmount)} | ${st}\n`
+                                }
+                                t += `\nCek status: *${prefix}shop cek <kode>*`
+                                return reply(t)
+                            }
+                            return reply(shopList())
+                        } catch(e){ reply(`Gagal: ${e.message}`) }
                     }
                     break
-                    case 'economy': case 'eco': {
+                    case 'ekonomi': {
                         if (!isCreator) return reply(mess.owner)
                         const sub = String(args[0]||'').toLowerCase()
                         try {
@@ -2264,16 +2292,16 @@ ${CmD} Tangerang
                                     if (n.length>=9) target = (n.startsWith('62')?n:'62'+n.replace(/^0/,''))+'@s.whatsapp.net'
                                 }
                                 const amount = parseInt(String(args[2]||'').replace(/[^0-9]/g,''),10)
-                                if (!target || !amount) return reply(`Gunakan: *${prefix}economy give @user <jumlah>*\nContoh: *${prefix}economy give @Arasya 10000*`)
+                                if (!target || !amount) return reply(`Gunakan: *${prefix}ekonomi give @user <jumlah>*\nContoh: *${prefix}ekonomi give @Arasya 10000*`)
                                 const w = await economy.adminGive(target, amount, 0, `admin give by ${sender}`)
                                 await bob.sendMessage(m.chat, { text: `Admin give Rp ${economy.formatMoney(amount)} ke @${target.split('@')[0]}\nSaldo baru: Rp ${economy.formatMoney(w.money)}`, mentions: [target] }, { quoted: m })
-                                try { await bob.sendMessage(target, { text: `𐙚 Admin memberi kamu *Rp ${economy.formatMoney(amount)} Money*` }) } catch {}
+                                try { await bob.sendMessage(target, { text: `𐙚 Admin memberi kamu *Rp ${economy.formatMoney(amount)} uang*` }) } catch {}
                             } else if (sub === 'remove') {
                                 let target = null
                                 if (mentionUser && mentionUser.length) target = mentionUser[0]
                                 else if (m.quoted && m.quoted.sender) target = m.quoted.sender
                                 const amount = parseInt(String(args[2]||'').replace(/[^0-9]/g,''),10)
-                                if (!target || !amount) return reply(`Gunakan: *${prefix}economy remove @user <jumlah>*`)
+                                if (!target || !amount) return reply(`Gunakan: *${prefix}ekonomi remove @user <jumlah>*`)
                                 const w = await economy.adminRemove(target, amount, 0, `admin remove by ${sender}`)
                                 reply(`Admin remove Rp ${economy.formatMoney(amount)} dari @${target.split('@')[0]}\nSaldo baru: Rp ${economy.formatMoney(w.money)}`)
                             } else if (sub === 'set') {
@@ -2281,74 +2309,41 @@ ${CmD} Tangerang
                                 if (mentionUser && mentionUser.length) target = mentionUser[0]
                                 else if (m.quoted && m.quoted.sender) target = m.quoted.sender
                                 const amount = parseInt(String(args[2]||'').replace(/[^0-9]/g,''),10)
-                                if (!target || isNaN(amount)) return reply(`Gunakan: *${prefix}economy set @user <jumlah Money>*`)
+                                if (!target || isNaN(amount)) return reply(`Gunakan: *${prefix}ekonomi set @user <jumlah uang>*`)
                                 const w = await economy.adminSet(target, amount, undefined)
-                                reply(`Set Money @${target.split('@')[0]} = Rp ${economy.formatMoney(w.money)}`)
-                            } else if (sub === 'setpoint') {
+                                reply(`Set uang @${target.split('@')[0]} = Rp ${economy.formatMoney(w.money)}`)
+                            } else if (sub === 'setpoin') {
                                 let target = null
                                 if (mentionUser && mentionUser.length) target = mentionUser[0]
                                 else if (m.quoted && m.quoted.sender) target = m.quoted.sender
                                 const amount = parseInt(String(args[2]||'').replace(/[^0-9]/g,''),10)
-                                if (!target || isNaN(amount)) return reply(`Gunakan: *${prefix}economy setpoint @user <jumlah Point>*`)
+                                if (!target || isNaN(amount)) return reply(`Gunakan: *${prefix}ekonomi setpoin @user <jumlah poin>*`)
                                 const w = await economy.adminSet(target, undefined, amount)
-                                reply(`Set Point @${target.split('@')[0]} = ${economy.formatPoint(w.point)} Point`)
-                            } else if (sub === 'transaction' || sub === 'tx') {
+                                reply(`Set poin @${target.split('@')[0]} = ${economy.formatPoint(w.point)} poin`)
+                            } else if (sub === 'unlimited') {
+                                let target = null
+                                if (mentionUser && mentionUser.length) target = mentionUser[0]
+                                else if (m.quoted && m.quoted.sender) target = m.quoted.sender
+                                else {
+                                    const n = String(args[1]||'').replace(/[^0-9]/g,'')
+                                    if (n.length >= 9) target = ((n.startsWith('62') ? n : '62' + n.replace(/^0/,'')) + '@s.whatsapp.net')
+                                }
+                                if (!target) return reply(`Gunakan: *${prefix}ekonomi unlimited @user*`)
+                                await economy.setUnlimitedPoint(target, `Diberi admin ${sender}`)
+                                reply(`✅ @${target.split('@')[0]} sekarang *Unlimited Poin* (bebas biaya fitur).`)
+                            } else if (sub === 'transaksi') {
                                 const txid = String(args[1]||'').trim()
-                                if (!txid) return reply(`Gunakan: *${prefix}economy transaction <id>*`)
+                                if (!txid) return reply(`Gunakan: *${prefix}ekonomi transaksi <id>*`)
                                 const tx = economy.getTransactionById(txid)
                                 if (!tx) return reply(`Transaksi tidak ditemukan`)
                                 reply(`⋆˚𐙚 Detail Transaksi 𐙚˚⋆\n· · ───── · ·\nID: ${tx.transaction_id}\nUser: @${tx.user_id.split('@')[0]}\nType: ${tx.type}\nAmount: ${tx.amount} ${tx.currency}\nDesc: ${tx.description}\nWaktu: ${tx.created_at}\nFee: ${tx.fee}`)
                             } else {
-                                reply(`*Admin Economy*\n· · ───── · ·\n*${prefix}economy give @user <jumlah>* — beri Money\n*${prefix}economy remove @user <jumlah>* — ambil Money\n*${prefix}economy set @user <jumlah>* — set Money\n*${prefix}economy setpoint @user <jumlah>* — set Point\n*${prefix}economy transaction <id>* — detail tx`)
+                                reply(`*Admin Ekonomi*\n· · ───── · ·\n*${prefix}ekonomi give @user <jumlah>* — beri uang\n*${prefix}ekonomi remove @user <jumlah>* — ambil uang\n*${prefix}ekonomi set @user <jumlah>* — set uang\n*${prefix}ekonomi setpoin @user <jumlah>* — set poin\n*${prefix}ekonomi transaksi <id>* — detail transaksi\n*${prefix}ekonomi unlimited @user* — beri Unlimited Poin`)
                             }
                         } catch(e){ reply(`Gagal: ${e.message}`)}
                     }
                     break
-                    case 'resetpoin': {
-                    if (!isCreator) return reply(mess.owner)
-                    limitkosong = [];
-                    limit.sort((a, b) => (a.limit < b.limit) ? 1 : -1)
-                    let top = '*── 「 SELAMAT 」 ──*\n\n'
-                    let arrTop = []
-                    var total = 1
-                    if (limit.length < 1) total = limit.length
-                    for (let i = 0; i < total; i ++){
-                    top += `Selamat Kepada :\n@${limit[i].id.split("@")[0]} Telah Memakai Fitur\nBot Sebanyak: ${limit[i].limit} Fitur\n\nPada Tanggal : ${tgl}\nPakai Fitur Bot Sebanyak\n Banyaknya Capai Top 1 Pemakai Bot Paling Banyak!.\n\nKetik #top Untuk Melihat Saingan Mu!\n\nMereset Poin.`
-                    arrTop.push(limit[i].id)
-                    }
-                    bob.sendMessage(gcku, {text: top, mentions: arrTop})
-                    await sleep(5000)
-                    fs.writeFileSync('./assets/db/limit.json', JSON.stringify(limitkosong))
-                    reply(`Poin Berhasil Di Reset.\nMereset Bot.`)
-                    await sleep(2000)
-                    exec(`pm2 restart index.js`, (err, stdout) => {
-                        if (err) return reply(`${err}`)
-                        if (stdout) return reply(stdout)
-                    })
-                    }
-                    break
-                    /*case 'buylimit': case 'buypoin': {
-                    if (!q) return reply(`Kirim perintah *${prefix}buypoint* jumlah poin yang ingin dibeli\n\nHarga 1 poin = $200 balance`)
-                    if (!q) return reply(`Jangan menggunakan -`)
-                    if (isNaN(q)) return reply(`Harus berupa angka`)
-                    let ane = Number(parseInt(q) * 200)
-                    if (getBalance(sender, balance) < ane) return reply(`Balance kamu tidak mencukupi untuk pembelian ini`)
-                    kurangBalance(sender, ane, balance)
-                    giveLimit(sender, parseInt(q), limit)
-                    reply(monospace(`Pembeliaan Poin sebanyak ${q} berhasil\n\nSisa Balance : $${getBalance(sender, balance)}\nSisa Poin : ${getLimit(sender, limitCount, limit)}/${limitCount}`))
-                                        }
-                    break
-                    case 'cheatbalance':{
-                    if (!isCreator) return reply(`Lo Siapa?`)
-                    if (quoted) { 
-                    addBalance(quoted.sender, `9999999999`, balance)
-                    reply(`Sukses Ngecheat BALANCE ke nomer : ${quoted.sender}`)
-                    } else {
-                        addBalance(q.replace(/[-|+| |]/gi, '') + "@s.whatsapp.net", `9999999999`, balance)
-                    reply(`Sukses Ngecheat BALANCE ke nomer : ${q.replace(/[-|+| |]/gi, '') + "@s.whatsapp.net"}`)
-                    }
-                    }
-                    break*/
+                    // (resetpoin/buylimit/cheatbalance dihapus bersama limit.js)
                     //akhir
                     //GROUP MENU
                     // ===== MENU:Group Menu =====
@@ -2545,8 +2540,7 @@ ${CmD} Tangerang
                     // ========== AI via Puter.js (sesi per nomor utk private, per grup utk grup) ==========
                     case 'ai': {
                         if (!q) return reply(`Apa yang mau ditanyakan?\nContoh: ${prefix}ai Siapa presiden pertama Indonesia?`)
-                        if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
-                        limitAdd(sender, limit)
+                        { const _pp = await pakaiPoin(sender); if (!_pp.ok) return reply(_pp.msg) }
                         try { bob.sendPresenceUpdate("composing", m.chat) } catch {}
                         try {
                             const puterai = require('./lib/puterai')
@@ -2594,7 +2588,7 @@ ${CmD} Tangerang
                             }
                         }
                         if (!isMedia && !urlFromText) return reply(`Kirim / reply foto yang mau diedit dengan caption:\n${prefix}editimg <prompt>\n\nContoh:\n${prefix}editimg Edit karakter ini jadi tersenyum`)
-                        if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
+                        { const _pp = await pakaiPoin(sender); if (!_pp.ok) return reply(_pp.msg) }
                         // 2. Cek kuota editimg (owner = unlimited)
                         const cek = editimg.peekQuota(m.sender, isCreator)
                         if (!cek.ok) return reply(`🚫 *JATAH HABIS!*\neditimg hanya bisa dipakai *${editimg.BATAS_PAKAI}x dalam 6 jam*.\nJatahmu pulih dalam *${editimg.sisaWaktu(cek.resetMs)}*.\nSisa jatah: *0/${editimg.BATAS_PAKAI}*`)
@@ -2609,7 +2603,6 @@ ${CmD} Tangerang
                             slot.release()
                             return reply(`🚫 *JATAH HABIS!*\neditimg hanya bisa dipakai *${editimg.BATAS_PAKAI}x dalam 6 jam*.\nJatahmu pulih dalam *${editimg.sisaWaktu(take.resetMs)}*.`)
                         }
-                        limitAdd(sender, limit)
                         try {
                             let imageUrl = urlFromText
                             if (isMedia) {
@@ -2828,8 +2821,7 @@ ${CmD} Tangerang
                 break
                 case 'qc': case 'chat': case 'fm': {
                 // if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
-                if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
-                    limitAdd(sender, limit)
+                { const _pp = await pakaiPoin(sender); if (!_pp.ok) return reply(_pp.msg) }
                     try{
                         if (!q) return m.reply('Missing parameter text')
                         const name = pushname
@@ -2852,8 +2844,7 @@ ${CmD} Tangerang
                 break
                 case 'stalkig': case 'igstalk':{
                 // if (checkLogin(sender, loginulti) === false) return reply(mess.reg)
-                if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
-                limitAdd(sender, limit)
+                { const _pp = await pakaiPoin(sender); if (!_pp.ok) return reply(_pp.msg) }
                 apiku.stalkig(args[0]).then ( data => {
                 var teksig = `*[ INSTAGRAM STALKER ]*\n\nUsername : ${data.result.user_info.username}\nLink : https://instagram.com/${data.result.user_info.username}\nFull Name : ${data.result.user_info.full_name}\nBio : ${data.result.user_info.biography}\nPrivasi : ${data.result.user_info.is_private}\nPostingan : ${data.result.user_info.posts}\nFollowers : ${data.result.user_info.followers}\nFollowing : ${data.result.user_info.following}`
                 bob.sendMessage(m.chat, {image: {url: data.result.user_info.profile_pic_url}, caption: teksig})
@@ -2861,8 +2852,7 @@ ${CmD} Tangerang
                 }
                 break
                 case 'igdl': case 'instagram': case 'ig': {
-                    if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply (`Poin kamu sudah habis silahkan kirim ${prefix}poin untuk mengecek Point Yang Tersedia`)
-                    limitAdd(sender, limit)
+                    { const _pp = await pakaiPoin(sender); if (!_pp.ok) return reply(_pp.msg) }
                     if (!q) return reply(`Berikan Link\nExample : ${prefix}igdl link`)
                     if (!isUrl(q)) return reply(`Link Ga Sesuai`)
                     if (!q.includes('instagram.com')) return reply(`Link Ga Sesuai`)
@@ -3544,7 +3534,6 @@ fakereply(rules)
                     await sleep(5000)
                     bob.sendMessage(m.chat, {document: fs.readFileSync('./assets/db/antilink.json'), fileName: `antilink.json`, mimetype: `json`})
                     await sleep(2000)
-                    bob.sendMessage(m.chat, {document: fs.readFileSync('./assets/db/limit.json'), fileName: `limit.json`, mimetype: `json`})
                     await sleep(3000)
                     bob.sendMessage(m.chat, {document: fs.readFileSync('./assets/db/prem2.json'), fileName: `prem2.json`, mimetype: `json`})
                     await sleep(4000)
@@ -3558,21 +3547,19 @@ fakereply(rules)
                     bob.sendMessage(m.chat, {document: fs.readFileSync('./database.json'), fileName: `database.json`, mimetype: `json`})
                     }
                     break
-                    // ========== JO DATABASE ==========
-                    case 'dbsync': case 'syncdb': {
+                    // ========== JO DATABASE (lokal saja, tanpa sync remote) ==========
+                    case 'dbcount': case 'usercount': {
                         if (!isCreator) return reply(global.mess.owner)
-                        await joDatabase.forceSync()
-                        reply(`✅ Sync database ke JVault selesai.\nTotal user: ${joDatabase.getUserCount()}`)
+                        reply(`👥 Total user di database lokal: ${joDatabase.getUserCount()}`)
                     }
                     break
                     // ========== BRAT STICKER ==========
                     // ===== MENU:Other Menu =====
                     case 'brat': {
-                        if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply(`Poin kamu habis, ketik ${prefix}poin`)
+                        { const _pp = await pakaiPoin(sender); if (!_pp.ok) return reply(_pp.msg) }
                         let txt = m.quoted ? (m.quoted.text || m.quoted.caption || '') : q
                         if (!txt) return reply(`Kirim/Reply teks!\nContoh: *${prefix}brat Halo Arasya*`)
                         if (txt.length > 200) return reply('Teks terlalu panjang! Maks 200 karakter.')
-                        limitAdd(sender, limit)
                         try {
                             let url = `https://brat.siputzx.my.id/image?text=${encodeURIComponent(txt)}`
                             let buf = await getBuffer(url)
@@ -3582,7 +3569,7 @@ fakereply(rules)
                     break
                     // ========== PLAY (YT SEARCH + AUDIO) ==========
                     case 'play': {
-                        if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply(`Poin habis, ketik ${prefix}poin`)
+                        { const _pp = await pakaiPoin(sender); if (!_pp.ok) return reply(_pp.msg) }
                         if (!q) return reply(`Contoh: ${prefix}play astaga bercanda thailand style\n\n*Flag (opsional, di akhir):*\n• *--vn* : kirim sebagai voice note\n• *--video* : kirim sebagai video\n• *--doc* : kirim sebagai dokumen`)
                         // Flag output: --vn / --video / --doc (boleh digabung, mis. --video --doc)
                         let mode = 'audio'
@@ -3591,7 +3578,6 @@ fakereply(rules)
                         if (/\s--(doc|document)\b/i.test(' ' + q)) mode = (mode === 'video' ? 'videodoc' : 'doc')
                         let query = String(q).replace(/\s--(vn|voice|ptt|video|vid|mp4|doc|document)\b/gi, '').trim()
                         if (!query) return reply(`Judul lagunya mana?\nContoh: ${prefix}play astaga bercanda --vn`)
-                        limitAdd(sender, limit)
                         reply(global.mess.wait)
                         let dlFile = null
                         try {
@@ -3649,12 +3635,11 @@ fakereply(rules)
                     break
                     // ========== YTMP3 (youtube-dl-exec / yt-dlp) ==========
                     case 'ytmp3': case 'yta': {
-                        if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply(`Poin habis`)
+                        { const _pp = await pakaiPoin(sender); if (!_pp.ok) return reply(_pp.msg) }
                         let url = q || (m.quoted && m.quoted.text) || ''
                         let mUrl = String(url).match(/https?:\/\/(www\.|m\.|music\.)?(youtube\.com|youtu\.be)\/\S+/)
                         if (!mUrl) return reply(`Kirim URL YouTube!\nContoh: ${prefix}ytmp3 https://youtu.be/xxxx`)
                         url = mUrl[0]
-                        limitAdd(sender, limit)
                         reply(global.mess.wait)
                         let dlFile = null
                         try {
@@ -3679,12 +3664,11 @@ fakereply(rules)
                     break
                     // ========== YTMP4 (youtube-dl-exec / yt-dlp) ==========
                     case 'ytmp4': case 'ytv': {
-                        if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply(`Poin habis`)
+                        { const _pp = await pakaiPoin(sender); if (!_pp.ok) return reply(_pp.msg) }
                         let url = q || ''
                         let mUrl = String(url).match(/https?:\/\/(www\.|m\.|music\.)?(youtube\.com|youtu\.be)\/\S+/)
                         if (!mUrl) return reply(`Kirim URL YouTube!\nContoh: ${prefix}ytmp4 https://youtu.be/xxxx`)
                         url = mUrl[0]
-                        limitAdd(sender, limit)
                         reply(global.mess.wait)
                         let dlFile = null
                         try {
@@ -3706,11 +3690,10 @@ fakereply(rules)
                     break
                     // ========== TIKTOK VIDEO (api siputzx) ==========
                     case 'tiktok': case 'tt': {
-                        if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply(`Poin habis`)
+                        { const _pp = await pakaiPoin(sender); if (!_pp.ok) return reply(_pp.msg) }
                         let url = (q || '').trim().split(/\s+/)[0] || ''
                         if (!url) return reply(`Kirim link TikTok!\nContoh: ${prefix}tiktok https://vt.tiktok.com/xxxx`)
                         if (!/^https?:\/\/(www\.|vt\.|vm\.|m\.)?tiktok\.com\//i.test(url)) return reply(`Link TikTok tidak valid!\nContoh: ${prefix}tiktok https://vt.tiktok.com/xxxx`)
-                        limitAdd(sender, limit)
                         reply(global.mess.wait)
                         try {
                             // via @faouzkk/tiktok-dl (ssstik.io scraper) — jika gagal, fallback ke api.siputzx
@@ -3757,10 +3740,9 @@ fakereply(rules)
                     break
                     // ========== TIKTOK MUSIC (api-faa) ==========
                     case 'tiktokmp3': case 'ttmp3': case 'ttmusic': {
-                        if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply(`Poin habis`)
+                        { const _pp = await pakaiPoin(sender); if (!_pp.ok) return reply(_pp.msg) }
                         let url = (q || '').trim().split(/\s+/)[0] || ''
                         if (!url || !/^https?:\/\/(www\.|vt\.|vm\.|m\.)?tiktok\.com\//.test(url)) return reply(`Kirim link TikTok!\nContoh: ${prefix}tiktokmp3 https://vt.tiktok.com/xxxx`)
-                        limitAdd(sender, limit)
                         reply(global.mess.wait)
                         try {
                             let r = await axios.get('https://api-faa.my.id/faa/tiktok', { params: { url }, timeout: 25000, validateStatus: () => true })
@@ -3777,9 +3759,8 @@ fakereply(rules)
                     break
                     // ========== MENFESS (UTAMA, pakai database tracking) ==========
                     case 'confess': {
-                        if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply(`Poin habis`)
+                        { const _pp = await pakaiPoin(sender); if (!_pp.ok) return reply(_pp.msg) }
                         if (!q || !q.includes('|')) return reply(`Format: ${prefix}menfess 62812xxxx|pesan rahasia`)
-                        limitAdd(sender, limit)
                         let [jidRaw, pesan] = q.split('|')
                         if (!jidRaw || !pesan) return reply(`Format: ${prefix}menfess 62812xxxx|Halo`)
                         let target = jidRaw.trim().replace(/[^0-9]/g, '')
@@ -3800,8 +3781,7 @@ fakereply(rules)
                     break
                     // ========== BUYPREM (OTOPREM) ==========
                     case 'buyprem': {
-                        if (isLimit(m.sender, isCreator, isPremium, limitCount, limit)) return reply(`Poin habis`)
-                        limitAdd(sender, limit)
+                        { const _pp = await pakaiPoin(sender); if (!_pp.ok) return reply(_pp.msg) }
                         reply('💳 *BUYPREM*\nSilakan hubungi owner untuk QRIS:\nhttps://wa.me/' + global.owner[0] + '\nHarga 2k / 30 hari. Bot akan aktifkan manual setelah transfer.')
                     }
                     break
@@ -3814,7 +3794,7 @@ fakereply(rules)
                         let db = joDatabase.loadDB()
                         if (db.sticker[hash] && db.sticker[hash].locked) return reply('Stiker ini terkunci')
                         db.sticker[hash] = { text: q, mentionedJid: m.mentionedJid || [], creator: m.sender, at: Date.now(), locked: false }
-                        joDatabase.saveDB(true); try{ require('./lib/jvault').syncUsers(db.users, db.sticker) }catch{}
+                        joDatabase.saveDB(true)
                         reply('✅ setcmd berhasil')
                     }
                     break
@@ -3826,7 +3806,7 @@ fakereply(rules)
                         if (!db.sticker[hash]) return reply('Hash tidak ada di database')
                         if (db.sticker[hash].locked) return reply('Tidak ada izin (terkunci)')
                         delete db.sticker[hash]
-                        joDatabase.saveDB(true); try{ require('./lib/jvault').syncUsers(db.users, db.sticker) }catch{}
+                        joDatabase.saveDB(true)
                         reply('✅ delcmd berhasil')
                     }
                     break
